@@ -1,4 +1,15 @@
-# ElectronChatbotIaApp
+# Local Mind
+
+**Local Mind** is a desktop application built with Angular and Electron for chatting with artificial intelligence models running locally. The application provides a modern, multi-language interface for interacting with AI models through an intuitive chat interface.
+
+## Features
+
+- 🤖 **AI Chat**: Intelligent conversations with advanced AI models
+- 🌍 **Multi-language Support**: Interface available in 7 different languages (Spanish, English, Portuguese, French, German, Chinese, Japanese)
+- 🌙 **Dark Mode**: Adaptive interface with light and dark themes
+- 📁 **Folder Organization**: Organize your conversations in custom folders
+- 📊 **AI Models Status**: Monitor locally installed AI models status and information
+- 💻 **Cross-platform**: Available for Windows, macOS, and Linux
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.19.
 

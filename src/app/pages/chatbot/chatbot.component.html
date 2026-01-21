@@ -1,0 +1,259 @@
+<div class="flex h-screen overflow-hidden bg-background-light dark:bg-background-dark" style="width: -webkit-fill-available;">
+<aside
+    class="w-[260px] flex-shrink-0 bg-sidebar-light dark:bg-sidebar-dark border-r border-slate-200 dark:border-slate-800 flex flex-col h-full transition-all duration-300 hidden md:flex">
+<div class="p-3 flex flex-col gap-2">
+        <button (click)="newConversation()" [disabled]="loading"
+            [class.opacity-50]="loading"
+            [class.cursor-not-allowed]="loading"
+            class="flex w-full cursor-pointer items-center justify-start overflow-hidden rounded-lg h-10 px-3 bg-white dark:bg-[#111722] border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-[#1c2433] text-sm font-medium transition-colors gap-2 text-slate-700 dark:text-white shadow-sm disabled:hover:bg-white dark:disabled:hover:bg-[#111722]">
+            <span class="material-symbols-outlined text-primary" style="font-size: 20px;">add</span>
+            <span>{{ 'newChat' | translate }}</span>
+            <span class="ml-auto material-symbols-outlined text-slate-400" style="font-size: 18px;">edit_square</span>
+        </button>
+        <app-folder-sidebar
+          [selectedFolderId]="selectedFolderId"
+          [conversations]="selectedFolderId ? getFolderConversations() : []"
+          [selectedConversationId]="selectedConversationId"
+          [loading]="loading"
+          (folderSelected)="selectFolder($event)"
+          (folderCreated)="onFolderCreated()"
+          (chatCreatedInFolder)="createChatInFolder($event)"
+          (conversationMoved)="moveConversationToFolder($event)"
+          (conversationSelected)="openConversation($event)"
+          (conversationDeleted)="deleteConversationById($event)">
+        </app-folder-sidebar>
+    </div>
+    <div class="flex-1 overflow-y-auto px-3 py-2">
+            <div>
+                <div class="flex flex-col gap-1">
+                    <!-- Mostrar conversaciones del root cuando no hay carpeta seleccionada -->
+                    <ng-container *ngIf="!selectedFolderId">
+                        <button  *ngFor="let conv of conversations" (click)="openConversation(conv.id)" [disabled]="loading"
+                            draggable="true"
+                            (dragstart)="onDragStart($event, conv.id)"
+                            (dragend)="onDragEnd($event)"
+                            [class.bg-slate-200]="conv.id === selectedConversationId"
+                            [class.dark:bg-slate-700]="conv.id === selectedConversationId"
+                            [class.opacity-50]="loading || isDragging"
+                            [class.cursor-not-allowed]="loading"
+                            [class.cursor-grab]="!loading"
+                            [class.cursor-grabbing]="isDragging"
+                            class="group flex items-center gap-3 w-full rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1c2433] transition-colors text-left relative overflow-hidden disabled:hover:bg-transparent dark:disabled:hover:bg-transparent">
+                            <span class="truncate z-10 relative flex-1">{{ conv.title || ('conversation' | translate) }}</span>
+                            <button (click)="deleteConversation($event, conv.id)" [disabled]="loading"
+                                class="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-red-100 dark:hover:bg-red-900/20 rounded text-red-600 hover:text-red-700">
+                                <span class="material-symbols-outlined" style="font-size: 16px;">delete</span>
+                            </button>
+                        </button>
+                    </ng-container>
+
+                    <!-- Mostrar conversaciones del root cuando hay carpeta seleccionada -->
+                    <ng-container *ngIf="selectedFolderId">
+                        <button  *ngFor="let conv of getRootConversations()" (click)="openConversation(conv.id)" [disabled]="loading"
+                            draggable="true"
+                            (dragstart)="onDragStart($event, conv.id)"
+                            (dragend)="onDragEnd($event)"
+                            [class.bg-slate-200]="conv.id === selectedConversationId"
+                            [class.dark:bg-slate-700]="conv.id === selectedConversationId"
+                            [class.opacity-50]="loading || isDragging"
+                            [class.cursor-not-allowed]="loading"
+                            [class.cursor-grab]="!loading"
+                            [class.cursor-grabbing]="isDragging"
+                            class="group flex items-center gap-3 w-full rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1c2433] transition-colors text-left relative overflow-hidden disabled:hover:bg-transparent dark:disabled:hover:bg-transparent">
+                            <span class="truncate z-10 relative flex-1">{{ conv.title || ('conversation' | translate) }}</span>
+                            <button (click)="deleteConversation($event, conv.id)" [disabled]="loading"
+                                class="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-red-100 dark:hover:bg-red-900/20 rounded text-red-600 hover:text-red-700">
+                                <span class="material-symbols-outlined" style="font-size: 16px;">delete</span>
+                            </button>
+                        </button>
+                    </ng-container>
+                </div>
+            </div>
+    </div>
+    <div class="p-3 border-t border-slate-200 dark:border-slate-800 relative">
+        <button
+            (click)="toggleUserMenu()"
+            class="flex items-center gap-3 w-full rounded-lg px-3 py-3 text-sm text-slate-700 dark:text-white hover:bg-slate-100 dark:hover:bg-[#1c2433] transition-colors">
+            <div class="h-8 w-8 rounded-full bg-gradient-to-tr from-purple-500 to-primary flex items-center justify-center text-white font-bold text-xs"
+                data-alt="Avatar de Usuario">
+                {{ userInitials }}
+            </div>
+            <div class="flex flex-col items-start">
+                <span class="font-medium text-xs">{{ userName }}</span>
+                <!-- <span class="text-[10px] text-text-secondary-light dark:text-text-secondary-dark">Plan Gratuito</span> -->
+            </div>
+            <span class="material-symbols-outlined ml-auto text-slate-400 transition-transform" 
+                [style.transform]="showUserMenu ? 'rotate(90deg)' : 'rotate(0deg)'" 
+                style="font-size: 18px;">more_horiz</span>
+        </button>
+
+        <!-- Menú de usuario -->
+        <div *ngIf="showUserMenu" 
+            class="absolute bottom-full left-3 right-3 mb-2 bg-white dark:bg-[#1c2433] border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg py-2 z-50">
+            
+            <!-- Mi Perfil -->
+            <button 
+                (click)="openProfile()"
+                class="flex items-center gap-3 w-full px-4 py-2 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                <span class="material-symbols-outlined" style="font-size: 18px;">person</span>
+                <span>{{ 'profile.title' | translate }}</span>
+            </button>
+
+            <!-- Configuraciones -->
+            <button 
+                (click)="openSettings()"
+                class="flex items-center gap-3 w-full px-4 py-2 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                <span class="material-symbols-outlined" style="font-size: 18px;">settings</span>
+                <span>{{ 'settings.title' | translate }}</span>
+            </button>
+
+            <!-- Acerca de -->
+            <button 
+                (click)="openAbout()"
+                class="flex items-center gap-3 w-full px-4 py-2 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                <span class="material-symbols-outlined" style="font-size: 18px;">info</span>
+                <span>{{ 'about.title' | translate }}</span>
+            </button>
+        </div>
+    </div>
+</aside>
+<main class="flex flex-1 flex-col h-full relative">
+    <header
+        class="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-800 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md sticky top-0">
+        <div class="flex items-center gap-2">
+            <button
+                class="md:hidden p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+            <div
+                class="relative flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-[#1c2433] cursor-pointer transition-colors group"
+                (click)="toggleModelDropdown()">
+                <h2 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">
+                    {{ selectedModel }}</h2>
+                <span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors"
+                    style="font-size: 20px;">keyboard_arrow_down</span>
+                
+                <!-- Dropdown menu -->
+                <div *ngIf="showModelDropdown" 
+                    class="absolute top-full left-0 mt-2 w-64 bg-white dark:bg-[#1c2433] border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto"
+                    (click)="$event.stopPropagation()">
+                    <div class="p-2">
+                        <div *ngIf="models.length === 0" class="px-3 py-2 text-sm text-slate-500 dark:text-slate-400">
+                            {{ 'noModelsAvailable' | translate }}
+                        </div>
+                        <button
+                            *ngFor="let model of models"
+                            (click)="selectModel(model.name)"
+                            class="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                            [class.bg-slate-100]="model.name === selectedModel"
+                            [class.dark:bg-slate-700]="model.name === selectedModel">
+                            <div class="font-medium text-slate-900 dark:text-white">{{ model.name }}</div>
+                            <div class="text-xs text-slate-500 dark:text-slate-400">{{ model.size ? (model.size / 1e9).toFixed(1) + ' GB' : '' }}</div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div
+                class="hidden md:flex items-center gap-1 text-xs text-text-secondary-light dark:text-text-secondary-dark ml-2">
+                <span class="material-symbols-outlined" style="font-size: 16px;">chat</span>
+                <span>{{ 'currentConversation' | translate }}</span>
+            </div>
+        </div>
+        <!-- <div class="flex items-center gap-2">
+            <button
+                class="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-[#1c2433] rounded-lg transition-colors"
+                title="Compartir Chat">
+                <span class="material-symbols-outlined" style="font-size: 20px;">ios_share</span>
+            </button>
+            <button
+                class="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-[#1c2433] rounded-lg transition-colors"
+                title="Archivar Chat">
+                <span class="material-symbols-outlined" style="font-size: 20px;">archive</span>
+            </button>
+        </div> -->
+    </header>
+    <div #messagesContainer class="flex-1 overflow-y-auto w-full">
+        <div class="flex flex-col w-full max-w-3xl mx-auto py-8 px-4 pb-32 gap-6">
+            <div *ngIf="messages.length === 0" class="flex flex-col items-center justify-center min-h-[50vh] gap-8">
+                <h1 class="text-4xl font-bold text-slate-900 dark:text-white">{{ getWelcomeMessage() }}</h1>
+            </div>
+            
+            <div *ngFor="let message of messages" class="group w-full text-slate-900 dark:text-slate-100">
+                <div class="flex gap-4 md:gap-6 m-auto">
+                    <div class="flex-shrink-0 flex flex-col relative items-end">
+                        <div *ngIf="message.role === 'user'" 
+                            class="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-500 to-primary flex items-center justify-center text-white font-bold text-xs"
+                            data-alt="User Avatar">
+                            {{ userInitials }}
+                        </div>
+                        <div *ngIf="message.role === 'assistant'" 
+                            class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white"
+                            data-alt="AI Avatar Logo">
+                            <span class="material-symbols-outlined text-[18px]">smart_toy</span>
+                        </div>
+                    </div>
+                    <div class="relative flex-1 overflow-hidden">
+                        <div class="font-semibold text-sm mb-1 opacity-90">{{ message.role === 'user' ? ('you' | translate) : ('assistant' | translate) }}</div>
+                        <div class="prose dark:prose-invert text-[15px] leading-7 max-w-none" 
+                             [innerHTML]="formatMessageContent(message.content)"
+                             (click)="handleCodeCopyClick($event)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div *ngIf="loading && !isStreaming" class="group w-full text-slate-900 dark:text-slate-100">
+                <div class="flex gap-4 md:gap-6 m-auto">
+                    <div class="flex-shrink-0 flex flex-col relative items-end">
+                        <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white"
+                            data-alt="AI Avatar Logo">
+                            <span class="material-symbols-outlined text-[18px] animate-pulse">smart_toy</span>
+                        </div>
+                    </div>
+                    <div class="relative flex-1 overflow-hidden pt-1">
+                        <div class="font-semibold text-sm mb-1 opacity-90">{{ 'assistant' | translate }}</div>
+                        <div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                            <span>{{ typingText }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+        </div>
+    </div>
+    <div class="w-full bg-background-light dark:bg-background-dark pt-2 pb-4 px-4 sticky bottom-0">
+        <div class="max-w-3xl mx-auto w-full relative">
+            <div
+                class="relative flex items-end w-full p-3 bg-white dark:bg-[#1c2433] border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/50 transition-all">
+                <button
+                    class="flex-shrink-0 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors mr-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">add_circle</span>
+                </button>
+                <textarea
+                    [(ngModel)]="input"
+                    (keydown.enter)="onEnterKey($event)"
+                    [disabled]="loading"
+                    class="w-full bg-transparent border-none text-slate-900 dark:text-white placeholder-slate-400 focus:ring-0 resize-none max-h-[200px] py-2 text-base leading-6"
+                    placeholder="{{ 'sendMessage' | translate }}" rows="1" style="min-height: 24px;"></textarea>
+                <button
+                    *ngIf="!loading"
+                    (click)="send()"
+                    [disabled]="!input.trim()"
+                    class="flex-shrink-0 p-1.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors ml-2 disabled:opacity-50 disabled:cursor-not-allowed mb-0.5">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">arrow_upward</span>
+                </button>
+                <button
+                    *ngIf="loading"
+                    (click)="stopResponse()"
+                    class="flex-shrink-0 p-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors ml-2 mb-0.5">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">stop</span>
+                </button>
+            </div>
+            <div class="text-center mt-2">
+                <p class="text-[10px] text-text-secondary-light dark:text-text-secondary-dark">{{ 'aiDisclaimer' | translate }}</p>
+            </div>
+        </div>
+    </div>
+</main>
+</div>

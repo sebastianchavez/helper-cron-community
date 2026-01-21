@@ -1,12 +1,26 @@
 {
-  "name": "electron-chatbot-ia-app",
-  "version": "0.0.0",
+  "name": "local-mind",
+  "description": "Local Mind - A desktop application for chatting with artificial intelligence",
+  "version": "1.0.0",
+  "author": "Tecnodesa",
+  "main": "electron-dist/main.js",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "electron": "ng build && electron .",
+    "build:electron": "ng build && electron-builder",
+    "electron:build": "tsc -p electron/tsconfig.json",
+    "electron:run": "electron electron-dist/main.js",
+    "electron:dev": "concurrently \"ng serve\" \"npm run electron:build -- --watch\" \"wait-on http://localhost:4200 && cross-env ELECTRON_DEV_URL=http://localhost:4200 electron electron-dist/main.js\"",
+    "test": "ng test",
+    "postinstall": "electron-builder install-app-deps",
+    "dist": "npm run electron:build && ng build --configuration production && electron-builder",
+    "dist:win": "npm run electron:build && ng build --configuration production && electron-builder --win",
+    "dist:mac": "npm run electron:build && ng build --configuration production && electron-builder --mac",
+    "dist:linux": "npm run electron:build && ng build --configuration production && electron-builder --linux",
+    "dist:all": "npm run electron:build && ng build --configuration production && electron-builder --win --mac --linux"
   },
   "private": true,
   "dependencies": {
@@ -17,6 +31,10 @@
     "@angular/platform-browser": "^19.2.0",
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/router": "^19.2.0",
+    "@fontsource/inter": "^5.2.8",
+    "@fontsource/material-symbols-outlined": "^5.2.32",
+    "@tailwindcss/forms": "^0.5.10",
+    "better-sqlite3": "^12.5.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
@@ -25,13 +43,103 @@
     "@angular-devkit/build-angular": "^19.2.19",
     "@angular/cli": "^19.2.19",
     "@angular/compiler-cli": "^19.2.0",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/jasmine": "~5.1.0",
+    "@types/node": "^25.0.2",
+    "autoprefixer": "^10.4.23",
+    "concurrently": "^9.2.1",
+    "cross-env": "^10.1.0",
+    "electron": "^39.2.7",
+    "electron-builder": "^26.4.0",
     "jasmine-core": "~5.6.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.7.2"
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.17",
+    "tsx": "^4.21.0",
+    "typescript": "~5.7.2",
+    "wait-on": "^9.0.3"
+  },
+  "build": {
+    "appId": "com.tecnodesa.localmind",
+    "productName": "LocalMind",
+    "copyright": "Copyright © 2026 Tecnodesa",
+    "directories": {
+      "output": "release",
+      "buildResources": "assets"
+    },
+    "files": [
+      "dist/electron-chatbot-ia-app/**/*",
+      "electron-dist/**/*",
+      "node_modules/**/*",
+      "!node_modules/.cache/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "node_modules/better-sqlite3",
+        "to": "better-sqlite3",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/favicon.ico",
+      "requestedExecutionLevel": "asInvoker"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "category": "public.app-category.productivity"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "tar.gz",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "category": "Office"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "LocalMind"
+    }
   }
 }
