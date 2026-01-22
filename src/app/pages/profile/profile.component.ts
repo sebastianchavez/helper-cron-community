@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -6,6 +6,7 @@ import { TranslationService } from '../../core/services/translation/translation.
 import { TranslatePipe } from '../../core/pipes/translate.pipe';
 import { NavigationMenuComponent } from '../../core/components/navigation-menu/navigation-menu.component';
 import { UserService } from '../../core/services/user/user.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -14,13 +15,14 @@ import { UserService } from '../../core/services/user/user.service';
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
   profileForm: FormGroup;
   loading = false;
   message = '';
   messageType: 'success' | 'error' | '' = '';
   showUserMenu = false;
   isDarkMode = false;
+  private userSubscription?: Subscription;
 
   constructor(
     private fb: FormBuilder,
@@ -36,15 +38,41 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     this.loadProfile();
     this.initializeTheme();
+    
+    // Suscribirse a los cambios del usuario para mantener sincronizado
+    this.userSubscription = this.userService.user$.subscribe(user => {
+      if (user?.name) {
+        this.profileForm.patchValue({
+          name: user.name
+        }, { emitEvent: false }); // No emitir evento para evitar loops
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
   }
 
   async loadProfile(): Promise<void> {
     try {
+      // Primero intentar cargar desde el servicio de usuario
+      const currentUser = this.userService.getCurrentUser();
+      if (currentUser && currentUser.name) {
+        this.profileForm.patchValue({
+          name: currentUser.name
+        });
+        return;
+      }
+      
+      // Si no hay datos en el servicio, cargar desde la persistencia
       const response = await window.agi?.userProfile.get();
       if (response?.success && response.data) {
-        this.profileForm.patchValue({
-          name: response.data.name || ''
-        });
+        const userData = { name: response.data.name || '' };
+        this.profileForm.patchValue(userData);
+        // Actualizar el servicio con los datos cargados
+        await this.userService.updateUser({ name: response.data.name });
       }
     } catch (error) {
       this.showMessage(this.translationService.translate('profile.loadError'), 'error');
@@ -62,15 +90,10 @@ export class ProfileComponent implements OnInit {
 
     try {
       const profileData = this.profileForm.value;
-      const response = await window.agi?.userProfile.save(profileData);
       
-      if (response?.success) {
-        this.showMessage(this.translationService.translate('profile.saveSuccess'), 'success');
-        // Actualizar el servicio de usuario para reflejar el cambio inmediatamente
-        this.userService.updateUser({ name: profileData.name });
-      } else {
-        this.showMessage(response?.error || this.translationService.translate('profile.saveError'), 'error');
-      }
+      // Usar el UserService para guardar (que ahora maneja la persistencia)
+      await this.userService.updateUser({ name: profileData.name });
+      this.showMessage(this.translationService.translate('profile.saveSuccess'), 'success');
     } catch (error) {
       this.showMessage(this.translationService.translate('profile.saveError'), 'error');
       console.error('Error saving profile:', error);
@@ -88,16 +111,10 @@ export class ProfileComponent implements OnInit {
     this.message = '';
 
     try {
-      const response = await window.agi?.userProfile.delete();
-      
-      if (response?.success) {
-        this.showMessage(this.translationService.translate('profile.deleteSuccess'), 'success');
-        this.profileForm.reset();
-        // Limpiar el servicio de usuario cuando se elimina el perfil
-        this.userService.clearUser();
-      } else {
-        this.showMessage(response?.error || this.translationService.translate('profile.deleteError'), 'error');
-      }
+      // Usar el UserService para eliminar (que ahora maneja la persistencia)
+      await this.userService.clearUser();
+      this.showMessage(this.translationService.translate('profile.deleteSuccess'), 'success');
+      this.profileForm.reset();
     } catch (error) {
       this.showMessage(this.translationService.translate('profile.deleteError'), 'error');
       console.error('Error deleting profile:', error);

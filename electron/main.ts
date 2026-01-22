@@ -9,6 +9,7 @@ import { initDb } from './db/db';
 import { registerChatDbHandler } from './ipc/chat-db.handler';
 import { registerFolderHandlers } from './ipc/folder.handler';
 import { setupUserProfileHandlers } from './ipc/user-profile.handler';
+import { registerExternalLinkHandler } from './ipc/external-link.handler';
 
 
 let win: BrowserWindow | null = null;
@@ -50,6 +51,7 @@ function createWindow() {
     registerFolderHandlers();
     registerOllamaPlanHandler();
     registerOllamaServiceHandler();
+    registerExternalLinkHandler();
 }
 
 app.whenReady().then(() => {
@@ -57,6 +59,7 @@ app.whenReady().then(() => {
     
     // Registrar handlers IPC
     setupUserProfileHandlers();
+    registerExternalLinkHandler();
     
     createWindow();
 });

@@ -39,11 +39,33 @@ export class UserService {
     return this.userSubject.value;
   }
 
-  updateUser(user: UserProfile): void {
-    this.userSubject.next(user);
+  async updateUser(user: UserProfile): Promise<void> {
+    try {
+      // Persistir los datos usando el API de Electron
+      const response = await window.agi?.userProfile.save(user);
+      if (response?.success) {
+        this.userSubject.next(user);
+      } else {
+        console.error('Error updating user:', response?.error);
+      }
+    } catch (error) {
+      console.error('Error updating user:', error);
+      // Aunque falle la persistencia, actualizamos el estado local
+      this.userSubject.next(user);
+    }
   }
 
-  clearUser(): void {
-    this.userSubject.next(null);
+  async clearUser(): Promise<void> {
+    try {
+      const response = await window.agi?.userProfile.delete();
+      if (response?.success) {
+        this.userSubject.next(null);
+      } else {
+        console.error('Error clearing user:', response?.error);
+      }
+    } catch (error) {
+      console.error('Error clearing user:', error);
+      this.userSubject.next(null);
+    }
   }
 }

@@ -2,7 +2,11 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
     {
-        path: '',
+        path: 'welcome',
+        loadComponent: () => import('./pages/welcome/welcome.component').then(m => m.WelcomeComponent)
+    },
+    {
+        path: 'chat',
         redirectTo: '/chatbot',
         pathMatch: 'full'
     },
@@ -21,5 +25,10 @@ export const routes: Routes = [
     {
         path: 'about',
         loadComponent: () => import('./pages/about/about.component').then(m => m.AboutComponent)
+    },
+    {
+        path: '',
+        loadComponent: () => import('./components/redirect/redirect.component').then(m => m.RedirectComponent),
+        pathMatch: 'full'
     }
 ];

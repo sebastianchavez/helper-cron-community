@@ -33,6 +33,16 @@ declare global {
             chat: {
                 listModels: () => Promise<OllamaModel[]>;
                 downloadModel: (modelName: string) => Promise<{ success: boolean; error?: string }>;
+                deleteModel: (modelName: string) => Promise<{ success: boolean; error?: string }>;
+                onDownloadProgress: (cb: (progress: {
+                    modelName: string;
+                    status: string;
+                    progress?: number;
+                    completed?: number;
+                    total?: number;
+                    error?: string;
+                    phase?: string;
+                }) => void) => () => void;
                 send: (messages: any[], model?: string) => Promise<{ content: string }>;
                 stream: (
                     messages: any[], 
@@ -84,6 +94,7 @@ declare global {
                 startService(): Promise<{ success: boolean; error?: string }>;
                 isInstalled(): Promise<boolean>;
             };
+            openExternalLink: (url: string) => Promise<{ success: boolean; error?: string }>;
         };
     }
 }

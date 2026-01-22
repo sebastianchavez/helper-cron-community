@@ -14,6 +14,7 @@ const db_1 = require("./db/db");
 const chat_db_handler_1 = require("./ipc/chat-db.handler");
 const folder_handler_1 = require("./ipc/folder.handler");
 const user_profile_handler_1 = require("./ipc/user-profile.handler");
+const external_link_handler_1 = require("./ipc/external-link.handler");
 let win = null;
 function createWindow() {
     win = new electron_1.BrowserWindow({
@@ -48,11 +49,13 @@ function createWindow() {
     (0, folder_handler_1.registerFolderHandlers)();
     (0, ollama_plan_handler_1.registerOllamaPlanHandler)();
     (0, ollama_service_handler_1.registerOllamaServiceHandler)();
+    (0, external_link_handler_1.registerExternalLinkHandler)();
 }
 electron_1.app.whenReady().then(() => {
     (0, db_1.initDb)();
     // Registrar handlers IPC
     (0, user_profile_handler_1.setupUserProfileHandlers)();
+    (0, external_link_handler_1.registerExternalLinkHandler)();
     createWindow();
 });
 electron_1.app.on('window-all-closed', () => {

@@ -23,6 +23,12 @@ electron_1.contextBridge.exposeInMainWorld('agi', {
     chat: {
         listModels: () => electron_1.ipcRenderer.invoke('ollama:models'),
         downloadModel: (modelName) => electron_1.ipcRenderer.invoke('ollama:download-model', modelName),
+        deleteModel: (modelName) => electron_1.ipcRenderer.invoke('ollama:delete-model', modelName),
+        onDownloadProgress: (cb) => {
+            const handler = (_, payload) => cb(payload);
+            electron_1.ipcRenderer.on('ollama:download-progress', handler);
+            return () => electron_1.ipcRenderer.removeListener('ollama:download-progress', handler);
+        },
         send: (messages, model = 'llama3') => electron_1.ipcRenderer.invoke('ollama:chat', { messages, model }),
         stream: (messages, model, onChunk, onDone, onError) => {
             // Listener para chunks
@@ -91,4 +97,6 @@ electron_1.contextBridge.exposeInMainWorld('agi', {
         save: (profile) => electron_1.ipcRenderer.invoke('user-profile:save', profile),
         delete: () => electron_1.ipcRenderer.invoke('user-profile:delete'),
     },
+    // API para abrir enlaces externos
+    openExternalLink: (url) => electron_1.ipcRenderer.invoke('open-external-link', url),
 });

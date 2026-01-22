@@ -10,6 +10,7 @@ import { FolderService } from '../../core/services/folder/folder.service';
 import { TranslationService } from '../../core/services/translation/translation.service';
 import { TranslatePipe } from '../../core/pipes/translate.pipe';
 import { UserService } from '../../core/services/user/user.service';
+import { AIModelsService, OllamaStatus } from '../../core/services/ai-models/ai-models.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -31,9 +32,6 @@ export class ChatbotComponent implements OnInit, OnDestroy {
   models: any[] = [];
   selectedModel = 'llama3';
   showModelDropdown = false;
-
-  // Lista blanca de modelos permitidos
-  private allowedModels = ['llama3', 'gpt4all', 'mistral', 'vicuna', 'stablelm', 'wizardlm', 'guanaco', 'alpaca', 'airoboros', 'dolly', 'koala', 'phi', 'pythia', 'cerebras', 'gemini', 'claude', 'falcon', 'airoboros', 'mistral', 'qwen', 'xgen'];
 
   loading = false;
   typingText = 'Pensando...';
@@ -60,6 +58,13 @@ export class ChatbotComponent implements OnInit, OnDestroy {
   draggedConversationId: string | null = null;
   showUserMenu = false;
   isDarkMode = false;
+  showNoModelsModal = false;
+  
+  // Ollama modal properties
+  showOllamaModal = false;
+  ollamaStatus: OllamaStatus = { installed: false, running: false };
+  isStartingOllama = false;
+  ollamaStartError: string | null = null;
 
 
   constructor(
@@ -70,7 +75,8 @@ export class ChatbotComponent implements OnInit, OnDestroy {
     private folderService: FolderService,
     private router: Router,
     private translationService: TranslationService,
-    private userService: UserService
+    private userService: UserService,
+    private aiModelsService: AIModelsService
   ) {
     this.chat.messages$.subscribe(msgs => {
       this.messages = msgs;
@@ -79,6 +85,9 @@ export class ChatbotComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit(): Promise<void> {
+    // Verificar estado de Ollama primero
+    await this.checkOllamaOnStartup();
+    
     // Cargar modelos primero para establecer el modelo por defecto
     await this.loadModels();
     
@@ -153,12 +162,8 @@ export class ChatbotComponent implements OnInit, OnDestroy {
       try {
         const allModels = await window.agi.chat.listModels();
 
-        // Filtrar solo los modelos que están en la lista blanca
-        this.models = allModels.filter(model => {
-          return this.allowedModels.some(allowed =>
-            model.name.toLowerCase().includes(allowed.toLowerCase())
-          );
-        });
+        // Mostrar todos los modelos instalados
+        this.models = allModels;
 
         // Buscar llama3 en cualquier variante (llama3, llama3:latest, etc.)
         const llama3Model = this.models.find(m => 
@@ -225,6 +230,12 @@ export class ChatbotComponent implements OnInit, OnDestroy {
 
   async send() {
     if (!this.input.trim()) return;
+
+    // Verificar si hay modelos disponibles
+    if (this.models.length === 0) {
+      this.showNoModelsModal = true;
+      return;
+    }
 
     const userMessage = this.input;
 
@@ -654,11 +665,6 @@ export class ChatbotComponent implements OnInit, OnDestroy {
     }
   }
 
-  openSettings() {
-    this.router.navigate(['/settings']);
-    this.showUserMenu = false;
-  }
-
   openAbout() {
     this.router.navigate(['/about']);
     this.showUserMenu = false;
@@ -766,5 +772,77 @@ export class ChatbotComponent implements OnInit, OnDestroy {
     const template = this.translationService.translate('personalizedWelcome');
     const firstName = this.userName.split(' ')[0]; // Solo usar el primer nombre
     return template.replace('{name}', firstName);
+  }
+
+  // Ollama management methods
+  private async checkOllamaOnStartup(): Promise<void> {
+    try {
+      this.ollamaStatus = await this.aiModelsService.checkOllamaStatus();
+      
+      // Si Ollama no está instalado o no está corriendo, mostrar el modal
+      if (!this.ollamaStatus.installed || !this.ollamaStatus.running) {
+        this.showOllamaModal = true;
+      }
+    } catch (error) {
+      console.error('Error checking Ollama on startup:', error);
+      this.ollamaStatus = { installed: false, running: false, error: 'Error al verificar Ollama' };
+      this.showOllamaModal = true;
+    }
+  }
+
+  async startOllamaService(): Promise<void> {
+    this.isStartingOllama = true;
+    this.ollamaStartError = null;
+    
+    try {
+      const result = await this.aiModelsService.startOllama();
+      
+      if (result.success) {
+        // Esperar un momento y verificar el estado
+        setTimeout(async () => {
+          this.ollamaStatus = await this.aiModelsService.checkOllamaStatus();
+          if (this.ollamaStatus.running) {
+            this.showOllamaModal = false;
+            // Recargar modelos después de iniciar Ollama
+            await this.loadModels();
+          }
+          this.isStartingOllama = false;
+        }, 3000);
+      } else {
+        this.ollamaStartError = result.error || 'Error desconocido al iniciar Ollama';
+        this.isStartingOllama = false;
+      }
+    } catch (error: any) {
+      console.error('Error starting Ollama:', error);
+      this.ollamaStartError = error?.message || 'Error al iniciar Ollama';
+      this.isStartingOllama = false;
+    }
+  }
+
+  closeOllamaModal(): void {
+    this.showOllamaModal = false;
+  }
+
+  openSettings(): void {
+    this.router.navigate(['/settings']);
+    this.closeOllamaModal();
+  }
+
+  openOllamaWebsite(): void {
+    if (window.agi?.openExternalLink) {
+      window.agi.openExternalLink('https://ollama.com');
+    } else {
+      // Fallback para desarrollo
+      window.open('https://ollama.com', '_blank');
+    }
+  }
+
+  closeNoModelsModal() {
+    this.showNoModelsModal = false;
+  }
+
+  navigateToModels() {
+    this.showNoModelsModal = false;
+    this.router.navigate(['/settings'], { fragment: 'models' });
   }
 }

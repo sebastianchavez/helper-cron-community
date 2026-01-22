@@ -256,4 +256,120 @@
         </div>
     </div>
 </main>
+
+<!-- Modal de Ollama Startup -->
+<div *ngIf="showOllamaModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md mx-4 shadow-2xl">
+        <div class="text-center">
+            <!-- Icono -->
+            <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 dark:bg-blue-900 mb-4">
+                <span class="material-symbols-outlined text-blue-600 dark:text-blue-400 text-3xl">smart_toy</span>
+            </div>
+            
+            <!-- Título -->
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                {{ 'startup.ollamaRequired' | translate }}
+            </h3>
+            
+            <!-- Contenido dinámico basado en el estado -->
+            <div *ngIf="!ollamaStatus.installed">
+                <h4 class="text-md font-medium text-gray-800 dark:text-gray-200 mb-3">
+                    {{ 'startup.ollamaNotInstalledTitle' | translate }}
+                </h4>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
+                    {{ 'startup.ollamaNotInstalledDesc' | translate }}
+                </p>
+                <div class="space-y-3">
+                    <button 
+                        (click)="openOllamaWebsite()"
+                        class="block w-full bg-yellow-600 text-white py-2 px-4 rounded-lg hover:bg-yellow-700 transition-colors font-medium text-center">
+                        {{ 'startup.downloadOllama' | translate }}
+                    </button>
+                    <button 
+                        (click)="openSettings()"
+                        class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                        {{ 'startup.goToSettings' | translate }}
+                    </button>
+                    <button 
+                        (click)="closeOllamaModal()"
+                        class="w-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 py-2 px-4 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors text-sm">
+                        {{ 'startup.continueAnyway' | translate }}
+                    </button>
+                </div>
+            </div>
+            
+            <div *ngIf="ollamaStatus.installed && !ollamaStatus.running">
+                <h4 class="text-md font-medium text-gray-800 dark:text-gray-200 mb-3">
+                    {{ 'startup.ollamaNotRunningTitle' | translate }}
+                </h4>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
+                    {{ 'startup.ollamaNotRunningDesc' | translate }}
+                </p>
+                
+                <!-- Error de inicio -->
+                <div *ngIf="ollamaStartError" class="mb-4 p-3 bg-red-100 dark:bg-red-900 border border-red-300 dark:border-red-700 rounded-lg">
+                    <p class="text-sm text-red-700 dark:text-red-300">{{ ollamaStartError }}</p>
+                </div>
+                
+                <div class="flex space-x-3">
+                    <button 
+                        (click)="startOllamaService()"
+                        [disabled]="isStartingOllama"
+                        class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+                        <span *ngIf="!isStartingOllama">{{ 'startup.startOllama' | translate }}</span>
+                        <span *ngIf="isStartingOllama" class="flex items-center justify-center">
+                            <span class="animate-spin inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full mr-2"></span>
+                            {{ 'startup.startingOllama' | translate }}
+                        </span>
+                    </button>
+                    <button 
+                        (click)="openSettings()"
+                        class="flex-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 py-2 px-4 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                        {{ 'startup.goToSettings' | translate }}
+                    </button>
+                </div>
+                
+                <button 
+                    (click)="closeOllamaModal()"
+                    class="mt-3 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 underline">
+                    {{ 'startup.continueAnyway' | translate }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Sin Modelos -->
+<div *ngIf="showNoModelsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60] p-4">
+    <div class="bg-white dark:bg-[#1c2433] rounded-lg shadow-xl max-w-md w-full mx-auto">
+        <div class="p-6">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/20 rounded-full flex items-center justify-center">
+                    <span class="material-symbols-outlined text-yellow-600 dark:text-yellow-400 text-2xl">download</span>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ 'noModels.title' | translate }}</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ 'noModels.subtitle' | translate }}</p>
+                </div>
+            </div>
+            
+            <p class="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                {{ 'noModels.description' | translate }}
+            </p>
+            
+            <div class="flex gap-3">
+                <button 
+                    (click)="navigateToModels()"
+                    class="flex-1 bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary/90 transition-colors font-medium">
+                    {{ 'noModels.installModels' | translate }}
+                </button>
+                <button 
+                    (click)="closeNoModelsModal()"
+                    class="flex-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 py-2 px-4 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                    {{ 'noModels.cancel' | translate }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 </div>

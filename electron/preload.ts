@@ -41,6 +41,20 @@ contextBridge.exposeInMainWorld('agi', {
   chat: {
     listModels: () => ipcRenderer.invoke('ollama:models'),
     downloadModel: (modelName: string) => ipcRenderer.invoke('ollama:download-model', modelName),
+    deleteModel: (modelName: string) => ipcRenderer.invoke('ollama:delete-model', modelName),
+    
+    onDownloadProgress: (cb: (progress: {
+      modelName: string;
+      status: string;
+      progress?: number;
+      completed?: number;
+      total?: number;
+      error?: string;
+    }) => void) => {
+      const handler = (_: any, payload: any) => cb(payload);
+      ipcRenderer.on('ollama:download-progress', handler);
+      return () => ipcRenderer.removeListener('ollama:download-progress', handler);
+    },
 
     send: (messages: any[], model = 'llama3') =>
       ipcRenderer.invoke('ollama:chat', { messages, model }),
@@ -149,4 +163,7 @@ contextBridge.exposeInMainWorld('agi', {
     save: (profile: { name: string }) => ipcRenderer.invoke('user-profile:save', profile),
     delete: () => ipcRenderer.invoke('user-profile:delete'),
   },
+
+  // API para abrir enlaces externos
+  openExternalLink: (url: string) => ipcRenderer.invoke('open-external-link', url),
 });
