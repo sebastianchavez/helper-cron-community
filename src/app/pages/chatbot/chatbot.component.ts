@@ -11,6 +11,7 @@ import { TranslationService } from '../../core/services/translation/translation.
 import { TranslatePipe } from '../../core/pipes/translate.pipe';
 import { UserService } from '../../core/services/user/user.service';
 import { AIModelsService, OllamaStatus } from '../../core/services/ai-models/ai-models.service';
+import { TerminalService } from '../../core/services/terminal/terminal.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -76,7 +77,8 @@ export class ChatbotComponent implements OnInit, OnDestroy {
     private router: Router,
     private translationService: TranslationService,
     private userService: UserService,
-    private aiModelsService: AIModelsService
+    private aiModelsService: AIModelsService,
+    private terminalService: TerminalService
   ) {
     this.chat.messages$.subscribe(msgs => {
       this.messages = msgs;
@@ -516,8 +518,69 @@ export class ChatbotComponent implements OnInit, OnDestroy {
     // Convertir texto en negrita (*texto*) a <strong>
     formattedContent = formattedContent.replace(/(?<!\*)\*([^*\n]+?)\*(?!\*)/g, '<strong>$1</strong>');
 
-    // Convertir saltos de línea en <br> solo en el texto que no es código
+    // Convertir líneas que empiecen con asterisco en listas
+    const lines = formattedContent.split('\n');
+    let inList = false;
+    let processedLines: string[] = [];
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const trimmedLine = line.trim();
+      
+      // Verificar si la línea comienza con asterisco y no termina con asterisco
+      const isListItem = trimmedLine.match(/^\*\s+(.*)/) && !trimmedLine.endsWith('*');
+      
+      if (isListItem) {
+        const listItemText = trimmedLine.substring(2); // Remover "* "
+        
+        if (!inList) {
+          // Iniciar nueva lista
+          processedLines.push('<ul class="list-disc list-inside my-2 space-y-1">');
+          inList = true;
+        }
+        
+        processedLines.push(`<li class="ml-4">${listItemText}</li>`);
+      } else {
+        if (inList) {
+          // Cerrar lista si estábamos en una
+          processedLines.push('</ul>');
+          inList = false;
+        }
+        
+        // Solo agregar líneas que no estén vacías o agregar un salto si no estamos en una lista
+        if (trimmedLine || !inList) {
+          processedLines.push(line);
+        }
+      }
+    }
+    
+    // Cerrar lista si terminamos dentro de una
+    if (inList) {
+      processedLines.push('</ul>');
+    }
+    
+    formattedContent = processedLines.join('\n');
+
+    // Convertir saltos de línea en <br> pero evitar dentro de listas HTML
+    // Primero marcamos las listas para protegerlas
+    const listMatches: string[] = [];
+    let listIndex = 0;
+    
+    // Reemplazar listas con marcadores temporales
+    formattedContent = formattedContent.replace(/<ul[^>]*>[\s\S]*?<\/ul>/g, (match) => {
+      const placeholder = `__LIST_PLACEHOLDER_${listIndex}__`;
+      listMatches[listIndex] = match;
+      listIndex++;
+      return placeholder;
+    });
+    
+    // Ahora convertir saltos de línea en <br> solo fuera de las listas
     formattedContent = formattedContent.replace(/\n/g, '<br>');
+    
+    // Restaurar las listas
+    listMatches.forEach((listHtml, index) => {
+      formattedContent = formattedContent.replace(`__LIST_PLACEHOLDER_${index}__`, listHtml);
+    });
 
     // Restaurar los bloques de código
     codeBlocks.forEach((block, index) => {

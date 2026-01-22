@@ -2,7 +2,7 @@
   "name": "local-mind",
   "description": "Local Mind - A desktop application for chatting with artificial intelligence",
   "version": "1.0.0",
-  "author": "Tecnodesa",
+  "author": "Tecnodesa SPA",
   "main": "electron-dist/main.js",
   "scripts": {
     "ng": "ng",
@@ -16,10 +16,18 @@
     "electron:dev": "concurrently \"ng serve\" \"npm run electron:build -- --watch\" \"wait-on http://localhost:4200 && cross-env ELECTRON_DEV_URL=http://localhost:4200 electron electron-dist/main.js\"",
     "test": "ng test",
     "postinstall": "electron-builder install-app-deps",
+    "clean": "rimraf release dist electron-dist",
+    "clean:release": "rimraf release",
+    "kill:electron": "taskkill /F /IM electron.exe /T 2>nul || taskkill /F /IM local-mind.exe /T 2>nul || echo No Electron processes found",
+    "predist": "npm run clean && npm run kill:electron",
     "dist": "npm run electron:build && ng build --configuration production && electron-builder",
-    "dist:win": "npm run electron:build && ng build --configuration production && electron-builder --win",
+    "predist:win": "npm run kill:electron",
+    "dist:win": "node scripts/build-win.js",
+    "predist:mac": "npm run clean:release",
     "dist:mac": "npm run electron:build && ng build --configuration production && electron-builder --mac",
+    "predist:linux": "npm run clean:release",
     "dist:linux": "npm run electron:build && ng build --configuration production && electron-builder --linux",
+    "predist:all": "npm run clean && npm run kill:electron",
     "dist:all": "npm run electron:build && ng build --configuration production && electron-builder --win --mac --linux"
   },
   "private": true,
@@ -58,15 +66,16 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "postcss": "^8.5.6",
+    "rimraf": "^6.1.2",
     "tailwindcss": "^3.4.17",
     "tsx": "^4.21.0",
     "typescript": "~5.7.2",
     "wait-on": "^9.0.3"
   },
   "build": {
-    "appId": "com.tecnodesa.localmind",
+    "appId": "com.tecnodesaspa.localmind",
     "productName": "LocalMind",
-    "copyright": "Copyright © 2026 Tecnodesa",
+    "copyright": "Copyright © 2026 Tecnodesa SPA",
     "directories": {
       "output": "release",
       "buildResources": "assets"
@@ -102,7 +111,9 @@
         }
       ],
       "icon": "assets/favicon.ico",
-      "requestedExecutionLevel": "asInvoker"
+      "requestedExecutionLevel": "asInvoker",
+      "verifyUpdateCodeSignature": false,
+      "forceCodeSigning": false
     },
     "mac": {
       "target": [

@@ -95,6 +95,10 @@ declare global {
                 isInstalled(): Promise<boolean>;
             };
             openExternalLink: (url: string) => Promise<{ success: boolean; error?: string }>;
+            executeTerminalCommand: (command: string) => Promise<{ success: boolean; output?: string; error?: string; exitCode?: number }>;
+            startTerminalProcess: (command: string, processId?: string) => Promise<{ success: boolean; output?: string; error?: string }>;
+            stopTerminalProcess: (processId: string) => Promise<{ success: boolean; output?: string; error?: string }>;
+            listTerminalProcesses: () => Promise<string[]>;
         };
     }
 }

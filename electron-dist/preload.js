@@ -99,4 +99,6 @@ electron_1.contextBridge.exposeInMainWorld('agi', {
     },
     // API para abrir enlaces externos
     openExternalLink: (url) => electron_1.ipcRenderer.invoke('open-external-link', url),
+    // APIs de terminal
+    executeTerminalCommand: (command) => electron_1.ipcRenderer.invoke('terminal:execute', command),
 });

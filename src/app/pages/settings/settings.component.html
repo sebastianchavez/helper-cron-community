@@ -86,6 +86,51 @@
         <!-- Modelos de IA -->
         <app-ai-models></app-ai-models>
 
+        <!-- Ollama Control - Solo mostrar si Ollama está corriendo -->
+        <div *ngIf="!loading && !error" class="bg-white dark:bg-gray-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Ollama</h2>
+            <button 
+              (click)="refreshOllamaStatus()"
+              [disabled]="checkingOllamaStatus"
+              class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 flex items-center gap-1">
+              <span class="material-symbols-outlined" style="font-size: 16px;">refresh</span>
+              Verificar
+            </button>
+          </div>
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-700 dark:text-gray-300 font-medium">{{ 'settings.stopOllama' | translate }}</p>
+              <p class="text-sm text-gray-500 dark:text-gray-400">{{ 'settings.stopOllamaDesc' | translate }}</p>
+            </div>
+            <button 
+              (click)="stopOllama()"
+              [disabled]="stoppingOllama"
+              class="bg-red-600 hover:bg-red-700 disabled:bg-gray-400 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2">
+              <span class="material-symbols-outlined" style="font-size: 18px;">stop</span>
+              {{ 'settings.stopOllamaBtn' | translate }}
+            </button>
+          </div>
+          
+          <!-- Mensaje de estado -->
+          <div *ngIf="ollamaStopMessage" 
+               [class.text-green-600]="ollamaStopMessage.includes('correctamente')"
+               [class.text-red-600]="ollamaStopMessage.includes('Error') || ollamaStopMessage.includes('Advertencia')"
+               [class.dark:text-green-400]="ollamaStopMessage.includes('correctamente')"
+               [class.dark:text-red-400]="ollamaStopMessage.includes('Error') || ollamaStopMessage.includes('Advertencia')"
+               class="mt-3 text-sm font-medium">
+            {{ ollamaStopMessage }}
+          </div>
+        </div>
+
+        <!-- Mensaje cuando se está verificando el estado de Ollama -->
+        <div *ngIf="checkingOllamaStatus" class="bg-white dark:bg-gray-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
+          <div class="flex items-center gap-3">
+            <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600 dark:border-gray-400"></div>
+            <span class="text-gray-600 dark:text-gray-400 text-sm">Verificando estado de Ollama...</span>
+          </div>
+        </div>
+
         <!-- Información de la aplicación -->
         <div class="bg-white dark:bg-gray-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ 'settings.information' | translate }}</h2>

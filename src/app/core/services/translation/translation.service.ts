@@ -54,6 +54,17 @@ export class TranslationService {
       'settings.platform': 'Plataforma',
       'settings.aboutApp': 'Acerca de la aplicación',
       
+      // Terminal
+      'settings.terminal': 'Terminal',
+      'settings.terminalDesc': 'Terminal integrada para comandos de sistema',
+      'settings.showTerminal': 'Mostrar Terminal',
+      'settings.hideTerminal': 'Ocultar Terminal',
+      
+      // Ollama
+      'settings.stopOllama': 'Detener Ollama',
+      'settings.stopOllamaDesc': 'Detiene el servicio de Ollama si está ejecutándose',
+      'settings.stopOllamaBtn': 'Detener Ollama',
+      
       // Chat
       'chat.thinking': 'Pensando...',
       'chat.analyzing': 'Analizando...',
@@ -227,6 +238,17 @@ export class TranslationService {
       'settings.version': 'Version',
       'settings.platform': 'Platform',
       'settings.aboutApp': 'About the application',
+      
+      // Terminal
+      'settings.terminal': 'Terminal',
+      'settings.terminalDesc': 'Integrated terminal for system commands',
+      'settings.showTerminal': 'Show Terminal',
+      'settings.hideTerminal': 'Hide Terminal',
+      
+      // Ollama
+      'settings.stopOllama': 'Stop Ollama',
+      'settings.stopOllamaDesc': 'Stops the Ollama service if it is running',
+      'settings.stopOllamaBtn': 'Stop Ollama',
       
       // Chat
       'chat.thinking': 'Thinking...',
@@ -402,6 +424,17 @@ export class TranslationService {
       'settings.platform': 'Plataforma',
       'settings.aboutApp': 'Sobre a aplicação',
       
+      // Terminal
+      'settings.terminal': 'Terminal',
+      'settings.terminalDesc': 'Terminal integrado para comandos do sistema',
+      'settings.showTerminal': 'Mostrar Terminal',
+      'settings.hideTerminal': 'Ocultar Terminal',
+      
+      // Ollama
+      'settings.stopOllama': 'Parar Ollama',
+      'settings.stopOllamaDesc': 'Para o serviço Ollama se estiver em execução',
+      'settings.stopOllamaBtn': 'Parar Ollama',
+      
       // Chat
       'chat.thinking': 'Pensando...',
       'chat.analyzing': 'Analisando...',
@@ -561,6 +594,17 @@ export class TranslationService {
       'settings.platform': 'Plateforme',
       'settings.aboutApp': 'À propos de l\'application',
       
+      // Terminal
+      'settings.terminal': 'Terminal',
+      'settings.terminalDesc': 'Terminal intégré pour les commandes système',
+      'settings.showTerminal': 'Afficher Terminal',
+      'settings.hideTerminal': 'Masquer Terminal',
+      
+      // Ollama
+      'settings.stopOllama': 'Arrêter Ollama',
+      'settings.stopOllamaDesc': 'Arrête le service Ollama s\'il est en cours d\'exécution',
+      'settings.stopOllamaBtn': 'Arrêter Ollama',
+      
       // Chat
       'chat.thinking': 'Réflexion...',
       'chat.analyzing': 'Analyse...',
@@ -713,6 +757,17 @@ export class TranslationService {
       'settings.platform': 'Plattform',
       'settings.aboutApp': 'Über die Anwendung',
       
+      // Terminal
+      'settings.terminal': 'Terminal',
+      'settings.terminalDesc': 'Integriertes Terminal für Systembefehle',
+      'settings.showTerminal': 'Terminal anzeigen',
+      'settings.hideTerminal': 'Terminal ausblenden',
+      
+      // Ollama
+      'settings.stopOllama': 'Ollama stoppen',
+      'settings.stopOllamaDesc': 'Stoppt den Ollama-Dienst, wenn er ausgeführt wird',
+      'settings.stopOllamaBtn': 'Ollama stoppen',
+      
       // Chat
       'chat.thinking': 'Denken...',
       'chat.analyzing': 'Analysieren...',
@@ -857,6 +912,17 @@ export class TranslationService {
       'settings.version': '版本',
       'settings.platform': '平台',
       'settings.aboutApp': '关于应用程序',
+      
+      // Terminal
+      'settings.terminal': '终端',
+      'settings.terminalDesc': '用于系统命令的集成终端',
+      'settings.showTerminal': '显示终端',
+      'settings.hideTerminal': '隐藏终端',
+      
+      // Ollama
+      'settings.stopOllama': '停止Ollama',
+      'settings.stopOllamaDesc': '如果Ollama正在运行，停止该服务',
+      'settings.stopOllamaBtn': '停止Ollama',
       
       // 聊天
       'chat.thinking': '思考中...',
@@ -1008,6 +1074,17 @@ export class TranslationService {
       'settings.version': 'バージョン',
       'settings.platform': 'プラットフォーム',
       'settings.aboutApp': 'アプリケーションについて',
+      
+      // Terminal
+      'settings.terminal': 'ターミナル',
+      'settings.terminalDesc': 'システムコマンド用の統合ターミナル',
+      'settings.showTerminal': 'ターミナルを表示',
+      'settings.hideTerminal': 'ターミナルを非表示',
+      
+      // Ollama
+      'settings.stopOllama': 'Ollama を停止',
+      'settings.stopOllamaDesc': 'Ollama が実行されている場合はサービスを停止します',
+      'settings.stopOllamaBtn': 'Ollama を停止',
       
       // チャット
       'chat.thinking': '考え中...',

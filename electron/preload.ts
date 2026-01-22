@@ -166,4 +166,7 @@ contextBridge.exposeInMainWorld('agi', {
 
   // API para abrir enlaces externos
   openExternalLink: (url: string) => ipcRenderer.invoke('open-external-link', url),
+  
+  // APIs de terminal
+  executeTerminalCommand: (command: string) => ipcRenderer.invoke('terminal:execute', command),
 });

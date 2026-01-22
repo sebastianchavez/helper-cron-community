@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { AIModelsService, AIModel, OllamaStatus } from '../../services/ai-models/ai-models.service';
 import { TranslationService } from '../../services/translation/translation.service';
+import { OllamaStatusService, OllamaStatus as OllamaServiceStatus } from '../../services/ollama-status/ollama-status.service';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -594,6 +595,7 @@ export class AiModelsComponent implements OnInit, OnDestroy {
   constructor(
     private aiModelsService: AIModelsService,
     private translationService: TranslationService,
+    private ollamaStatusService: OllamaStatusService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -661,6 +663,17 @@ export class AiModelsComponent implements OnInit, OnDestroy {
         this.error = error;
       });
 
+    // Subscribe to Ollama status changes
+    this.ollamaStatusService.status$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((status: OllamaServiceStatus) => {
+        console.log('[AIModels] Ollama status changed:', status);
+        if (status === 'stopped') {
+          console.log('[AIModels] Ollama stopped, refreshing models list...');
+          this.refreshModels();
+        }
+      });
+
     // Cargar modelos inicialmente
     this.loadModels();
   }
@@ -698,6 +711,7 @@ export class AiModelsComponent implements OnInit, OnDestroy {
     if (this.startingOllama || !this.ollamaStatus.installed) return;
     
     this.startingOllama = true;
+    
     try {
       await this.aiModelsService.startOllama();
       // Esperar un momento y verificar el estado nuevamente
@@ -844,9 +858,13 @@ export class AiModelsComponent implements OnInit, OnDestroy {
   }
 
   openOllamaLibrary(): void {
-    // Los modelos deben descargarse usando la funcionalidad interna, 
-    // no abrir en navegador externo
-    window.open('https://ollama.com/library', '_blank');
+    // Abrir en el navegador web del sistema usando Electron
+    if (window.agi?.openExternalLink) {
+      window.agi.openExternalLink('https://ollama.com/library');
+    } else {
+      // Fallback si la API no está disponible
+      window.open('https://ollama.com/library', '_blank');
+    }
   }
 
   private getPhaseDisplayName(phase: string): string {

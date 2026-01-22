@@ -79,10 +79,10 @@ function getOllamaCommand() {
 async function startOllama() {
     try {
         const ollamaCommand = getOllamaCommand();
-        // Iniciar Ollama como servicio en segundo plano
+        // Iniciar Ollama como servicio en segundo plano SIN ventana externa
         if (process.platform === 'win32') {
-            // En Windows, usar 'start' para abrir en una nueva ventana
-            (0, child_process_1.spawn)('cmd', ['/c', 'start', '/min', ollamaCommand, 'serve'], {
+            // En Windows, NO usar 'start' para evitar ventana externa
+            (0, child_process_1.spawn)(ollamaCommand, ['serve'], {
                 detached: true,
                 stdio: 'ignore'
             });
