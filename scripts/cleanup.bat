@@ -1,8 +1,8 @@
 @echo off
 echo Stopping Electron processes...
 taskkill /F /IM electron.exe /T >nul 2>&1
-taskkill /F /IM local-mind.exe /T >nul 2>&1
-taskkill /F /IM "LocalMind.exe" /T >nul 2>&1
+taskkill /F /IM .exe /T >nul 2>&1
+taskkill /F /IM "HelperCron.exe" /T >nul 2>&1
 
 echo Waiting for processes to close...
 timeout /t 3 /nobreak >nul

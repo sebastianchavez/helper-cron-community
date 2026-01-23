@@ -40,7 +40,7 @@ const releasePath = path.join(projectRoot, 'release');
 // Kill any electron processes
 if (process.platform === 'win32') {
   try {
-    require('child_process').execSync('taskkill /F /IM electron.exe /T 2>nul || taskkill /F /IM local-mind.exe /T 2>nul', { stdio: 'ignore' });
+    require('child_process').execSync('taskkill /F /IM electron.exe /T 2>nul || taskkill /F /IM brodapp.exe /T 2>nul', { stdio: 'ignore' });
     console.log('Killed Electron processes');
   } catch (err) {
     // Ignore errors if no processes found

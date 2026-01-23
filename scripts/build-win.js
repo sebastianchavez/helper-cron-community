@@ -10,7 +10,7 @@ try {
   // Kill any electron processes
   console.log('Killing Electron processes...');
   try {
-    execSync('taskkill /F /IM electron.exe /T 2>nul || taskkill /F /IM local-mind.exe /T 2>nul', { stdio: 'inherit' });
+    execSync('taskkill /F /IM electron.exe /T 2>nul || taskkill /F /IM brodapp.exe /T 2>nul', { stdio: 'inherit' });
   } catch (e) {
     // Ignore if no processes found
   }

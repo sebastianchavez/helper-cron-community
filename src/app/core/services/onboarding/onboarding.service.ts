@@ -12,7 +12,7 @@ export interface OnboardingData {
   providedIn: 'root'
 })
 export class OnboardingService {
-  private readonly STORAGE_KEY = 'localmind_onboarding';
+  private readonly STORAGE_KEY = 'localcommit_onboarding';
   
   private onboardingDataSubject = new BehaviorSubject<OnboardingData>(this.loadOnboardingData());
   public onboardingData$ = this.onboardingDataSubject.asObservable();

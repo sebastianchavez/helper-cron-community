@@ -1,4 +1,4 @@
-# Scripts de Compilación - LocalMind
+# Scripts de Compilación - HelperCron
 
 ## Scripts disponibles para compilar la aplicación Electron:
 

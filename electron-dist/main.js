@@ -24,7 +24,7 @@ function createWindow() {
         height: 800,
         minWidth: 800,
         minHeight: 600,
-        title: "LocalMind",
+        title: "HelperCron",
         icon: path_1.default.join(__dirname, '../assets/favicon.ico'),
         resizable: true,
         webPreferences: {

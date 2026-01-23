@@ -17,7 +17,7 @@ export class TranslationService {
   private translations: { [key: string]: { [key: string]: string } } = {
     es: {
       // Aplicación
-      'app.name': 'Local Mind',
+      'app.name': 'HelperCron',
       
       // Navegación
       'nav.chat': 'Volver al Chat',
@@ -105,7 +105,7 @@ export class TranslationService {
       'about.madeWith': 'Hecho con',
       'about.withTech': 'usando Angular, Electron y Tailwind CSS',
       'about.allRights': 'Todos los derechos reservados',
-      'settings.aboutAppDesc': 'Local Mind - Una aplicación de escritorio para chatear con inteligencia artificial',
+      'settings.aboutAppDesc': 'HelperCron - Una aplicación de escritorio para chatear con inteligencia artificial',
       
       // Modelos IA
       'models.title': 'Modelos de IA',
@@ -151,9 +151,9 @@ export class TranslationService {
       // Modal de inicio de Ollama
       'startup.ollamaRequired': 'Ollama Requerido',
       'startup.ollamaNotRunningTitle': 'Ollama no está ejecutándose',
-      'startup.ollamaNotRunningDesc': 'Para usar LocalMind necesitas tener Ollama ejecutándose. Puedes iniciarlo automáticamente desde aquí.',
+      'startup.ollamaNotRunningDesc': 'Para usar HelperCron necesitas tener Ollama ejecutándose. Puedes iniciarlo automáticamente desde aquí.',
       'startup.ollamaNotInstalledTitle': 'Ollama no está instalado',
-      'startup.ollamaNotInstalledDesc': 'Para usar LocalMind necesitas instalar Ollama primero. Es un motor de IA local gratuito.',
+      'startup.ollamaNotInstalledDesc': 'Para usar HelperCron necesitas instalar Ollama primero. Es un motor de IA local gratuito.',
       'startup.startOllama': 'Iniciar Ollama',
       'startup.installOllama': 'Instalar Ollama',
       'startup.downloadOllama': 'Descargar Ollama',
@@ -162,7 +162,7 @@ export class TranslationService {
       'startup.startingOllama': 'Iniciando Ollama...',
       
       // Pantalla de bienvenida
-      'welcome.title': 'Bienvenido a LocalMind',
+      'welcome.title': 'Bienvenido a HelperCron',
       'welcome.subtitle': 'Tu asistente de inteligencia artificial completamente local',
       'welcome.aiChatTitle': 'Chat con IA Avanzada',
       'welcome.aiChatDesc': 'Conversa con modelos de IA de última generación como Llama, Mistral y más, todo ejecutándose localmente en tu computadora.',
@@ -207,15 +207,15 @@ export class TranslationService {
       'terms.title': 'Términos y Condiciones',
       'terms.fullTitle': 'TÉRMINOS Y CONDICIONES DE USO',
       'terms.lastUpdate': 'Última actualización',
-      'terms.footer.thanks': 'Gracias por usar LocalMind',
+      'terms.footer.thanks': 'Gracias por usar HelperCron',
       
       // Sección 1
       'terms.section1.title': 'Aceptación de los Términos',
-      'terms.section1.content': 'Al descargar, instalar o utilizar LocalMind (en adelante, "la Aplicación"), el usuario acepta expresamente estos Términos y Condiciones. Si no está de acuerdo con alguno de ellos, debe abstenerse de utilizar la Aplicación.',
+      'terms.section1.content': 'Al descargar, instalar o utilizar HelperCron (en adelante, "la Aplicación"), el usuario acepta expresamente estos Términos y Condiciones. Si no está de acuerdo con alguno de ellos, debe abstenerse de utilizar la Aplicación.',
       
       // Sección 2
       'terms.section2.title': 'Descripción del Servicio',
-      'terms.section2.content1': 'LocalMind es una aplicación de escritorio que permite interactuar con modelos de inteligencia artificial ejecutados localmente en el dispositivo del usuario, incluyendo modelos compatibles con Ollama.',
+      'terms.section2.content1': 'HelperCron es una aplicación de escritorio que permite interactuar con modelos de inteligencia artificial ejecutados localmente en el dispositivo del usuario, incluyendo modelos compatibles con Ollama.',
       'terms.section2.content2': 'La Aplicación funciona de manera local, sin enviar información a servidores externos operados por el desarrollador.',
       
       // Sección 3
@@ -253,7 +253,7 @@ export class TranslationService {
       'terms.section6.title': 'Responsabilidad del Usuario',
       'terms.section6.intro': 'El usuario reconoce y acepta que:',
       'terms.section6.responsibility1': 'Todo el contenido generado, almacenado o gestionado dentro de la Aplicación es de su exclusiva responsabilidad.',
-      'terms.section6.responsibility2': 'El desarrollador de LocalMind no controla, supervisa ni modera el contenido generado o almacenado localmente.',
+      'terms.section6.responsibility2': 'El desarrollador de HelperCron no controla, supervisa ni modera el contenido generado o almacenado localmente.',
       'terms.section6.responsibility3': 'El uso de modelos de inteligencia artificial y la interpretación de sus resultados depende únicamente del usuario.',
       
       // Sección 7
@@ -275,14 +275,14 @@ export class TranslationService {
       
       // Sección 9
       'terms.section9.title': 'Privacidad',
-      'terms.section9.privacy1': 'LocalMind respeta la privacidad del usuario.',
+      'terms.section9.privacy1': 'HelperCron respeta la privacidad del usuario.',
       'terms.section9.privacy2': 'Los datos se almacenan únicamente de forma local en el dispositivo del usuario.',
       'terms.section9.privacy3': 'El desarrollador no recopila información personal ni contenido generado.',
       'terms.section9.privacy4': 'No existe transmisión automática de datos a servidores externos.',
       
       // Sección 10
       'terms.section10.title': 'Propiedad Intelectual',
-      'terms.section10.ownership': 'La Aplicación, su nombre, logotipo y código fuente (excepto librerías de terceros) son propiedad del desarrollador de LocalMind.',
+      'terms.section10.ownership': 'La Aplicación, su nombre, logotipo y código fuente (excepto librerías de terceros) son propiedad del desarrollador de HelperCron.',
       'terms.section10.rights': 'El uso de la Aplicación no otorga al usuario ningún derecho de propiedad intelectual sobre la misma.',
       
       // Sección 11
@@ -302,11 +302,11 @@ export class TranslationService {
       
       // Sección 14
       'terms.section14.title': 'Contacto',
-      'terms.section14.contact': 'Para consultas relacionadas con estos Términos, el usuario puede contactar al desarrollador a través de los canales oficiales de LocalMind.'
+      'terms.section14.contact': 'Para consultas relacionadas con estos Términos, el usuario puede contactar al desarrollador a través de los canales oficiales de HelperCron.'
     },
     en: {
       // Application
-      'app.name': 'Local Mind',
+      'app.name': 'HelperCron',
       
       // Navigation
       'nav.chat': 'Back to Chat',
@@ -394,7 +394,7 @@ export class TranslationService {
       'about.madeWith': 'Made with',
       'about.withTech': 'using Angular, Electron and Tailwind CSS',
       'about.allRights': 'All rights reserved',
-      'settings.aboutAppDesc': 'Local Mind - A desktop application for chatting with artificial intelligence',
+      'settings.aboutAppDesc': 'HelperCron - A desktop application for chatting with artificial intelligence',
       
       // AI Models
       'models.title': 'AI Models',
@@ -440,9 +440,9 @@ export class TranslationService {
       // Ollama startup modal
       'startup.ollamaRequired': 'Ollama Required',
       'startup.ollamaNotRunningTitle': 'Ollama is not running',
-      'startup.ollamaNotRunningDesc': 'To use LocalMind you need to have Ollama running. You can start it automatically from here.',
+      'startup.ollamaNotRunningDesc': 'To use HelperCron you need to have Ollama running. You can start it automatically from here.',
       'startup.ollamaNotInstalledTitle': 'Ollama is not installed',
-      'startup.ollamaNotInstalledDesc': 'To use LocalMind you need to install Ollama first. It is a free local AI engine.',
+      'startup.ollamaNotInstalledDesc': 'To use HelperCron you need to install Ollama first. It is a free local AI engine.',
       'startup.startOllama': 'Start Ollama',
       'startup.installOllama': 'Install Ollama',
       'startup.downloadOllama': 'Download Ollama',
@@ -451,7 +451,7 @@ export class TranslationService {
       'startup.startingOllama': 'Starting Ollama...',
       
       // Welcome screen
-      'welcome.title': 'Welcome to LocalMind',
+      'welcome.title': 'Welcome to HelperCron',
       'welcome.subtitle': 'Your completely local artificial intelligence assistant',
       'welcome.aiChatTitle': 'Advanced AI Chat',
       'welcome.aiChatDesc': 'Chat with state-of-the-art AI models like Llama, Mistral and more, all running locally on your computer.',
@@ -489,15 +489,15 @@ export class TranslationService {
       'terms.title': 'Terms and Conditions',
       'terms.fullTitle': 'TERMS AND CONDITIONS OF USE',
       'terms.lastUpdate': 'Last updated',
-      'terms.footer.thanks': 'Thank you for using LocalMind',
+      'terms.footer.thanks': 'Thank you for using HelperCron',
       
       // Section 1
       'terms.section1.title': 'Acceptance of Terms',
-      'terms.section1.content': 'By downloading, installing or using LocalMind (hereinafter, "the Application"), the user expressly agrees to these Terms and Conditions. If you do not agree with any of them, you must refrain from using the Application.',
+      'terms.section1.content': 'By downloading, installing or using HelperCron (hereinafter, "the Application"), the user expressly agrees to these Terms and Conditions. If you do not agree with any of them, you must refrain from using the Application.',
       
       // Section 2
       'terms.section2.title': 'Service Description',
-      'terms.section2.content1': 'LocalMind is a desktop application that allows interaction with artificial intelligence models running locally on the user\'s device, including models compatible with Ollama.',
+      'terms.section2.content1': 'HelperCron is a desktop application that allows interaction with artificial intelligence models running locally on the user\'s device, including models compatible with Ollama.',
       'terms.section2.content2': 'The Application works locally, without sending information to external servers operated by the developer.',
       
       // Section 3
@@ -535,7 +535,7 @@ export class TranslationService {
       'terms.section6.title': 'User Responsibility',
       'terms.section6.intro': 'The user acknowledges and accepts that:',
       'terms.section6.responsibility1': 'All content generated, stored or managed within the Application is their exclusive responsibility.',
-      'terms.section6.responsibility2': 'The LocalMind developer does not control, supervise or moderate content generated or stored locally.',
+      'terms.section6.responsibility2': 'The HelperCron developer does not control, supervise or moderate content generated or stored locally.',
       'terms.section6.responsibility3': 'The use of artificial intelligence models and interpretation of their results depends solely on the user.',
       
       // Section 7
@@ -557,14 +557,14 @@ export class TranslationService {
       
       // Section 9
       'terms.section9.title': 'Privacy',
-      'terms.section9.privacy1': 'LocalMind respects user privacy.',
+      'terms.section9.privacy1': 'HelperCron respects user privacy.',
       'terms.section9.privacy2': 'Data is stored only locally on the user\'s device.',
       'terms.section9.privacy3': 'The developer does not collect personal information or generated content.',
       'terms.section9.privacy4': 'There is no automatic transmission of data to external servers.',
       
       // Section 10
       'terms.section10.title': 'Intellectual Property',
-      'terms.section10.ownership': 'The Application, its name, logo and source code (except third-party libraries) are owned by the LocalMind developer.',
+      'terms.section10.ownership': 'The Application, its name, logo and source code (except third-party libraries) are owned by the HelperCron developer.',
       'terms.section10.rights': 'Use of the Application does not grant the user any intellectual property rights over it.',
       
       // Section 11
@@ -584,7 +584,7 @@ export class TranslationService {
       
       // Section 14
       'terms.section14.title': 'Contact',
-      'terms.section14.contact': 'For inquiries related to these Terms, the user may contact the developer through LocalMind\'s official channels.',
+      'terms.section14.contact': 'For inquiries related to these Terms, the user may contact the developer through HelperCron\'s official channels.',
       
       // Modal sin modelos
       'noModels.title': 'No AI Models',
@@ -595,7 +595,7 @@ export class TranslationService {
     },
     pt: {
       // Aplicação
-      'app.name': 'Local Mind',
+      'app.name': 'HelperCron',
       
       // Navegação
       'nav.chat': 'Voltar ao Chat',
@@ -683,7 +683,7 @@ export class TranslationService {
       'about.madeWith': 'Feito com',
       'about.withTech': 'usando Angular, Electron e Tailwind CSS',
       'about.allRights': 'Todos os direitos reservados',
-      'settings.aboutAppDesc': 'Local Mind - Uma aplicação desktop para conversar com inteligência artificial',
+      'settings.aboutAppDesc': 'HelperCron - Uma aplicação desktop para conversar com inteligência artificial',
       
       // Modelos de IA
       'models.title': 'Modelos de IA',
@@ -716,9 +716,9 @@ export class TranslationService {
       // Modal de início do Ollama
       'startup.ollamaRequired': 'Ollama Necessário',
       'startup.ollamaNotRunningTitle': 'Ollama não está em execução',
-      'startup.ollamaNotRunningDesc': 'Para usar LocalMind você precisa ter o Ollama em execução. Você pode iniciá-lo automaticamente aqui.',
+      'startup.ollamaNotRunningDesc': 'Para usar HelperCron você precisa ter o Ollama em execução. Você pode iniciá-lo automaticamente aqui.',
       'startup.ollamaNotInstalledTitle': 'Ollama não está instalado',
-      'startup.ollamaNotInstalledDesc': 'Para usar LocalMind você precisa instalar o Ollama primeiro. É um motor de IA local gratuito.',
+      'startup.ollamaNotInstalledDesc': 'Para usar HelperCron você precisa instalar o Ollama primeiro. É um motor de IA local gratuito.',
       'startup.startOllama': 'Iniciar Ollama',
       'startup.installOllama': 'Instalar Ollama',
       'startup.goToSettings': 'Ir para Configurações',
@@ -726,7 +726,7 @@ export class TranslationService {
       'startup.startingOllama': 'Iniciando Ollama...',
       
       // Tela de boas-vindas
-      'welcome.title': 'Bem-vindo ao LocalMind',
+      'welcome.title': 'Bem-vindo ao HelperCron',
       'welcome.subtitle': 'Seu assistente de inteligência artificial completamente local',
       'welcome.aiChatTitle': 'Chat com IA Avançada',
       'welcome.aiChatDesc': 'Converse com modelos de IA de última geração como Llama, Mistral e mais, tudo executando localmente no seu computador.',
@@ -762,15 +762,15 @@ export class TranslationService {
       'terms.title': 'Termos e Condições',
       'terms.fullTitle': 'TERMOS E CONDIÇÕES DE USO',
       'terms.lastUpdate': 'Última atualização',
-      'terms.footer.thanks': 'Obrigado por usar o LocalMind',
+      'terms.footer.thanks': 'Obrigado por usar o HelperCron',
       
       // Seção 1
       'terms.section1.title': 'Aceitação dos Termos',
-      'terms.section1.content': 'Ao baixar, instalar ou usar o LocalMind (doravante, "a Aplicação"), o usuário aceita expressamente estes Termos e Condições. Se não concordar com algum deles, deve abster-se de usar a Aplicação.',
+      'terms.section1.content': 'Ao baixar, instalar ou usar o HelperCron (doravante, "a Aplicação"), o usuário aceita expressamente estes Termos e Condições. Se não concordar com algum deles, deve abster-se de usar a Aplicação.',
       
       // Seção 2
       'terms.section2.title': 'Descrição do Serviço',
-      'terms.section2.content1': 'LocalMind é uma aplicação desktop que permite interagir com modelos de inteligência artificial executados localmente no dispositivo do usuário, incluindo modelos compatíveis com Ollama.',
+      'terms.section2.content1': 'HelperCron é uma aplicação desktop que permite interagir com modelos de inteligência artificial executados localmente no dispositivo do usuário, incluindo modelos compatíveis com Ollama.',
       'terms.section2.content2': 'A Aplicação funciona localmente, sem enviar informações para servidores externos operados pelo desenvolvedor.',
       
       // Seção 3
@@ -808,7 +808,7 @@ export class TranslationService {
       'terms.section6.title': 'Responsabilidade do Usuário',
       'terms.section6.intro': 'O usuário reconhece e aceita que:',
       'terms.section6.responsibility1': 'Todo o conteúdo gerado, armazenado ou gerenciado dentro da Aplicação é de sua exclusiva responsabilidade.',
-      'terms.section6.responsibility2': 'O desenvolvedor do LocalMind não controla, supervisiona nem modera o conteúdo gerado ou armazenado localmente.',
+      'terms.section6.responsibility2': 'O desenvolvedor do HelperCron não controla, supervisiona nem modera o conteúdo gerado ou armazenado localmente.',
       'terms.section6.responsibility3': 'O uso de modelos de inteligência artificial e a interpretação de seus resultados depende unicamente do usuário.',
       
       // Seção 7
@@ -830,14 +830,14 @@ export class TranslationService {
       
       // Seção 9
       'terms.section9.title': 'Privacidade',
-      'terms.section9.privacy1': 'LocalMind respeita a privacidade do usuário.',
+      'terms.section9.privacy1': 'HelperCron respeita a privacidade do usuário.',
       'terms.section9.privacy2': 'Os dados são armazenados apenas localmente no dispositivo do usuário.',
       'terms.section9.privacy3': 'O desenvolvedor não coleta informações pessoais nem conteúdo gerado.',
       'terms.section9.privacy4': 'Não existe transmissão automática de dados para servidores externos.',
       
       // Seção 10
       'terms.section10.title': 'Propriedade Intelectual',
-      'terms.section10.ownership': 'A Aplicação, seu nome, logotipo e código-fonte (exceto bibliotecas de terceiros) são propriedade do desenvolvedor do LocalMind.',
+      'terms.section10.ownership': 'A Aplicação, seu nome, logotipo e código-fonte (exceto bibliotecas de terceiros) são propriedade do desenvolvedor do HelperCron.',
       'terms.section10.rights': 'O uso da Aplicação não concede ao usuário nenhum direito de propriedade intelectual sobre ela.',
       
       // Seção 11
@@ -857,7 +857,7 @@ export class TranslationService {
       
       // Seção 14
       'terms.section14.title': 'Contato',
-      'terms.section14.contact': 'Para consultas relacionadas a estes Termos, o usuário pode entrar em contato com o desenvolvedor através dos canais oficiais do LocalMind.',
+      'terms.section14.contact': 'Para consultas relacionadas a estes Termos, o usuário pode entrar em contato com o desenvolvedor através dos canais oficiais do HelperCron.',
       
       // Modal sem modelos
       'noModels.title': 'Sem Modelos de IA',
@@ -868,7 +868,7 @@ export class TranslationService {
     },
     fr: {
       // Application
-      'app.name': 'Local Mind',
+      'app.name': 'HelperCron',
       
       // Navigation
       'nav.chat': 'Retour au Chat',
@@ -956,7 +956,7 @@ export class TranslationService {
       'about.madeWith': 'Fait avec',
       'about.withTech': 'en utilisant Angular, Electron et Tailwind CSS',
       'about.allRights': 'Tous droits réservés',
-      'settings.aboutAppDesc': 'Local Mind - Une application desktop pour discuter avec l\'intelligence artificielle',
+      'settings.aboutAppDesc': 'HelperCron - Une application desktop pour discuter avec l\'intelligence artificielle',
       
       // Modèles IA
       'models.title': 'Modèles d\'IA',
@@ -965,7 +965,7 @@ export class TranslationService {
       'models.installed': 'Modèles Installés',
       'models.loading': 'Chargement des modèles...',
       'models.noModels': 'Aucun modèle installé',
-      'models.noModelsDesc': 'Pour utiliser Local Mind, vous avez besoin de modèles d\'IA installés',
+      'models.noModelsDesc': 'Pour utiliser HelperCron, vous avez besoin de modèles d\'IA installés',
       'models.downloadOllama': 'Télécharger Ollama',
       'models.recommendedModels': 'Modèles Recommandés',
       'models.exploreModels': 'Explorer plus de modèles',
@@ -982,16 +982,16 @@ export class TranslationService {
       // Modal de démarrage Ollama
       'startup.ollamaRequired': 'Ollama Requis',
       'startup.ollamaNotRunningTitle': 'Ollama ne fonctionne pas',
-      'startup.ollamaNotRunningDesc': 'Pour utiliser LocalMind, vous devez avoir Ollama en cours d’exécution. Vous pouvez le démarrer automatiquement d’ici.',
+      'startup.ollamaNotRunningDesc': 'Pour utiliser HelperCron, vous devez avoir Ollama en cours d’exécution. Vous pouvez le démarrer automatiquement d’ici.',
       'startup.ollamaNotInstalledTitle': 'Ollama n’est pas installé',
-      'startup.ollamaNotInstalledDesc': 'Pour utiliser LocalMind, vous devez d’abord installer Ollama. C’est un moteur IA local gratuit.',
+      'startup.ollamaNotInstalledDesc': 'Pour utiliser HelperCron, vous devez d’abord installer Ollama. C’est un moteur IA local gratuit.',
       'startup.startOllama': 'Démarrer Ollama',
       'startup.installOllama': 'Installer Ollama',
       'startup.goToSettings': 'Aller aux Paramètres',
       'startup.continueAnyway': 'Continuer sans Ollama',
       'startup.startingOllama': 'Démarrage d’Ollama...',      
       // Écran de bienvenue
-      'welcome.title': 'Bienvenue dans LocalMind',
+      'welcome.title': 'Bienvenue dans HelperCron',
       'welcome.subtitle': 'Votre assistant d\'intelligence artificielle entièrement local',
       'welcome.aiChatTitle': 'Chat IA Avancé',
       'welcome.aiChatDesc': 'Chattez avec des modèles d\'IA de pointe comme Llama, Mistral et plus, le tout s\'exécutant localement sur votre ordinateur.',
@@ -1036,15 +1036,15 @@ export class TranslationService {
       'terms.title': 'Termes et Conditions',
       'terms.fullTitle': 'TERMES ET CONDITIONS D\'UTILISATION',
       'terms.lastUpdate': 'Dernière mise à jour',
-      'terms.footer.thanks': 'Merci d\'utiliser LocalMind',
+      'terms.footer.thanks': 'Merci d\'utiliser HelperCron',
       
       // Section 1
       'terms.section1.title': 'Acceptation des Termes',
-      'terms.section1.content': 'En téléchargeant, installant ou utilisant LocalMind (ci-après, "l\'Application"), l\'utilisateur accepte expressément ces Termes et Conditions. S\'il n\'est pas d\'accord avec l\'un d\'entre eux, il doit s\'abstenir d\'utiliser l\'Application.',
+      'terms.section1.content': 'En téléchargeant, installant ou utilisant HelperCron (ci-après, "l\'Application"), l\'utilisateur accepte expressément ces Termes et Conditions. S\'il n\'est pas d\'accord avec l\'un d\'entre eux, il doit s\'abstenir d\'utiliser l\'Application.',
       
       // Section 2
       'terms.section2.title': 'Description du Service',
-      'terms.section2.content1': 'LocalMind est une application de bureau qui permet d\'interagir avec des modèles d\'intelligence artificielle exécutés localement sur l\'appareil de l\'utilisateur, y compris les modèles compatibles avec Ollama.',
+      'terms.section2.content1': 'HelperCron est une application de bureau qui permet d\'interagir avec des modèles d\'intelligence artificielle exécutés localement sur l\'appareil de l\'utilisateur, y compris les modèles compatibles avec Ollama.',
       'terms.section2.content2': 'L\'Application fonctionne localement, sans envoyer d\'informations à des serveurs externes exploités par le développeur.',
       
       // Section 3
@@ -1082,7 +1082,7 @@ export class TranslationService {
       'terms.section6.title': 'Responsabilité de l\'Utilisateur',
       'terms.section6.intro': 'L\'utilisateur reconnaît et accepte que:',
       'terms.section6.responsibility1': 'Tout le contenu généré, stocké ou géré dans l\'Application relève de sa seule responsabilité.',
-      'terms.section6.responsibility2': 'Le développeur de LocalMind ne contrôle, ne supervise ni ne modère le contenu généré ou stocké localement.',
+      'terms.section6.responsibility2': 'Le développeur de HelperCron ne contrôle, ne supervise ni ne modère le contenu généré ou stocké localement.',
       'terms.section6.responsibility3': 'L\'utilisation des modèles d\'intelligence artificielle et l\'interprétation de leurs résultats dépend uniquement de l\'utilisateur.',
       
       // Section 7
@@ -1104,14 +1104,14 @@ export class TranslationService {
       
       // Section 9
       'terms.section9.title': 'Confidentialité',
-      'terms.section9.privacy1': 'LocalMind respecte la confidentialité de l\'utilisateur.',
+      'terms.section9.privacy1': 'HelperCron respecte la confidentialité de l\'utilisateur.',
       'terms.section9.privacy2': 'Les données sont stockées uniquement localement sur l\'appareil de l\'utilisateur.',
       'terms.section9.privacy3': 'Le développeur ne collecte pas d\'informations personnelles ni de contenu généré.',
       'terms.section9.privacy4': 'Il n\'y a pas de transmission automatique de données vers des serveurs externes.',
       
       // Section 10
       'terms.section10.title': 'Propriété Intellectuelle',
-      'terms.section10.ownership': 'L\'Application, son nom, son logo et son code source (à l\'exception des bibliothèques tierces) appartiennent au développeur de LocalMind.',
+      'terms.section10.ownership': 'L\'Application, son nom, son logo et son code source (à l\'exception des bibliothèques tierces) appartiennent au développeur de HelperCron.',
       'terms.section10.rights': 'L\'utilisation de l\'Application n\'accorde à l\'utilisateur aucun droit de propriété intellectuelle sur celle-ci.',
       
       // Section 11
@@ -1131,14 +1131,14 @@ export class TranslationService {
       
       // Section 14
       'terms.section14.title': 'Contact',
-      'terms.section14.contact': 'Pour les demandes liées à ces Termes, l\'utilisateur peut contacter le développeur via les canaux officiels de LocalMind.',
+      'terms.section14.contact': 'Pour les demandes liées à ces Termes, l\'utilisateur peut contacter le développeur via les canaux officiels de HelperCron.',
       
       // Modal sans modèles
       'noModels.title': 'Aucun Modèle IA',
     },
     de: {
       // Anwendung
-      'app.name': 'Local Mind',
+      'app.name': 'HelperCron',
       
       // Navigation
       'nav.chat': 'Zurück zum Chat',
@@ -1226,7 +1226,7 @@ export class TranslationService {
       'about.madeWith': 'Erstellt mit',
       'about.withTech': 'mit Angular, Electron und Tailwind CSS',
       'about.allRights': 'Alle Rechte vorbehalten',
-      'settings.aboutAppDesc': 'Local Mind - Eine Desktop-Anwendung zum Chatten mit künstlicher Intelligenz',
+      'settings.aboutAppDesc': 'HelperCron - Eine Desktop-Anwendung zum Chatten mit künstlicher Intelligenz',
       
       // KI-Modelle
       'models.title': 'KI-Modelle',
@@ -1235,7 +1235,7 @@ export class TranslationService {
       'models.installed': 'Installierte Modelle',
       'models.loading': 'Modelle werden geladen...',
       'models.noModels': 'Keine Modelle installiert',
-      'models.noModelsDesc': 'Um Local Mind zu verwenden, benötigen Sie installierte KI-Modelle',
+      'models.noModelsDesc': 'Um HelperCron zu verwenden, benötigen Sie installierte KI-Modelle',
       'models.downloadOllama': 'Ollama herunterladen',
       'models.recommendedModels': 'Empfohlene Modelle',
       'models.exploreModels': 'Weitere Modelle erkunden',
@@ -1252,9 +1252,9 @@ export class TranslationService {
       // Ollama Startup Modal
       'startup.ollamaRequired': 'Ollama Erforderlich',
       'startup.ollamaNotRunningTitle': 'Ollama läuft nicht',
-      'startup.ollamaNotRunningDesc': 'Um LocalMind zu verwenden, muss Ollama laufen. Sie können es automatisch von hier starten.',
+      'startup.ollamaNotRunningDesc': 'Um HelperCron zu verwenden, muss Ollama laufen. Sie können es automatisch von hier starten.',
       'startup.ollamaNotInstalledTitle': 'Ollama ist nicht installiert',
-      'startup.ollamaNotInstalledDesc': 'Um LocalMind zu verwenden, müssen Sie zuerst Ollama installieren. Es ist eine kostenlose lokale KI-Engine.',
+      'startup.ollamaNotInstalledDesc': 'Um HelperCron zu verwenden, müssen Sie zuerst Ollama installieren. Es ist eine kostenlose lokale KI-Engine.',
       'startup.startOllama': 'Ollama starten',
       'startup.installOllama': 'Ollama installieren',
       'startup.goToSettings': 'Zu Einstellungen gehen',
@@ -1262,7 +1262,7 @@ export class TranslationService {
       'startup.startingOllama': 'Starte Ollama...',
       
       // Willkommensbildschirm
-      'welcome.title': 'Willkommen bei LocalMind',
+      'welcome.title': 'Willkommen bei HelperCron',
       'welcome.subtitle': 'Ihr vollständig lokaler KI-Assistent',
       'welcome.aiChatTitle': 'Erweiterte KI-Chat',
       'welcome.aiChatDesc': 'Chatten Sie mit modernsten KI-Modellen wie Llama, Mistral und mehr, alles läuft lokal auf Ihrem Computer.',
@@ -1299,15 +1299,15 @@ export class TranslationService {
       'terms.title': 'Nutzungsbedingungen',
       'terms.fullTitle': 'NUTZUNGSBEDINGUNGEN',
       'terms.lastUpdate': 'Letzte Aktualisierung',
-      'terms.footer.thanks': 'Vielen Dank für die Nutzung von LocalMind',
+      'terms.footer.thanks': 'Vielen Dank für die Nutzung von HelperCron',
       
       // Abschnitt 1
       'terms.section1.title': 'Annahme der Bedingungen',
-      'terms.section1.content': 'Durch das Herunterladen, Installieren oder Verwenden von LocalMind (im Folgenden "die Anwendung") stimmt der Benutzer diesen Nutzungsbedingungen ausdrücklich zu. Wenn er mit einem von ihnen nicht einverstanden ist, muss er sich der Nutzung der Anwendung enthalten.',
+      'terms.section1.content': 'Durch das Herunterladen, Installieren oder Verwenden von HelperCron (im Folgenden "die Anwendung") stimmt der Benutzer diesen Nutzungsbedingungen ausdrücklich zu. Wenn er mit einem von ihnen nicht einverstanden ist, muss er sich der Nutzung der Anwendung enthalten.',
       
       // Abschnitt 2
       'terms.section2.title': 'Servicebeschreibung',
-      'terms.section2.content1': 'LocalMind ist eine Desktop-Anwendung, die es ermöglicht, mit künstlichen Intelligenzmodellen zu interagieren, die lokal auf dem Gerät des Benutzers ausgeführt werden, einschließlich Modellen, die mit Ollama kompatibel sind.',
+      'terms.section2.content1': 'HelperCron ist eine Desktop-Anwendung, die es ermöglicht, mit künstlichen Intelligenzmodellen zu interagieren, die lokal auf dem Gerät des Benutzers ausgeführt werden, einschließlich Modellen, die mit Ollama kompatibel sind.',
       'terms.section2.content2': 'Die Anwendung funktioniert lokal, ohne Informationen an externe Server zu senden, die vom Entwickler betrieben werden.',
       
       // Abschnitt 3
@@ -1345,7 +1345,7 @@ export class TranslationService {
       'terms.section6.title': 'Benutzerverantwortung',
       'terms.section6.intro': 'Der Benutzer erkennt an und akzeptiert, dass:',
       'terms.section6.responsibility1': 'Alle innerhalb der Anwendung generierten, gespeicherten oder verwalteten Inhalte in seiner alleinigen Verantwortung liegen.',
-      'terms.section6.responsibility2': 'Der Entwickler von LocalMind kontrolliert, überwacht oder moderiert keine lokal generierten oder gespeicherten Inhalte.',
+      'terms.section6.responsibility2': 'Der Entwickler von HelperCron kontrolliert, überwacht oder moderiert keine lokal generierten oder gespeicherten Inhalte.',
       'terms.section6.responsibility3': 'Die Nutzung von künstlichen Intelligenzmodellen und die Interpretation ihrer Ergebnisse hängt ausschließlich vom Benutzer ab.',
       
       // Abschnitt 7
@@ -1367,14 +1367,14 @@ export class TranslationService {
       
       // Abschnitt 9
       'terms.section9.title': 'Datenschutz',
-      'terms.section9.privacy1': 'LocalMind respektiert die Privatsphäre des Benutzers.',
+      'terms.section9.privacy1': 'HelperCron respektiert die Privatsphäre des Benutzers.',
       'terms.section9.privacy2': 'Daten werden nur lokal auf dem Gerät des Benutzers gespeichert.',
       'terms.section9.privacy3': 'Der Entwickler sammelt keine persönlichen Informationen oder generierte Inhalte.',
       'terms.section9.privacy4': 'Es gibt keine automatische Übertragung von Daten an externe Server.',
       
       // Abschnitt 10
       'terms.section10.title': 'Geistiges Eigentum',
-      'terms.section10.ownership': 'Die Anwendung, ihr Name, Logo und Quellcode (außer Drittanbieter-Bibliotheken) sind Eigentum des LocalMind-Entwicklers.',
+      'terms.section10.ownership': 'Die Anwendung, ihr Name, Logo und Quellcode (außer Drittanbieter-Bibliotheken) sind Eigentum des HelperCron-Entwicklers.',
       'terms.section10.rights': 'Die Nutzung der Anwendung gewährt dem Benutzer keine geistigen Eigentumsrechte daran.',
       
       // Abschnitt 11
@@ -1394,14 +1394,14 @@ export class TranslationService {
       
       // Abschnitt 14
       'terms.section14.title': 'Kontakt',
-      'terms.section14.contact': 'Für Anfragen zu diesen Bedingungen kann der Benutzer den Entwickler über die offiziellen Kanäle von LocalMind kontaktieren.',
+      'terms.section14.contact': 'Für Anfragen zu diesen Bedingungen kann der Benutzer den Entwickler über die offiziellen Kanäle von HelperCron kontaktieren.',
       
       // Modal ohne Modelle
       'noModels.title': 'Keine KI-Modelle',
     },
     zh: {
       // 应用程序
-      'app.name': 'Local Mind',
+      'app.name': 'HelperCron',
       
       // 导航
       'nav.chat': '返回聊天',
@@ -1488,7 +1488,7 @@ export class TranslationService {
       'about.madeWith': '使用技术',
       'about.withTech': '使用 Angular、Electron 和 Tailwind CSS 构建',
       'about.allRights': '保留所有权利',
-      'settings.aboutAppDesc': 'Local Mind - 一个用于与人工智能聊天的桌面应用程序',
+      'settings.aboutAppDesc': 'HelperCron - 一个用于与人工智能聊天的桌面应用程序',
       
       // AI 模型
       'models.title': 'AI 模型',
@@ -1497,7 +1497,7 @@ export class TranslationService {
       'models.installed': '已安装模型',
       'models.loading': '正在加载模型...',
       'models.noModels': '未安装模型',
-      'models.noModelsDesc': '要使用 Local Mind，您需要安装 AI 模型',
+      'models.noModelsDesc': '要使用 HelperCron AI 模型',
       'models.downloadOllama': '下载 Ollama',
       'models.recommendedModels': '推荐模型',
       'models.exploreModels': '探索更多模型',
@@ -1513,9 +1513,9 @@ export class TranslationService {
       // Ollama 启动模态框
       'startup.ollamaRequired': '需要 Ollama',
       'startup.ollamaNotRunningTitle': 'Ollama 未运行',
-      'startup.ollamaNotRunningDesc': '要使用 LocalMind，您需要运行 Ollama。您可以从这里自动启动它。',
+      'startup.ollamaNotRunningDesc': '要使用 HelperCron，您需要运行 Ollama。您可以从这里自动启动它。',
       'startup.ollamaNotInstalledTitle': '未安装 Ollama',
-      'startup.ollamaNotInstalledDesc': '要使用 LocalMind，您需要先安装 Ollama。它是一个免费的本地 AI 引擎。',
+      'startup.ollamaNotInstalledDesc': '要使用 HelperCron，您需要先安装 Ollama。它是一个免费的本地 AI 引擎。',
       'startup.startOllama': '启动 Ollama',
       'startup.installOllama': '安装 Ollama',
       'startup.goToSettings': '转到设置',
@@ -1523,7 +1523,7 @@ export class TranslationService {
       'startup.startingOllama': '正在启动 Ollama...',
       
       // 欢迎屏幕
-      'welcome.title': '欢迎使用 LocalMind',
+      'welcome.title': '欢迎使用 HelperCron',
       'welcome.subtitle': '您的完全本地人工智能助手',
       'welcome.aiChatTitle': '高级 AI 聊天',
       'welcome.aiChatDesc': '与最先进的 AI 模型如 Llama、Mistral 等聊天，全部在您的计算机上本地运行。',
@@ -1568,15 +1568,15 @@ export class TranslationService {
       'terms.title': '使用条款',
       'terms.fullTitle': '使用条款和条件',
       'terms.lastUpdate': '最后更新',
-      'terms.footer.thanks': '感谢您使用LocalMind',
+      'terms.footer.thanks': '感谢您使用Brodapp',
       
       // 第一条
       'terms.section1.title': '条款的接受',
-      'terms.section1.content': '通过下载、安装或使用LocalMind（以下简称"应用程序"），用户明确同意这些使用条款和条件。如果不同意其中任何一条，必须停止使用该应用程序。',
+      'terms.section1.content': '通过下载、安装或使用Brodapp（以下简称"应用程序"），用户明确同意这些使用条款和条件。如果不同意其中任何一条，必须停止使用该应用程序。',
       
       // 第二条
       'terms.section2.title': '服务描述',
-      'terms.section2.content1': 'LocalMind是一个桌面应用程序，允许与在用户设备上本地运行的人工智能模型进行交互，包括与Ollama兼容的模型。',
+      'terms.section2.content1': 'Brodapp是一个桌面应用程序，允许与在用户设备上本地运行的人工智能模型进行交互，包括与Ollama兼容的模型。',
       'terms.section2.content2': '应用程序在本地运行，不会向开发者运营的外部服务器发送信息。',
       
       // 第三条
@@ -1614,7 +1614,7 @@ export class TranslationService {
       'terms.section6.title': '用户责任',
       'terms.section6.intro': '用户承认并接受：',
       'terms.section6.responsibility1': '在应用程序内生成、存储或管理的所有内容完全由其负责。',
-      'terms.section6.responsibility2': 'LocalMind的开发者不控制、监督或审核本地生成或存储的内容。',
+      'terms.section6.responsibility2': 'Brodapp的开发者不控制、监督或审核本地生成或存储的内容。',
       'terms.section6.responsibility3': '人工智能模型的使用和对其结果的解释完全取决于用户。',
       
       // 第七条
@@ -1636,14 +1636,14 @@ export class TranslationService {
       
       // 第九条
       'terms.section9.title': '隐私',
-      'terms.section9.privacy1': 'LocalMind尊重用户隐私。',
+      'terms.section9.privacy1': 'Brodapp尊重用户隐私。',
       'terms.section9.privacy2': '数据仅在用户设备上本地存储。',
       'terms.section9.privacy3': '开发者不收集个人信息或生成的内容。',
       'terms.section9.privacy4': '不会自动向外部服务器传输数据。',
       
       // 第十条
       'terms.section10.title': '知识产权',
-      'terms.section10.ownership': '应用程序、其名称、标志和源代码（第三方库除外）属于LocalMind开发者所有。',
+      'terms.section10.ownership': '应用程序、其名称、标志和源代码（第三方库除外）属于Brodapp开发者所有。',
       'terms.section10.rights': '使用应用程序不授予用户对其任何知识产权。',
       
       // 第十一条
@@ -1663,14 +1663,14 @@ export class TranslationService {
       
       // 第十四条
       'terms.section14.title': '联系',
-      'terms.section14.contact': '对于与这些条款相关的咨询，用户可以通过LocalMind的官方渠道联系开发者。',
+      'terms.section14.contact': '对于与这些条款相关的咨询，用户可以通过Brodapp的官方渠道联系开发者。',
       
       // 无模型对话框
       'noModels.title': '无AI模型',
     },
     ja: {
       // アプリケーション
-      'app.name': 'Local Mind',
+      'app.name': 'HelperCron',
       
       // ナビゲーション
       'nav.chat': 'チャットに戻る',
@@ -1757,7 +1757,7 @@ export class TranslationService {
       'about.madeWith': '使用技術',
       'about.withTech': 'Angular、Electron、Tailwind CSSで構築',
       'about.allRights': 'すべての権利を保有',
-      'settings.aboutAppDesc': 'Local Mind - 人工知能とチャットするためのデスクトップアプリケーション',
+      'settings.aboutAppDesc': 'HelperCron - 人工知能とチャットするためのデスクトップアプリケーション',
       
       // AIモデル
       'models.title': 'AIモデル',
@@ -1766,7 +1766,7 @@ export class TranslationService {
       'models.installed': 'インストール済みモデル',
       'models.loading': 'モデルを読み込み中...',
       'models.noModels': 'モデルがインストールされていません',
-      'models.noModelsDesc': 'Local Mind を使用するには、AIモデルがインストールされている必要があります',
+      'models.noModelsDesc': 'HelperCron を使用するには、AIモデルがインストールされている必要があります',
       'models.downloadOllama': 'Ollama をダウンロード',
       'models.recommendedModels': '推奨モデル',
       'models.exploreModels': 'その他のモデルを探索',
@@ -1792,9 +1792,9 @@ export class TranslationService {
       // Ollama 起動モーダル
       'startup.ollamaRequired': 'Ollama 必須',
       'startup.ollamaNotRunningTitle': 'Ollama が動作していません',
-      'startup.ollamaNotRunningDesc': 'LocalMind を使用するには、Ollama が動作している必要があります。ここから自動的に開始できます。',
+      'startup.ollamaNotRunningDesc': 'HelperCron を使用するには、Ollama が動作している必要があります。ここから自動的に開始できます。',
       'startup.ollamaNotInstalledTitle': 'Ollama がインストールされていません',
-      'startup.ollamaNotInstalledDesc': 'LocalMind を使用するには、まず Ollama をインストールする必要があります。これは無料のローカル AI エンジンです。',
+      'startup.ollamaNotInstalledDesc': 'HelperCron を使用するには、まず Ollama をインストールする必要があります。これは無料のローカル AI エンジンです。',
       'startup.startOllama': 'Ollama を開始',
       'startup.installOllama': 'Ollama をインストール',
       'startup.goToSettings': '設定に移動',
@@ -1802,7 +1802,7 @@ export class TranslationService {
       'startup.startingOllama': 'Ollama を開始中...',
       
       // ウェルカム画面
-      'welcome.title': 'LocalMind へようこそ',
+      'welcome.title': 'HelperCron へようこそ',
       'welcome.subtitle': '完全にローカルな人工知能アシスタント',
       'welcome.aiChatTitle': '高度な AI チャット',
       'welcome.aiChatDesc': 'Llama、Mistral など最先端の AI モデルとチャットしながら、すべてをコンピューター上でローカルに実行します。',
@@ -1839,15 +1839,15 @@ export class TranslationService {
       'terms.title': '利用規約',
       'terms.fullTitle': '利用規約および使用条件',
       'terms.lastUpdate': '最終更新',
-      'terms.footer.thanks': 'LocalMindをご利用いただきありがとうございます',
+      'terms.footer.thanks': 'Brodappをご利用いただきありがとうございます',
       
       // 第1条
       'terms.section1.title': '規約の同意',
-      'terms.section1.content': 'LocalMind（以下「アプリケーション」）をダウンロード、インストール、または使用することにより、ユーザーはこれらの利用規約に明示的に同意するものとします。いずれかに同意しない場合は、アプリケーションの使用を控えなければなりません。',
+      'terms.section1.content': 'HelperCron（以下「アプリケーション」）をダウンロード、インストール、または使用することにより、ユーザーはこれらの利用規約に明示的に同意するものとします。いずれかに同意しない場合は、アプリケーションの使用を控えなければなりません。',
       
       // 第2条
       'terms.section2.title': 'サービスの説明',
-      'terms.section2.content1': 'LocalMindは、Ollamaと互換性のあるモデルを含む、ユーザーのデバイス上でローカルに実行される人工知能モデルとのやり取りを可能にするデスクトップアプリケーションです。',
+      'terms.section2.content1': 'Brodappは、Ollamaと互換性のあるモデルを含む、ユーザーのデバイス上でローカルに実行される人工知能モデルとのやり取りを可能にするデスクトップアプリケーションです。',
       'terms.section2.content2': 'アプリケーションは、開発者が運営する外部サーバーに情報を送信することなく、ローカルで動作します。',
       
       // 第3条
@@ -1885,7 +1885,7 @@ export class TranslationService {
       'terms.section6.title': 'ユーザーの責任',
       'terms.section6.intro': 'ユーザーは以下を認識し、同意します：',
       'terms.section6.responsibility1': 'アプリケーション内で生成、保存、または管理されるすべてのコンテンツは、その排他的責任です。',
-      'terms.section6.responsibility2': 'LocalMindの開発者は、ローカルで生成または保存されたコンテンツを制御、監督、またはモデレートしません。',
+      'terms.section6.responsibility2': 'Brodappの開発者は、ローカルで生成または保存されたコンテンツを制御、監督、またはモデレートしません。',
       'terms.section6.responsibility3': '人工知能モデルの使用とその結果の解釈は、ユーザーにのみ依存します。',
       
       // 第7条
@@ -1907,14 +1907,14 @@ export class TranslationService {
       
       // 第9条
       'terms.section9.title': 'プライバシー',
-      'terms.section9.privacy1': 'LocalMindはユーザーのプライバシーを尊重します。',
+      'terms.section9.privacy1': 'Brodappはユーザーのプライバシーを尊重します。',
       'terms.section9.privacy2': 'データはユーザーのデバイス上にのみローカルに保存されます。',
       'terms.section9.privacy3': '開発者は個人情報や生成されたコンテンツを収集しません。',
       'terms.section9.privacy4': '外部サーバーへのデータの自動送信はありません。',
       
       // 第10条
       'terms.section10.title': '知的財産',
-      'terms.section10.ownership': 'アプリケーション、その名前、ロゴ、およびソースコード（サードパーティライブラリを除く）は、LocalMind開発者の所有物です。',
+      'terms.section10.ownership': 'アプリケーション、その名前、ロゴ、およびソースコード（サードパーティライブラリを除く）は、Brodapp開発者の所有物です。',
       'terms.section10.rights': 'アプリケーションの使用は、ユーザーにその知的財産権を付与しません。',
       
       // 第11条
@@ -1934,7 +1934,7 @@ export class TranslationService {
       
       // 第14条
       'terms.section14.title': '連絡先',
-      'terms.section14.contact': 'これらの規約に関するお問い合わせについては、ユーザーはLocalMindの公式チャネルを通じて開発者に連絡することができます。',
+      'terms.section14.contact': 'これらの規約に関するお問い合わせについては、ユーザーはBrodappの公式チャネルを通じて開発者に連絡することができます。',
       
       // モデルなしのモーダル
       'noModels.title': 'AIモデルなし',

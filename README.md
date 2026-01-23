@@ -1,6 +1,6 @@
-# Local Mind
+# HelperCron
 
-**Local Mind** is a desktop application built with Angular and Electron for chatting with artificial intelligence models running locally. The application provides a modern, multi-language interface for interacting with AI models through an intuitive chat interface.
+**HelperCron** is a desktop application built with Angular and Electron for chatting with artificial intelligence models running locally. The application provides a modern, multi-language interface for interacting with AI models through an intuitive chat interface.
 
 ## Features
 
