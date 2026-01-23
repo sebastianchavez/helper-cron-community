@@ -1,0 +1,61 @@
+/* Terms Component Styles */
+
+.prose {
+  @apply text-slate-700 dark:text-slate-300;
+}
+
+.prose h3 {
+  @apply text-slate-900 dark:text-white;
+}
+
+.prose ul {
+  @apply text-slate-700 dark:text-slate-300;
+}
+
+.prose li {
+  @apply mb-2;
+}
+
+/* Container with scroll */
+.terms-container {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-slate-100 dark:bg-slate-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 dark:bg-slate-600 rounded-lg;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-400 dark:bg-slate-500;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Ensure body can scroll */
+body {
+  overflow-y: auto;
+}
+
+/* Section spacing */
+section {
+  scroll-margin-top: 120px;
+}
+
+/* Override any potential overflow hidden */
+.terms-content {
+  overflow: visible;
+}

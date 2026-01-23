@@ -27,6 +27,10 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/about/about.component').then(m => m.AboutComponent)
     },
     {
+        path: 'terms',
+        loadComponent: () => import('./pages/terms/terms.component').then(m => m.TermsComponent)
+    },
+    {
         path: '',
         loadComponent: () => import('./components/redirect/redirect.component').then(m => m.RedirectComponent),
         pathMatch: 'full'

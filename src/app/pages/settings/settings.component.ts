@@ -101,6 +101,10 @@ export class SettingsComponent implements OnInit {
     this.showUserMenu = false;
   }
 
+  navigateToTerms(): void {
+    this.router.navigate(['/terms']);
+  }
+
   getPlatformName(): string {
     return navigator.platform || 'Unknown';
   }

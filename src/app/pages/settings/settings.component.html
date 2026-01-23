@@ -152,6 +152,27 @@
             {{ 'settings.aboutApp' | translate }}
           </button>
         </div>
+
+        <!-- Términos y Condiciones -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary" style="font-size: 20px;">description</span>
+            {{ 'terms.title' | translate }}
+          </h2>
+          <div class="text-gray-700 dark:text-gray-300 mb-4">
+            <p class="text-sm leading-relaxed">
+              Consulta los términos de uso, políticas de privacidad y limitaciones de LocalMind. 
+              Esta información es importante para entender tus derechos y responsabilidades al usar la aplicación.
+            </p>
+          </div>
+          
+          <button 
+            (click)="navigateToTerms()"
+            class="w-full bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 px-4 py-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined" style="font-size: 18px;">gavel</span>
+            {{ 'settings.viewTerms' | translate }}
+          </button>
+        </div>
         
       </div>
     </div>

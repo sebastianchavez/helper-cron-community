@@ -53,6 +53,7 @@ export class TranslationService {
       'settings.version': 'Versión',
       'settings.platform': 'Plataforma',
       'settings.aboutApp': 'Acerca de la aplicación',
+      'settings.viewTerms': 'Ver términos y condiciones',
       
       // Terminal
       'settings.terminal': 'Terminal',
@@ -198,7 +199,110 @@ export class TranslationService {
       'noModels.cancel': 'Cancelar',
       'common.delete': 'Eliminar',
       'common.edit': 'Editar',
-      'common.close': 'Cerrar'
+      'common.close': 'Cerrar',
+      'common.back': 'Volver',
+      'common.continue': 'Continuar',
+      
+      // Términos y Condiciones
+      'terms.title': 'Términos y Condiciones',
+      'terms.fullTitle': 'TÉRMINOS Y CONDICIONES DE USO',
+      'terms.lastUpdate': 'Última actualización',
+      'terms.footer.thanks': 'Gracias por usar LocalMind',
+      
+      // Sección 1
+      'terms.section1.title': 'Aceptación de los Términos',
+      'terms.section1.content': 'Al descargar, instalar o utilizar LocalMind (en adelante, "la Aplicación"), el usuario acepta expresamente estos Términos y Condiciones. Si no está de acuerdo con alguno de ellos, debe abstenerse de utilizar la Aplicación.',
+      
+      // Sección 2
+      'terms.section2.title': 'Descripción del Servicio',
+      'terms.section2.content1': 'LocalMind es una aplicación de escritorio que permite interactuar con modelos de inteligencia artificial ejecutados localmente en el dispositivo del usuario, incluyendo modelos compatibles con Ollama.',
+      'terms.section2.content2': 'La Aplicación funciona de manera local, sin enviar información a servidores externos operados por el desarrollador.',
+      
+      // Sección 3
+      'terms.section3.title': 'Almacenamiento Local de Datos',
+      'terms.section3.intro': 'La Aplicación permite almacenar de forma local información generada por el usuario, incluyendo pero no limitándose a:',
+      'terms.section3.data1': 'Conversaciones con modelos de inteligencia artificial',
+      'terms.section3.data2': 'Nombres o títulos definidos por el usuario para dichas conversaciones',
+      'terms.section3.storage': 'Estos datos se almacenan exclusivamente en el dispositivo del usuario mediante una base de datos local (SQLite).',
+      'terms.section3.developer': 'El desarrollador:',
+      'terms.section3.no1': 'No accede a dichos datos',
+      'terms.section3.no2': 'No recopila ni transmite información a servidores externos',
+      'terms.section3.no3': 'No comparte información con terceros',
+      'terms.section3.responsibility': 'La gestión, respaldo y eliminación de estos datos es responsabilidad exclusiva del usuario.',
+      
+      // Sección 4
+      'terms.section4.title': 'Uso Permitido',
+      'terms.section4.intro': 'El usuario se compromete a utilizar la Aplicación únicamente para fines legales, éticos y legítimos, tales como:',
+      'terms.section4.use1': 'Productividad personal',
+      'terms.section4.use2': 'Asistencia en programación',
+      'terms.section4.use3': 'Escritura y análisis de texto',
+      'terms.section4.use4': 'Investigación y aprendizaje',
+      'terms.section4.use5': 'Creatividad y uso general de inteligencia artificial',
+      
+      // Sección 5
+      'terms.section5.title': 'Uso Prohibido',
+      'terms.section5.intro': 'Queda estrictamente prohibido utilizar la Aplicación para:',
+      'terms.section5.prohibited1': 'Actividades ilegales o ilícitas',
+      'terms.section5.prohibited2': 'Generación o facilitación de malware, fraudes, estafas o phishing',
+      'terms.section5.prohibited3': 'Violación de derechos de autor, privacidad o propiedad intelectual',
+      'terms.section5.prohibited4': 'Producción, distribución o promoción de contenido ilegal',
+      'terms.section5.prohibited5': 'Cualquier uso que infrinja leyes locales, nacionales o internacionales',
+      'terms.section5.responsibility': 'El usuario es el único responsable del contenido que genere y del uso que haga de la Aplicación.',
+      
+      // Sección 6
+      'terms.section6.title': 'Responsabilidad del Usuario',
+      'terms.section6.intro': 'El usuario reconoce y acepta que:',
+      'terms.section6.responsibility1': 'Todo el contenido generado, almacenado o gestionado dentro de la Aplicación es de su exclusiva responsabilidad.',
+      'terms.section6.responsibility2': 'El desarrollador de LocalMind no controla, supervisa ni modera el contenido generado o almacenado localmente.',
+      'terms.section6.responsibility3': 'El uso de modelos de inteligencia artificial y la interpretación de sus resultados depende únicamente del usuario.',
+      
+      // Sección 7
+      'terms.section7.title': 'Exclusión de Responsabilidad',
+      'terms.section7.intro': 'La Aplicación se proporciona "tal cual", sin garantías de ningún tipo.',
+      'terms.section7.notResponsible': 'El desarrollador no será responsable por:',
+      'terms.section7.disclaimer1': 'Daños directos o indirectos derivados del uso de la Aplicación',
+      'terms.section7.disclaimer2': 'Pérdida, corrupción o eliminación de datos almacenados localmente',
+      'terms.section7.disclaimer3': 'Fallos del sistema, errores del modelo de IA o resultados incorrectos',
+      'terms.section7.disclaimer4': 'Uso indebido, ilegal o no autorizado por parte del usuario',
+      'terms.section7.disclaimer5': 'Decisiones tomadas por el usuario basadas en contenido generado por IA',
+      
+      // Sección 8
+      'terms.section8.title': 'Inteligencia Artificial y Limitaciones',
+      'terms.section8.intro': 'El usuario entiende y acepta que:',
+      'terms.section8.limitation1': 'Los modelos de inteligencia artificial pueden generar información incorrecta, incompleta o imprecisa.',
+      'terms.section8.limitation2': 'El contenido generado no constituye asesoría legal, médica, financiera ni profesional.',
+      'terms.section8.limitation3': 'El usuario debe verificar de forma independiente cualquier información relevante.',
+      
+      // Sección 9
+      'terms.section9.title': 'Privacidad',
+      'terms.section9.privacy1': 'LocalMind respeta la privacidad del usuario.',
+      'terms.section9.privacy2': 'Los datos se almacenan únicamente de forma local en el dispositivo del usuario.',
+      'terms.section9.privacy3': 'El desarrollador no recopila información personal ni contenido generado.',
+      'terms.section9.privacy4': 'No existe transmisión automática de datos a servidores externos.',
+      
+      // Sección 10
+      'terms.section10.title': 'Propiedad Intelectual',
+      'terms.section10.ownership': 'La Aplicación, su nombre, logotipo y código fuente (excepto librerías de terceros) son propiedad del desarrollador de LocalMind.',
+      'terms.section10.rights': 'El uso de la Aplicación no otorga al usuario ningún derecho de propiedad intelectual sobre la misma.',
+      
+      // Sección 11
+      'terms.section11.title': 'Modificaciones',
+      'terms.section11.rights': 'El desarrollador se reserva el derecho de modificar estos Términos y Condiciones en cualquier momento.',
+      'terms.section11.effective': 'Las modificaciones entrarán en vigor desde su publicación o incorporación en versiones futuras de la Aplicación.',
+      
+      // Sección 12
+      'terms.section12.title': 'Terminación',
+      'terms.section12.suspension': 'El desarrollador podrá suspender o limitar el uso de la Aplicación si el usuario incumple estos Términos.',
+      'terms.section12.uninstall': 'El usuario puede dejar de utilizar la Aplicación en cualquier momento desinstalándola.',
+      
+      // Sección 13
+      'terms.section13.title': 'Legislación Aplicable',
+      'terms.section13.law': 'Estos Términos y Condiciones se rigen por las leyes de la República de Chile.',
+      'terms.section13.jurisdiction': 'Cualquier controversia será sometida a los tribunales competentes de dicho país.',
+      
+      // Sección 14
+      'terms.section14.title': 'Contacto',
+      'terms.section14.contact': 'Para consultas relacionadas con estos Términos, el usuario puede contactar al desarrollador a través de los canales oficiales de LocalMind.'
     },
     en: {
       // Application
@@ -238,6 +342,7 @@ export class TranslationService {
       'settings.version': 'Version',
       'settings.platform': 'Platform',
       'settings.aboutApp': 'About the application',
+      'settings.viewTerms': 'View terms and conditions',
       
       // Terminal
       'settings.terminal': 'Terminal',
@@ -377,6 +482,109 @@ export class TranslationService {
       'common.delete': 'Delete',
       'common.edit': 'Edit',
       'common.close': 'Close',
+      'common.back': 'Back',
+      'common.continue': 'Continue',
+      
+      // Terms and Conditions
+      'terms.title': 'Terms and Conditions',
+      'terms.fullTitle': 'TERMS AND CONDITIONS OF USE',
+      'terms.lastUpdate': 'Last updated',
+      'terms.footer.thanks': 'Thank you for using LocalMind',
+      
+      // Section 1
+      'terms.section1.title': 'Acceptance of Terms',
+      'terms.section1.content': 'By downloading, installing or using LocalMind (hereinafter, "the Application"), the user expressly agrees to these Terms and Conditions. If you do not agree with any of them, you must refrain from using the Application.',
+      
+      // Section 2
+      'terms.section2.title': 'Service Description',
+      'terms.section2.content1': 'LocalMind is a desktop application that allows interaction with artificial intelligence models running locally on the user\'s device, including models compatible with Ollama.',
+      'terms.section2.content2': 'The Application works locally, without sending information to external servers operated by the developer.',
+      
+      // Section 3
+      'terms.section3.title': 'Local Data Storage',
+      'terms.section3.intro': 'The Application allows local storage of user-generated information, including but not limited to:',
+      'terms.section3.data1': 'Conversations with artificial intelligence models',
+      'terms.section3.data2': 'Names or titles defined by the user for such conversations',
+      'terms.section3.storage': 'This data is stored exclusively on the user\'s device through a local database (SQLite).',
+      'terms.section3.developer': 'The developer:',
+      'terms.section3.no1': 'Does not access such data',
+      'terms.section3.no2': 'Does not collect or transmit information to external servers',
+      'terms.section3.no3': 'Does not share information with third parties',
+      'terms.section3.responsibility': 'The management, backup and deletion of this data is the exclusive responsibility of the user.',
+      
+      // Section 4
+      'terms.section4.title': 'Permitted Use',
+      'terms.section4.intro': 'The user agrees to use the Application only for legal, ethical and legitimate purposes, such as:',
+      'terms.section4.use1': 'Personal productivity',
+      'terms.section4.use2': 'Programming assistance',
+      'terms.section4.use3': 'Writing and text analysis',
+      'terms.section4.use4': 'Research and learning',
+      'terms.section4.use5': 'Creativity and general use of artificial intelligence',
+      
+      // Section 5
+      'terms.section5.title': 'Prohibited Use',
+      'terms.section5.intro': 'It is strictly prohibited to use the Application for:',
+      'terms.section5.prohibited1': 'Illegal or illicit activities',
+      'terms.section5.prohibited2': 'Generation or facilitation of malware, fraud, scams or phishing',
+      'terms.section5.prohibited3': 'Violation of copyright, privacy or intellectual property rights',
+      'terms.section5.prohibited4': 'Production, distribution or promotion of illegal content',
+      'terms.section5.prohibited5': 'Any use that violates local, national or international laws',
+      'terms.section5.responsibility': 'The user is solely responsible for the content they generate and the use they make of the Application.',
+      
+      // Section 6
+      'terms.section6.title': 'User Responsibility',
+      'terms.section6.intro': 'The user acknowledges and accepts that:',
+      'terms.section6.responsibility1': 'All content generated, stored or managed within the Application is their exclusive responsibility.',
+      'terms.section6.responsibility2': 'The LocalMind developer does not control, supervise or moderate content generated or stored locally.',
+      'terms.section6.responsibility3': 'The use of artificial intelligence models and interpretation of their results depends solely on the user.',
+      
+      // Section 7
+      'terms.section7.title': 'Disclaimer',
+      'terms.section7.intro': 'The Application is provided "as is", without warranties of any kind.',
+      'terms.section7.notResponsible': 'The developer shall not be responsible for:',
+      'terms.section7.disclaimer1': 'Direct or indirect damages arising from use of the Application',
+      'terms.section7.disclaimer2': 'Loss, corruption or deletion of locally stored data',
+      'terms.section7.disclaimer3': 'System failures, AI model errors or incorrect results',
+      'terms.section7.disclaimer4': 'Improper, illegal or unauthorized use by the user',
+      'terms.section7.disclaimer5': 'Decisions made by the user based on AI-generated content',
+      
+      // Section 8
+      'terms.section8.title': 'Artificial Intelligence and Limitations',
+      'terms.section8.intro': 'The user understands and accepts that:',
+      'terms.section8.limitation1': 'Artificial intelligence models may generate incorrect, incomplete or inaccurate information.',
+      'terms.section8.limitation2': 'Generated content does not constitute legal, medical, financial or professional advice.',
+      'terms.section8.limitation3': 'The user must independently verify any relevant information.',
+      
+      // Section 9
+      'terms.section9.title': 'Privacy',
+      'terms.section9.privacy1': 'LocalMind respects user privacy.',
+      'terms.section9.privacy2': 'Data is stored only locally on the user\'s device.',
+      'terms.section9.privacy3': 'The developer does not collect personal information or generated content.',
+      'terms.section9.privacy4': 'There is no automatic transmission of data to external servers.',
+      
+      // Section 10
+      'terms.section10.title': 'Intellectual Property',
+      'terms.section10.ownership': 'The Application, its name, logo and source code (except third-party libraries) are owned by the LocalMind developer.',
+      'terms.section10.rights': 'Use of the Application does not grant the user any intellectual property rights over it.',
+      
+      // Section 11
+      'terms.section11.title': 'Modifications',
+      'terms.section11.rights': 'The developer reserves the right to modify these Terms and Conditions at any time.',
+      'terms.section11.effective': 'Modifications will take effect from their publication or incorporation in future versions of the Application.',
+      
+      // Section 12
+      'terms.section12.title': 'Termination',
+      'terms.section12.suspension': 'The developer may suspend or limit use of the Application if the user violates these Terms.',
+      'terms.section12.uninstall': 'The user may stop using the Application at any time by uninstalling it.',
+      
+      // Section 13
+      'terms.section13.title': 'Applicable Law',
+      'terms.section13.law': 'These Terms and Conditions are governed by the laws of the Republic of Chile.',
+      'terms.section13.jurisdiction': 'Any dispute will be submitted to the competent courts of said country.',
+      
+      // Section 14
+      'terms.section14.title': 'Contact',
+      'terms.section14.contact': 'For inquiries related to these Terms, the user may contact the developer through LocalMind\'s official channels.',
       
       // Modal sin modelos
       'noModels.title': 'No AI Models',
@@ -423,6 +631,7 @@ export class TranslationService {
       'settings.version': 'Versão',
       'settings.platform': 'Plataforma',
       'settings.aboutApp': 'Sobre a aplicação',
+      'settings.viewTerms': 'Ver termos e condições',
       
       // Terminal
       'settings.terminal': 'Terminal',
@@ -540,13 +749,115 @@ export class TranslationService {
       'welcome.getStarted': 'Começar!',
       'welcome.settingUp': 'Configurando...',
       
-      // Comum
       'common.user': 'Usuário',
       'common.cancel': 'Cancelar',
       'common.save': 'Salvar',
       'common.delete': 'Excluir',
       'common.edit': 'Editar',
       'common.close': 'Fechar',
+      'common.back': 'Voltar',
+      'common.continue': 'Continuar',
+      
+      // Termos e Condições
+      'terms.title': 'Termos e Condições',
+      'terms.fullTitle': 'TERMOS E CONDIÇÕES DE USO',
+      'terms.lastUpdate': 'Última atualização',
+      'terms.footer.thanks': 'Obrigado por usar o LocalMind',
+      
+      // Seção 1
+      'terms.section1.title': 'Aceitação dos Termos',
+      'terms.section1.content': 'Ao baixar, instalar ou usar o LocalMind (doravante, "a Aplicação"), o usuário aceita expressamente estes Termos e Condições. Se não concordar com algum deles, deve abster-se de usar a Aplicação.',
+      
+      // Seção 2
+      'terms.section2.title': 'Descrição do Serviço',
+      'terms.section2.content1': 'LocalMind é uma aplicação desktop que permite interagir com modelos de inteligência artificial executados localmente no dispositivo do usuário, incluindo modelos compatíveis com Ollama.',
+      'terms.section2.content2': 'A Aplicação funciona localmente, sem enviar informações para servidores externos operados pelo desenvolvedor.',
+      
+      // Seção 3
+      'terms.section3.title': 'Armazenamento Local de Dados',
+      'terms.section3.intro': 'A Aplicação permite armazenar localmente informações geradas pelo usuário, incluindo mas não se limitando a:',
+      'terms.section3.data1': 'Conversas com modelos de inteligência artificial',
+      'terms.section3.data2': 'Nomes ou títulos definidos pelo usuário para tais conversas',
+      'terms.section3.storage': 'Estes dados são armazenados exclusivamente no dispositivo do usuário através de um banco de dados local (SQLite).',
+      'terms.section3.developer': 'O desenvolvedor:',
+      'terms.section3.no1': 'Não acessa tais dados',
+      'terms.section3.no2': 'Não coleta nem transmite informações para servidores externos',
+      'terms.section3.no3': 'Não compartilha informações com terceiros',
+      'terms.section3.responsibility': 'O gerenciamento, backup e exclusão desses dados é de responsabilidade exclusiva do usuário.',
+      
+      // Seção 4
+      'terms.section4.title': 'Uso Permitido',
+      'terms.section4.intro': 'O usuário compromete-se a usar a Aplicação apenas para fins legais, éticos e legítimos, tais como:',
+      'terms.section4.use1': 'Produtividade pessoal',
+      'terms.section4.use2': 'Assistência em programação',
+      'terms.section4.use3': 'Escrita e análise de texto',
+      'terms.section4.use4': 'Pesquisa e aprendizagem',
+      'terms.section4.use5': 'Criatividade e uso geral de inteligência artificial',
+      
+      // Seção 5
+      'terms.section5.title': 'Uso Proibido',
+      'terms.section5.intro': 'É estritamente proibido usar a Aplicação para:',
+      'terms.section5.prohibited1': 'Atividades ilegais ou ilícitas',
+      'terms.section5.prohibited2': 'Geração ou facilitação de malware, fraudes, golpes ou phishing',
+      'terms.section5.prohibited3': 'Violação de direitos autorais, privacidade ou propriedade intelectual',
+      'terms.section5.prohibited4': 'Produção, distribuição ou promoção de conteúdo ilegal',
+      'terms.section5.prohibited5': 'Qualquer uso que infrinja leis locais, nacionais ou internacionais',
+      'terms.section5.responsibility': 'O usuário é o único responsável pelo conteúdo que gerar e pelo uso que fizer da Aplicação.',
+      
+      // Seção 6
+      'terms.section6.title': 'Responsabilidade do Usuário',
+      'terms.section6.intro': 'O usuário reconhece e aceita que:',
+      'terms.section6.responsibility1': 'Todo o conteúdo gerado, armazenado ou gerenciado dentro da Aplicação é de sua exclusiva responsabilidade.',
+      'terms.section6.responsibility2': 'O desenvolvedor do LocalMind não controla, supervisiona nem modera o conteúdo gerado ou armazenado localmente.',
+      'terms.section6.responsibility3': 'O uso de modelos de inteligência artificial e a interpretação de seus resultados depende unicamente do usuário.',
+      
+      // Seção 7
+      'terms.section7.title': 'Exclusão de Responsabilidade',
+      'terms.section7.intro': 'A Aplicação é fornecida "como está", sem garantias de qualquer tipo.',
+      'terms.section7.notResponsible': 'O desenvolvedor não será responsável por:',
+      'terms.section7.disclaimer1': 'Danos diretos ou indiretos decorrentes do uso da Aplicação',
+      'terms.section7.disclaimer2': 'Perda, corrupção ou exclusão de dados armazenados localmente',
+      'terms.section7.disclaimer3': 'Falhas do sistema, erros do modelo de IA ou resultados incorretos',
+      'terms.section7.disclaimer4': 'Uso indevido, ilegal ou não autorizado pelo usuário',
+      'terms.section7.disclaimer5': 'Decisões tomadas pelo usuário baseadas em conteúdo gerado por IA',
+      
+      // Seção 8
+      'terms.section8.title': 'Inteligência Artificial e Limitações',
+      'terms.section8.intro': 'O usuário entende e aceita que:',
+      'terms.section8.limitation1': 'Os modelos de inteligência artificial podem gerar informações incorretas, incompletas ou imprecisas.',
+      'terms.section8.limitation2': 'O conteúdo gerado não constitui assessoria legal, médica, financeira ou profissional.',
+      'terms.section8.limitation3': 'O usuário deve verificar independentemente qualquer informação relevante.',
+      
+      // Seção 9
+      'terms.section9.title': 'Privacidade',
+      'terms.section9.privacy1': 'LocalMind respeita a privacidade do usuário.',
+      'terms.section9.privacy2': 'Os dados são armazenados apenas localmente no dispositivo do usuário.',
+      'terms.section9.privacy3': 'O desenvolvedor não coleta informações pessoais nem conteúdo gerado.',
+      'terms.section9.privacy4': 'Não existe transmissão automática de dados para servidores externos.',
+      
+      // Seção 10
+      'terms.section10.title': 'Propriedade Intelectual',
+      'terms.section10.ownership': 'A Aplicação, seu nome, logotipo e código-fonte (exceto bibliotecas de terceiros) são propriedade do desenvolvedor do LocalMind.',
+      'terms.section10.rights': 'O uso da Aplicação não concede ao usuário nenhum direito de propriedade intelectual sobre ela.',
+      
+      // Seção 11
+      'terms.section11.title': 'Modificações',
+      'terms.section11.rights': 'O desenvolvedor reserva-se o direito de modificar estes Termos e Condições a qualquer momento.',
+      'terms.section11.effective': 'As modificações entrarão em vigor a partir de sua publicação ou incorporação em versões futuras da Aplicação.',
+      
+      // Seção 12
+      'terms.section12.title': 'Terminação',
+      'terms.section12.suspension': 'O desenvolvedor poderá suspender ou limitar o uso da Aplicação se o usuário descumprir estes Termos.',
+      'terms.section12.uninstall': 'O usuário pode parar de usar a Aplicação a qualquer momento desinstalando-a.',
+      
+      // Seção 13
+      'terms.section13.title': 'Legislação Aplicável',
+      'terms.section13.law': 'Estes Termos e Condições são regidos pelas leis da República do Chile.',
+      'terms.section13.jurisdiction': 'Qualquer controvérsia será submetida aos tribunais competentes do referido país.',
+      
+      // Seção 14
+      'terms.section14.title': 'Contato',
+      'terms.section14.contact': 'Para consultas relacionadas a estes Termos, o usuário pode entrar em contato com o desenvolvedor através dos canais oficiais do LocalMind.',
       
       // Modal sem modelos
       'noModels.title': 'Sem Modelos de IA',
@@ -593,6 +904,7 @@ export class TranslationService {
       'settings.version': 'Version',
       'settings.platform': 'Plateforme',
       'settings.aboutApp': 'À propos de l\'application',
+      'settings.viewTerms': 'Voir les conditions d\'utilisation',
       
       // Terminal
       'settings.terminal': 'Terminal',
@@ -716,7 +1028,113 @@ export class TranslationService {
       'common.save': 'Sauvegarder',
       'common.delete': 'Supprimer',
       'common.edit': 'Éditer',
-      'common.close': 'Fermer'
+      'common.close': 'Fermer',
+      'common.back': 'Retour',
+      'common.continue': 'Continuer',
+      
+      // Termes et Conditions
+      'terms.title': 'Termes et Conditions',
+      'terms.fullTitle': 'TERMES ET CONDITIONS D\'UTILISATION',
+      'terms.lastUpdate': 'Dernière mise à jour',
+      'terms.footer.thanks': 'Merci d\'utiliser LocalMind',
+      
+      // Section 1
+      'terms.section1.title': 'Acceptation des Termes',
+      'terms.section1.content': 'En téléchargeant, installant ou utilisant LocalMind (ci-après, "l\'Application"), l\'utilisateur accepte expressément ces Termes et Conditions. S\'il n\'est pas d\'accord avec l\'un d\'entre eux, il doit s\'abstenir d\'utiliser l\'Application.',
+      
+      // Section 2
+      'terms.section2.title': 'Description du Service',
+      'terms.section2.content1': 'LocalMind est une application de bureau qui permet d\'interagir avec des modèles d\'intelligence artificielle exécutés localement sur l\'appareil de l\'utilisateur, y compris les modèles compatibles avec Ollama.',
+      'terms.section2.content2': 'L\'Application fonctionne localement, sans envoyer d\'informations à des serveurs externes exploités par le développeur.',
+      
+      // Section 3
+      'terms.section3.title': 'Stockage Local des Données',
+      'terms.section3.intro': 'L\'Application permet de stocker localement les informations générées par l\'utilisateur, incluant mais sans s\'y limiter à:',
+      'terms.section3.data1': 'Conversations avec les modèles d\'intelligence artificielle',
+      'terms.section3.data2': 'Noms ou titres définis par l\'utilisateur pour ces conversations',
+      'terms.section3.storage': 'Ces données sont stockées exclusivement sur l\'appareil de l\'utilisateur via une base de données locale (SQLite).',
+      'terms.section3.developer': 'Le développeur:',
+      'terms.section3.no1': 'N\'accède pas à ces données',
+      'terms.section3.no2': 'Ne collecte ni ne transmet d\'informations vers des serveurs externes',
+      'terms.section3.no3': 'Ne partage pas d\'informations avec des tiers',
+      'terms.section3.responsibility': 'La gestion, la sauvegarde et la suppression de ces données relèvent de la seule responsabilité de l\'utilisateur.',
+      
+      // Section 4
+      'terms.section4.title': 'Utilisation Autorisée',
+      'terms.section4.intro': 'L\'utilisateur s\'engage à utiliser l\'Application uniquement à des fins légales, éthiques et légitimes, telles que:',
+      'terms.section4.use1': 'Productivité personnelle',
+      'terms.section4.use2': 'Assistance à la programmation',
+      'terms.section4.use3': 'Rédaction et analyse de texte',
+      'terms.section4.use4': 'Recherche et apprentissage',
+      'terms.section4.use5': 'Créativité et utilisation générale de l\'intelligence artificielle',
+      
+      // Section 5
+      'terms.section5.title': 'Utilisation Interdite',
+      'terms.section5.intro': 'Il est strictement interdit d\'utiliser l\'Application pour:',
+      'terms.section5.prohibited1': 'Activités illégales ou illicites',
+      'terms.section5.prohibited2': 'Génération ou facilitation de malware, fraudes, arnaques ou phishing',
+      'terms.section5.prohibited3': 'Violation de droits d\'auteur, de confidentialité ou de propriété intellectuelle',
+      'terms.section5.prohibited4': 'Production, distribution ou promotion de contenu illégal',
+      'terms.section5.prohibited5': 'Toute utilisation qui enfreint les lois locales, nationales ou internationales',
+      'terms.section5.responsibility': 'L\'utilisateur est seul responsable du contenu qu\'il génère et de l\'usage qu\'il fait de l\'Application.',
+      
+      // Section 6
+      'terms.section6.title': 'Responsabilité de l\'Utilisateur',
+      'terms.section6.intro': 'L\'utilisateur reconnaît et accepte que:',
+      'terms.section6.responsibility1': 'Tout le contenu généré, stocké ou géré dans l\'Application relève de sa seule responsabilité.',
+      'terms.section6.responsibility2': 'Le développeur de LocalMind ne contrôle, ne supervise ni ne modère le contenu généré ou stocké localement.',
+      'terms.section6.responsibility3': 'L\'utilisation des modèles d\'intelligence artificielle et l\'interprétation de leurs résultats dépend uniquement de l\'utilisateur.',
+      
+      // Section 7
+      'terms.section7.title': 'Exclusion de Responsabilité',
+      'terms.section7.intro': 'L\'Application est fournie "en l\'état", sans garanties d\'aucune sorte.',
+      'terms.section7.notResponsible': 'Le développeur ne sera pas responsable de:',
+      'terms.section7.disclaimer1': 'Dommages directs ou indirects résultant de l\'utilisation de l\'Application',
+      'terms.section7.disclaimer2': 'Perte, corruption ou suppression de données stockées localement',
+      'terms.section7.disclaimer3': 'Pannes du système, erreurs du modèle IA ou résultats incorrects',
+      'terms.section7.disclaimer4': 'Utilisation inappropriée, illégale ou non autorisée par l\'utilisateur',
+      'terms.section7.disclaimer5': 'Décisions prises par l\'utilisateur basées sur du contenu généré par IA',
+      
+      // Section 8
+      'terms.section8.title': 'Intelligence Artificielle et Limitations',
+      'terms.section8.intro': 'L\'utilisateur comprend et accepte que:',
+      'terms.section8.limitation1': 'Les modèles d\'intelligence artificielle peuvent générer des informations incorrectes, incomplètes ou imprécises.',
+      'terms.section8.limitation2': 'Le contenu généré ne constitue pas un conseil juridique, médical, financier ou professionnel.',
+      'terms.section8.limitation3': 'L\'utilisateur doit vérifier indépendamment toute information pertinente.',
+      
+      // Section 9
+      'terms.section9.title': 'Confidentialité',
+      'terms.section9.privacy1': 'LocalMind respecte la confidentialité de l\'utilisateur.',
+      'terms.section9.privacy2': 'Les données sont stockées uniquement localement sur l\'appareil de l\'utilisateur.',
+      'terms.section9.privacy3': 'Le développeur ne collecte pas d\'informations personnelles ni de contenu généré.',
+      'terms.section9.privacy4': 'Il n\'y a pas de transmission automatique de données vers des serveurs externes.',
+      
+      // Section 10
+      'terms.section10.title': 'Propriété Intellectuelle',
+      'terms.section10.ownership': 'L\'Application, son nom, son logo et son code source (à l\'exception des bibliothèques tierces) appartiennent au développeur de LocalMind.',
+      'terms.section10.rights': 'L\'utilisation de l\'Application n\'accorde à l\'utilisateur aucun droit de propriété intellectuelle sur celle-ci.',
+      
+      // Section 11
+      'terms.section11.title': 'Modifications',
+      'terms.section11.rights': 'Le développeur se réserve le droit de modifier ces Termes et Conditions à tout moment.',
+      'terms.section11.effective': 'Les modifications prendront effet dès leur publication ou incorporation dans les versions futures de l\'Application.',
+      
+      // Section 12
+      'terms.section12.title': 'Résiliation',
+      'terms.section12.suspension': 'Le développeur peut suspendre ou limiter l\'utilisation de l\'Application si l\'utilisateur viole ces Termes.',
+      'terms.section12.uninstall': 'L\'utilisateur peut cesser d\'utiliser l\'Application à tout moment en la désinstallant.',
+      
+      // Section 13
+      'terms.section13.title': 'Loi Applicable',
+      'terms.section13.law': 'Ces Termes et Conditions sont régis par les lois de la République du Chili.',
+      'terms.section13.jurisdiction': 'Tout litige sera soumis aux tribunaux compétents dudit pays.',
+      
+      // Section 14
+      'terms.section14.title': 'Contact',
+      'terms.section14.contact': 'Pour les demandes liées à ces Termes, l\'utilisateur peut contacter le développeur via les canaux officiels de LocalMind.',
+      
+      // Modal sans modèles
+      'noModels.title': 'Aucun Modèle IA',
     },
     de: {
       // Anwendung
@@ -756,6 +1174,7 @@ export class TranslationService {
       'settings.version': 'Version',
       'settings.platform': 'Plattform',
       'settings.aboutApp': 'Über die Anwendung',
+      'settings.viewTerms': 'Nutzungsbedingungen anzeigen',
       
       // Terminal
       'settings.terminal': 'Terminal',
@@ -872,7 +1291,113 @@ export class TranslationService {
       'common.save': 'Speichern',
       'common.delete': 'Löschen',
       'common.edit': 'Bearbeiten',
-      'common.close': 'Schließen'
+      'common.close': 'Schließen',
+      'common.back': 'Zurück',
+      'common.continue': 'Weiter',
+      
+      // Nutzungsbedingungen
+      'terms.title': 'Nutzungsbedingungen',
+      'terms.fullTitle': 'NUTZUNGSBEDINGUNGEN',
+      'terms.lastUpdate': 'Letzte Aktualisierung',
+      'terms.footer.thanks': 'Vielen Dank für die Nutzung von LocalMind',
+      
+      // Abschnitt 1
+      'terms.section1.title': 'Annahme der Bedingungen',
+      'terms.section1.content': 'Durch das Herunterladen, Installieren oder Verwenden von LocalMind (im Folgenden "die Anwendung") stimmt der Benutzer diesen Nutzungsbedingungen ausdrücklich zu. Wenn er mit einem von ihnen nicht einverstanden ist, muss er sich der Nutzung der Anwendung enthalten.',
+      
+      // Abschnitt 2
+      'terms.section2.title': 'Servicebeschreibung',
+      'terms.section2.content1': 'LocalMind ist eine Desktop-Anwendung, die es ermöglicht, mit künstlichen Intelligenzmodellen zu interagieren, die lokal auf dem Gerät des Benutzers ausgeführt werden, einschließlich Modellen, die mit Ollama kompatibel sind.',
+      'terms.section2.content2': 'Die Anwendung funktioniert lokal, ohne Informationen an externe Server zu senden, die vom Entwickler betrieben werden.',
+      
+      // Abschnitt 3
+      'terms.section3.title': 'Lokale Datenspeicherung',
+      'terms.section3.intro': 'Die Anwendung ermöglicht die lokale Speicherung von benutzergenerierte Informationen, einschließlich aber nicht beschränkt auf:',
+      'terms.section3.data1': 'Gespräche mit künstlichen Intelligenzmodellen',
+      'terms.section3.data2': 'Vom Benutzer definierte Namen oder Titel für solche Gespräche',
+      'terms.section3.storage': 'Diese Daten werden ausschließlich auf dem Gerät des Benutzers über eine lokale Datenbank (SQLite) gespeichert.',
+      'terms.section3.developer': 'Der Entwickler:',
+      'terms.section3.no1': 'Greift nicht auf solche Daten zu',
+      'terms.section3.no2': 'Sammelt oder überträgt keine Informationen an externe Server',
+      'terms.section3.no3': 'Teilt keine Informationen mit Dritten',
+      'terms.section3.responsibility': 'Die Verwaltung, Sicherung und Löschung dieser Daten liegt in der alleinigen Verantwortung des Benutzers.',
+      
+      // Abschnitt 4
+      'terms.section4.title': 'Erlaubte Nutzung',
+      'terms.section4.intro': 'Der Benutzer verpflichtet sich, die Anwendung nur für legale, ethische und legitime Zwecke zu verwenden, wie:',
+      'terms.section4.use1': 'Persönliche Produktivität',
+      'terms.section4.use2': 'Programmierungsunterstützung',
+      'terms.section4.use3': 'Schreiben und Textanalyse',
+      'terms.section4.use4': 'Forschung und Lernen',
+      'terms.section4.use5': 'Kreativität und allgemeine Nutzung künstlicher Intelligenz',
+      
+      // Abschnitt 5
+      'terms.section5.title': 'Verbotene Nutzung',
+      'terms.section5.intro': 'Es ist strengstens verboten, die Anwendung zu verwenden für:',
+      'terms.section5.prohibited1': 'Illegale oder unerlaubte Aktivitäten',
+      'terms.section5.prohibited2': 'Generierung oder Erleichterung von Malware, Betrug, Betrügereien oder Phishing',
+      'terms.section5.prohibited3': 'Verletzung von Urheberrechten, Datenschutz oder geistigen Eigentumsrechten',
+      'terms.section5.prohibited4': 'Produktion, Verteilung oder Förderung illegaler Inhalte',
+      'terms.section5.prohibited5': 'Jede Nutzung, die lokale, nationale oder internationale Gesetze verletzt',
+      'terms.section5.responsibility': 'Der Benutzer ist allein verantwortlich für die Inhalte, die er generiert, und für die Nutzung, die er von der Anwendung macht.',
+      
+      // Abschnitt 6
+      'terms.section6.title': 'Benutzerverantwortung',
+      'terms.section6.intro': 'Der Benutzer erkennt an und akzeptiert, dass:',
+      'terms.section6.responsibility1': 'Alle innerhalb der Anwendung generierten, gespeicherten oder verwalteten Inhalte in seiner alleinigen Verantwortung liegen.',
+      'terms.section6.responsibility2': 'Der Entwickler von LocalMind kontrolliert, überwacht oder moderiert keine lokal generierten oder gespeicherten Inhalte.',
+      'terms.section6.responsibility3': 'Die Nutzung von künstlichen Intelligenzmodellen und die Interpretation ihrer Ergebnisse hängt ausschließlich vom Benutzer ab.',
+      
+      // Abschnitt 7
+      'terms.section7.title': 'Haftungsausschluss',
+      'terms.section7.intro': 'Die Anwendung wird "wie sie ist" bereitgestellt, ohne Garantien jeglicher Art.',
+      'terms.section7.notResponsible': 'Der Entwickler haftet nicht für:',
+      'terms.section7.disclaimer1': 'Direkte oder indirekte Schäden, die aus der Nutzung der Anwendung entstehen',
+      'terms.section7.disclaimer2': 'Verlust, Beschädigung oder Löschung lokal gespeicherter Daten',
+      'terms.section7.disclaimer3': 'Systemfehler, KI-Modell-Fehler oder falsche Ergebnisse',
+      'terms.section7.disclaimer4': 'Unsachgemäße, illegale oder unbefugte Nutzung durch den Benutzer',
+      'terms.section7.disclaimer5': 'Entscheidungen des Benutzers basierend auf KI-generierten Inhalten',
+      
+      // Abschnitt 8
+      'terms.section8.title': 'Künstliche Intelligenz und Einschränkungen',
+      'terms.section8.intro': 'Der Benutzer versteht und akzeptiert, dass:',
+      'terms.section8.limitation1': 'Künstliche Intelligenzmodelle können falsche, unvollständige oder ungenaue Informationen generieren.',
+      'terms.section8.limitation2': 'Generierte Inhalte stellen keine rechtliche, medizinische, finanzielle oder professionelle Beratung dar.',
+      'terms.section8.limitation3': 'Der Benutzer muss alle relevanten Informationen unabhängig verifizieren.',
+      
+      // Abschnitt 9
+      'terms.section9.title': 'Datenschutz',
+      'terms.section9.privacy1': 'LocalMind respektiert die Privatsphäre des Benutzers.',
+      'terms.section9.privacy2': 'Daten werden nur lokal auf dem Gerät des Benutzers gespeichert.',
+      'terms.section9.privacy3': 'Der Entwickler sammelt keine persönlichen Informationen oder generierte Inhalte.',
+      'terms.section9.privacy4': 'Es gibt keine automatische Übertragung von Daten an externe Server.',
+      
+      // Abschnitt 10
+      'terms.section10.title': 'Geistiges Eigentum',
+      'terms.section10.ownership': 'Die Anwendung, ihr Name, Logo und Quellcode (außer Drittanbieter-Bibliotheken) sind Eigentum des LocalMind-Entwicklers.',
+      'terms.section10.rights': 'Die Nutzung der Anwendung gewährt dem Benutzer keine geistigen Eigentumsrechte daran.',
+      
+      // Abschnitt 11
+      'terms.section11.title': 'Änderungen',
+      'terms.section11.rights': 'Der Entwickler behält sich das Recht vor, diese Nutzungsbedingungen jederzeit zu ändern.',
+      'terms.section11.effective': 'Änderungen treten ab ihrer Veröffentlichung oder Einbindung in zukünftige Versionen der Anwendung in Kraft.',
+      
+      // Abschnitt 12
+      'terms.section12.title': 'Beendigung',
+      'terms.section12.suspension': 'Der Entwickler kann die Nutzung der Anwendung aussetzen oder einschränken, wenn der Benutzer gegen diese Bedingungen verstößt.',
+      'terms.section12.uninstall': 'Der Benutzer kann die Nutzung der Anwendung jederzeit durch Deinstallation beenden.',
+      
+      // Abschnitt 13
+      'terms.section13.title': 'Anwendbares Recht',
+      'terms.section13.law': 'Diese Nutzungsbedingungen unterliegen den Gesetzen der Republik Chile.',
+      'terms.section13.jurisdiction': 'Jede Streitigkeit wird den zuständigen Gerichten des genannten Landes unterbreitet.',
+      
+      // Abschnitt 14
+      'terms.section14.title': 'Kontakt',
+      'terms.section14.contact': 'Für Anfragen zu diesen Bedingungen kann der Benutzer den Entwickler über die offiziellen Kanäle von LocalMind kontaktieren.',
+      
+      // Modal ohne Modelle
+      'noModels.title': 'Keine KI-Modelle',
     },
     zh: {
       // 应用程序
@@ -912,6 +1437,7 @@ export class TranslationService {
       'settings.version': '版本',
       'settings.platform': '平台',
       'settings.aboutApp': '关于应用程序',
+      'settings.viewTerms': '查看使用条款',
       
       // Terminal
       'settings.terminal': '终端',
@@ -1034,7 +1560,113 @@ export class TranslationService {
       'common.save': '保存',
       'common.delete': '删除',
       'common.edit': '编辑',
-      'common.close': '关闭'
+      'common.close': '关闭',
+      'common.back': '返回',
+      'common.continue': '继续',
+      
+      // 使用条款
+      'terms.title': '使用条款',
+      'terms.fullTitle': '使用条款和条件',
+      'terms.lastUpdate': '最后更新',
+      'terms.footer.thanks': '感谢您使用LocalMind',
+      
+      // 第一条
+      'terms.section1.title': '条款的接受',
+      'terms.section1.content': '通过下载、安装或使用LocalMind（以下简称"应用程序"），用户明确同意这些使用条款和条件。如果不同意其中任何一条，必须停止使用该应用程序。',
+      
+      // 第二条
+      'terms.section2.title': '服务描述',
+      'terms.section2.content1': 'LocalMind是一个桌面应用程序，允许与在用户设备上本地运行的人工智能模型进行交互，包括与Ollama兼容的模型。',
+      'terms.section2.content2': '应用程序在本地运行，不会向开发者运营的外部服务器发送信息。',
+      
+      // 第三条
+      'terms.section3.title': '本地数据存储',
+      'terms.section3.intro': '应用程序允许本地存储用户生成的信息，包括但不限于：',
+      'terms.section3.data1': '与人工智能模型的对话',
+      'terms.section3.data2': '用户为此类对话定义的名称或标题',
+      'terms.section3.storage': '这些数据通过本地数据库（SQLite）专门存储在用户的设备上。',
+      'terms.section3.developer': '开发者：',
+      'terms.section3.no1': '不访问这些数据',
+      'terms.section3.no2': '不收集或传输信息到外部服务器',
+      'terms.section3.no3': '不与第三方共享信息',
+      'terms.section3.responsibility': '这些数据的管理、备份和删除完全由用户负责。',
+      
+      // 第四条
+      'terms.section4.title': '允许的使用',
+      'terms.section4.intro': '用户承诺仅将应用程序用于合法、道德和正当的目的，例如：',
+      'terms.section4.use1': '个人生产力',
+      'terms.section4.use2': '编程辅助',
+      'terms.section4.use3': '写作和文本分析',
+      'terms.section4.use4': '研究和学习',
+      'terms.section4.use5': '创造力和人工智能的一般使用',
+      
+      // 第五条
+      'terms.section5.title': '禁止的使用',
+      'terms.section5.intro': '严格禁止将应用程序用于：',
+      'terms.section5.prohibited1': '非法或不当活动',
+      'terms.section5.prohibited2': '生成或促进恶意软件、欺诈、诈骗或钓鱼',
+      'terms.section5.prohibited3': '侵犯版权、隐私或知识产权',
+      'terms.section5.prohibited4': '制作、分发或推广非法内容',
+      'terms.section5.prohibited5': '任何违反地方、国家或国际法律的使用',
+      'terms.section5.responsibility': '用户对其生成的内容和对应用程序的使用承担全部责任。',
+      
+      // 第六条
+      'terms.section6.title': '用户责任',
+      'terms.section6.intro': '用户承认并接受：',
+      'terms.section6.responsibility1': '在应用程序内生成、存储或管理的所有内容完全由其负责。',
+      'terms.section6.responsibility2': 'LocalMind的开发者不控制、监督或审核本地生成或存储的内容。',
+      'terms.section6.responsibility3': '人工智能模型的使用和对其结果的解释完全取决于用户。',
+      
+      // 第七条
+      'terms.section7.title': '免责声明',
+      'terms.section7.intro': '应用程序按"现状"提供，不提供任何形式的保证。',
+      'terms.section7.notResponsible': '开发者不对以下情况负责：',
+      'terms.section7.disclaimer1': '使用应用程序引起的直接或间接损害',
+      'terms.section7.disclaimer2': '本地存储数据的丢失、损坏或删除',
+      'terms.section7.disclaimer3': '系统故障、AI模型错误或错误结果',
+      'terms.section7.disclaimer4': '用户的不当、非法或未经授权的使用',
+      'terms.section7.disclaimer5': '用户基于AI生成内容做出的决定',
+      
+      // 第八条
+      'terms.section8.title': '人工智能和限制',
+      'terms.section8.intro': '用户理解并接受：',
+      'terms.section8.limitation1': '人工智能模型可能生成不正确、不完整或不准确的信息。',
+      'terms.section8.limitation2': '生成的内容不构成法律、医疗、财务或专业建议。',
+      'terms.section8.limitation3': '用户必须独立验证任何相关信息。',
+      
+      // 第九条
+      'terms.section9.title': '隐私',
+      'terms.section9.privacy1': 'LocalMind尊重用户隐私。',
+      'terms.section9.privacy2': '数据仅在用户设备上本地存储。',
+      'terms.section9.privacy3': '开发者不收集个人信息或生成的内容。',
+      'terms.section9.privacy4': '不会自动向外部服务器传输数据。',
+      
+      // 第十条
+      'terms.section10.title': '知识产权',
+      'terms.section10.ownership': '应用程序、其名称、标志和源代码（第三方库除外）属于LocalMind开发者所有。',
+      'terms.section10.rights': '使用应用程序不授予用户对其任何知识产权。',
+      
+      // 第十一条
+      'terms.section11.title': '修改',
+      'terms.section11.rights': '开发者保留随时修改这些使用条款和条件的权利。',
+      'terms.section11.effective': '修改将在发布或纳入应用程序未来版本时生效。',
+      
+      // 第十二条
+      'terms.section12.title': '终止',
+      'terms.section12.suspension': '如果用户违反这些条款，开发者可以暂停或限制应用程序的使用。',
+      'terms.section12.uninstall': '用户可以通过卸载随时停止使用应用程序。',
+      
+      // 第十三条
+      'terms.section13.title': '适用法律',
+      'terms.section13.law': '这些使用条款和条件受智利共和国法律管辖。',
+      'terms.section13.jurisdiction': '任何争议将提交给该国的主管法院。',
+      
+      // 第十四条
+      'terms.section14.title': '联系',
+      'terms.section14.contact': '对于与这些条款相关的咨询，用户可以通过LocalMind的官方渠道联系开发者。',
+      
+      // 无模型对话框
+      'noModels.title': '无AI模型',
     },
     ja: {
       // アプリケーション
@@ -1074,6 +1706,7 @@ export class TranslationService {
       'settings.version': 'バージョン',
       'settings.platform': 'プラットフォーム',
       'settings.aboutApp': 'アプリケーションについて',
+      'settings.viewTerms': '利用規約を表示',
       
       // Terminal
       'settings.terminal': 'ターミナル',
@@ -1198,7 +1831,113 @@ export class TranslationService {
       'common.save': '保存',
       'common.delete': '削除',
       'common.edit': '編集',
-      'common.close': '閉じる'
+      'common.close': '閉じる',
+      'common.back': '戻る',
+      'common.continue': '続行',
+      
+      // 利用規約
+      'terms.title': '利用規約',
+      'terms.fullTitle': '利用規約および使用条件',
+      'terms.lastUpdate': '最終更新',
+      'terms.footer.thanks': 'LocalMindをご利用いただきありがとうございます',
+      
+      // 第1条
+      'terms.section1.title': '規約の同意',
+      'terms.section1.content': 'LocalMind（以下「アプリケーション」）をダウンロード、インストール、または使用することにより、ユーザーはこれらの利用規約に明示的に同意するものとします。いずれかに同意しない場合は、アプリケーションの使用を控えなければなりません。',
+      
+      // 第2条
+      'terms.section2.title': 'サービスの説明',
+      'terms.section2.content1': 'LocalMindは、Ollamaと互換性のあるモデルを含む、ユーザーのデバイス上でローカルに実行される人工知能モデルとのやり取りを可能にするデスクトップアプリケーションです。',
+      'terms.section2.content2': 'アプリケーションは、開発者が運営する外部サーバーに情報を送信することなく、ローカルで動作します。',
+      
+      // 第3条
+      'terms.section3.title': 'ローカルデータストレージ',
+      'terms.section3.intro': 'アプリケーションは、以下を含むがこれらに限定されない、ユーザー生成情報のローカルストレージを可能にします：',
+      'terms.section3.data1': '人工知能モデルとの会話',
+      'terms.section3.data2': 'そのような会話に対してユーザーが定義した名前またはタイトル',
+      'terms.section3.storage': 'これらのデータは、ローカルデータベース（SQLite）を通じてユーザーのデバイス上に専ら保存されます。',
+      'terms.section3.developer': '開発者は：',
+      'terms.section3.no1': 'そのようなデータにアクセスしません',
+      'terms.section3.no2': '外部サーバーに情報を収集または送信しません',
+      'terms.section3.no3': '第三者と情報を共有しません',
+      'terms.section3.responsibility': 'これらのデータの管理、バックアップ、削除は、ユーザーの排他的責任です。',
+      
+      // 第4条
+      'terms.section4.title': '許可された使用',
+      'terms.section4.intro': 'ユーザーは、以下のような合法、倫理的、正当な目的でのみアプリケーションを使用することを約束します：',
+      'terms.section4.use1': '個人の生産性',
+      'terms.section4.use2': 'プログラミング支援',
+      'terms.section4.use3': '文章作成とテキスト分析',
+      'terms.section4.use4': '研究と学習',
+      'terms.section4.use5': '創造性と人工知能の一般的な使用',
+      
+      // 第5条
+      'terms.section5.title': '禁止された使用',
+      'terms.section5.intro': '以下の目的でアプリケーションを使用することは厳格に禁止されています：',
+      'terms.section5.prohibited1': '違法または不正な活動',
+      'terms.section5.prohibited2': 'マルウェア、詐欺、詐取、またはフィッシングの生成または促進',
+      'terms.section5.prohibited3': '著作権、プライバシー、または知的財産権の侵害',
+      'terms.section5.prohibited4': '違法コンテンツの制作、配布、または宣伝',
+      'terms.section5.prohibited5': '地域、国内、または国際法に違反する使用',
+      'terms.section5.responsibility': 'ユーザーは、生成するコンテンツとアプリケーションの使用について、唯一の責任を負います。',
+      
+      // 第6条
+      'terms.section6.title': 'ユーザーの責任',
+      'terms.section6.intro': 'ユーザーは以下を認識し、同意します：',
+      'terms.section6.responsibility1': 'アプリケーション内で生成、保存、または管理されるすべてのコンテンツは、その排他的責任です。',
+      'terms.section6.responsibility2': 'LocalMindの開発者は、ローカルで生成または保存されたコンテンツを制御、監督、またはモデレートしません。',
+      'terms.section6.responsibility3': '人工知能モデルの使用とその結果の解釈は、ユーザーにのみ依存します。',
+      
+      // 第7条
+      'terms.section7.title': '責任の除外',
+      'terms.section7.intro': 'アプリケーションは「現状のまま」提供され、いかなる種類の保証もありません。',
+      'terms.section7.notResponsible': '開発者は以下について責任を負いません：',
+      'terms.section7.disclaimer1': 'アプリケーションの使用から生じる直接的または間接的な損害',
+      'terms.section7.disclaimer2': 'ローカルに保存されたデータの損失、破損、または削除',
+      'terms.section7.disclaimer3': 'システムの故障、AIモデルのエラー、または誤った結果',
+      'terms.section7.disclaimer4': 'ユーザーによる不適切、違法、または無許可の使用',
+      'terms.section7.disclaimer5': 'AI生成コンテンツに基づいてユーザーが行った決定',
+      
+      // 第8条
+      'terms.section8.title': '人工知能と制限',
+      'terms.section8.intro': 'ユーザーは以下を理解し、同意します：',
+      'terms.section8.limitation1': '人工知能モデルは、不正確、不完全、または不正確な情報を生成する可能性があります。',
+      'terms.section8.limitation2': '生成されたコンテンツは、法的、医学的、財務的、または専門的な助言を構成しません。',
+      'terms.section8.limitation3': 'ユーザーは、関連する情報を独立して検証しなければなりません。',
+      
+      // 第9条
+      'terms.section9.title': 'プライバシー',
+      'terms.section9.privacy1': 'LocalMindはユーザーのプライバシーを尊重します。',
+      'terms.section9.privacy2': 'データはユーザーのデバイス上にのみローカルに保存されます。',
+      'terms.section9.privacy3': '開発者は個人情報や生成されたコンテンツを収集しません。',
+      'terms.section9.privacy4': '外部サーバーへのデータの自動送信はありません。',
+      
+      // 第10条
+      'terms.section10.title': '知的財産',
+      'terms.section10.ownership': 'アプリケーション、その名前、ロゴ、およびソースコード（サードパーティライブラリを除く）は、LocalMind開発者の所有物です。',
+      'terms.section10.rights': 'アプリケーションの使用は、ユーザーにその知的財産権を付与しません。',
+      
+      // 第11条
+      'terms.section11.title': '変更',
+      'terms.section11.rights': '開発者は、これらの利用規約をいつでも変更する権利を留保します。',
+      'terms.section11.effective': '変更は、公開またはアプリケーションの将来のバージョンへの組み込みから有効になります。',
+      
+      // 第12条
+      'terms.section12.title': '終了',
+      'terms.section12.suspension': 'ユーザーがこれらの規約に違反した場合、開発者はアプリケーションの使用を停止または制限することができます。',
+      'terms.section12.uninstall': 'ユーザーは、アンインストールすることでいつでもアプリケーションの使用を停止できます。',
+      
+      // 第13条
+      'terms.section13.title': '適用法',
+      'terms.section13.law': 'これらの利用規約は、チリ共和国の法律に準拠します。',
+      'terms.section13.jurisdiction': 'いかなる紛争も、当該国の管轄裁判所に提出されます。',
+      
+      // 第14条
+      'terms.section14.title': '連絡先',
+      'terms.section14.contact': 'これらの規約に関するお問い合わせについては、ユーザーはLocalMindの公式チャネルを通じて開発者に連絡することができます。',
+      
+      // モデルなしのモーダル
+      'noModels.title': 'AIモデルなし',
     }
   };
 

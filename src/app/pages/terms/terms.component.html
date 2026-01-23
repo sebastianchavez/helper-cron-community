@@ -1,0 +1,307 @@
+<div class="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-[#0f1419] dark:to-[#1c2433] overflow-y-auto">
+  <!-- Header -->
+  <div class="sticky top-0 bg-white/80 dark:bg-[#1c2433]/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-700 z-50">
+    <div class="max-w-4xl mx-auto px-4 py-4">
+      <div class="flex items-center justify-between">
+        <button 
+          (click)="navigateBack()"
+          class="flex items-center gap-2 px-3 py-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-all">
+          <span class="material-symbols-outlined" style="font-size: 20px;">arrow_back</span>
+          <span class="font-medium">{{ 'common.back' | translate }}</span>
+        </button>
+        
+        <h1 class="text-xl font-bold text-slate-900 dark:text-white">
+          {{ 'terms.title' | translate }}
+        </h1>
+        
+        <button 
+          (click)="navigateToHome()"
+          class="flex items-center gap-2 px-3 py-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-all">
+          <span class="material-symbols-outlined" style="font-size: 20px;">home</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="max-w-4xl mx-auto">
+    <div class="bg-white dark:bg-[#1c2433] rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+      <div class="p-8 max-h-[calc(100vh-200px)] overflow-y-auto">
+        <!-- Title and Date -->
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+            📄 {{ 'terms.fullTitle' | translate }}
+          </h2>
+          <div class="text-center mb-6">
+            <p class="text-2xl font-bold text-primary mb-2">LocalMind</p>
+            <p class="text-sm text-slate-600 dark:text-slate-400">
+              {{ 'terms.lastUpdate' | translate }}: {{ currentDate }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Terms Content -->
+        <div class="prose prose-slate dark:prose-invert max-w-none">
+          
+          <!-- 1. Acceptance -->
+          <section class="mb-8">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+              <span class="text-primary">1.</span>
+              {{ 'terms.section1.title' | translate }}
+            </h3>
+            <p class="text-slate-700 dark:text-slate-300 leading-relaxed">
+              {{ 'terms.section1.content' | translate }}
+            </p>
+          </section>
+
+          <!-- 2. Service Description -->
+          <section class="mb-8">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+              <span class="text-primary">2.</span>
+              {{ 'terms.section2.title' | translate }}
+            </h3>
+            <p class="text-slate-700 dark:text-slate-300 leading-relaxed mb-3">
+              {{ 'terms.section2.content1' | translate }}
+            </p>
+            <p class="text-slate-700 dark:text-slate-300 leading-relaxed">
+              {{ 'terms.section2.content2' | translate }}
+            </p>
+          </section>
+
+          <!-- 3. Local Data Storage -->
+          <section class="mb-8">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+              <span class="text-primary">3.</span>
+              {{ 'terms.section3.title' | translate }}
+            </h3>
+            <p class="text-slate-700 dark:text-slate-300 leading-relaxed mb-4">
+              {{ 'terms.section3.intro' | translate }}
+            </p>
+            <ul class="list-disc list-inside space-y-2 mb-4 text-slate-700 dark:text-slate-300">
+              <li>{{ 'terms.section3.data1' | translate }}</li>
+              <li>{{ 'terms.section3.data2' | translate }}</li>
+            </ul>
+            <p class="text-slate-700 dark:text-slate-300 leading-relaxed mb-4">
+              {{ 'terms.section3.storage' | translate }}
+            </p>
+            <p class="text-slate-700 dark:text-slate-300 font-medium mb-2">
+              {{ 'terms.section3.developer' | translate }}
+            </p>
+            <ul class="space-y-2 mb-4">
+              <li class="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                <span class="text-red-500">❌</span>
+                {{ 'terms.section3.no1' | translate }}
+              </li>
+              <li class="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                <span class="text-red-500">❌</span>
+                {{ 'terms.section3.no2' | translate }}
+              </li>
+              <li class="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                <span class="text-red-500">❌</span>
+                {{ 'terms.section3.no3' | translate }}
+              </li>
+            </ul>
+            <p class="text-slate-700 dark:text-slate-300 leading-relaxed">
+              {{ 'terms.section3.responsibility' | translate }}
+            </p>
+          </section>
+
+          <!-- 4. Permitted Use -->
+          <section class="mb-8">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+              <span class="text-primary">4.</span>
+              {{ 'terms.section4.title' | translate }}
+            </h3>
+            <p class="text-slate-700 dark:text-slate-300 leading-relaxed mb-4">
+              {{ 'terms.section4.intro' | translate }}
+            </p>
+            <ul class="list-disc list-inside space-y-2 text-slate-700 dark:text-slate-300">
+              <li>{{ 'terms.section4.use1' | translate }}</li>
+              <li>{{ 'terms.section4.use2' | translate }}</li>
+              <li>{{ 'terms.section4.use3' | translate }}</li>
+              <li>{{ 'terms.section4.use4' | translate }}</li>
+              <li>{{ 'terms.section4.use5' | translate }}</li>
+            </ul>
+          </section>
+
+          <!-- 5. Prohibited Use -->
+          <section class="mb-8">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+              <span class="text-primary">5.</span>
+              {{ 'terms.section5.title' | translate }}
+            </h3>
+            <p class="text-slate-700 dark:text-slate-300 leading-relaxed mb-4">
+              {{ 'terms.section5.intro' | translate }}
+            </p>
+            <ul class="list-disc list-inside space-y-2 mb-4 text-slate-700 dark:text-slate-300">
+              <li>{{ 'terms.section5.prohibited1' | translate }}</li>
+              <li>{{ 'terms.section5.prohibited2' | translate }}</li>
+              <li>{{ 'terms.section5.prohibited3' | translate }}</li>
+              <li>{{ 'terms.section5.prohibited4' | translate }}</li>
+              <li>{{ 'terms.section5.prohibited5' | translate }}</li>
+            </ul>
+            <p class="text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
+              {{ 'terms.section5.responsibility' | translate }}
+            </p>
+          </section>
+
+          <!-- 6. User Responsibility -->
+          <section class="mb-8">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+              <span class="text-primary">6.</span>
+              {{ 'terms.section6.title' | translate }}
+            </h3>
+            <p class="text-slate-700 dark:text-slate-300 leading-relaxed mb-4">
+              {{ 'terms.section6.intro' | translate }}
+            </p>
+            <ul class="list-disc list-inside space-y-3 text-slate-700 dark:text-slate-300">
+              <li>{{ 'terms.section6.responsibility1' | translate }}</li>
+              <li>{{ 'terms.section6.responsibility2' | translate }}</li>
+              <li>{{ 'terms.section6.responsibility3' | translate }}</li>
+            </ul>
+          </section>
+
+          <!-- 7. Disclaimer -->
+          <section class="mb-8">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+              <span class="text-primary">7.</span>
+              {{ 'terms.section7.title' | translate }}
+            </h3>
+            <p class="text-slate-700 dark:text-slate-300 leading-relaxed mb-4">
+              {{ 'terms.section7.intro' | translate }}
+            </p>
+            <p class="text-slate-700 dark:text-slate-300 leading-relaxed mb-4">
+              {{ 'terms.section7.notResponsible' | translate }}
+            </p>
+            <ul class="list-disc list-inside space-y-2 text-slate-700 dark:text-slate-300">
+              <li>{{ 'terms.section7.disclaimer1' | translate }}</li>
+              <li>{{ 'terms.section7.disclaimer2' | translate }}</li>
+              <li>{{ 'terms.section7.disclaimer3' | translate }}</li>
+              <li>{{ 'terms.section7.disclaimer4' | translate }}</li>
+              <li>{{ 'terms.section7.disclaimer5' | translate }}</li>
+            </ul>
+          </section>
+
+          <!-- 8. AI Limitations -->
+          <section class="mb-8">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+              <span class="text-primary">8.</span>
+              {{ 'terms.section8.title' | translate }}
+            </h3>
+            <p class="text-slate-700 dark:text-slate-300 leading-relaxed mb-4">
+              {{ 'terms.section8.intro' | translate }}
+            </p>
+            <ul class="list-disc list-inside space-y-3 text-slate-700 dark:text-slate-300">
+              <li>{{ 'terms.section8.limitation1' | translate }}</li>
+              <li>{{ 'terms.section8.limitation2' | translate }}</li>
+              <li>{{ 'terms.section8.limitation3' | translate }}</li>
+            </ul>
+          </section>
+
+          <!-- 9. Privacy -->
+          <section class="mb-8">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+              <span class="text-primary">9.</span>
+              {{ 'terms.section9.title' | translate }}
+            </h3>
+            <ul class="list-disc list-inside space-y-3 text-slate-700 dark:text-slate-300">
+              <li>{{ 'terms.section9.privacy1' | translate }}</li>
+              <li>{{ 'terms.section9.privacy2' | translate }}</li>
+              <li>{{ 'terms.section9.privacy3' | translate }}</li>
+              <li>{{ 'terms.section9.privacy4' | translate }}</li>
+            </ul>
+          </section>
+
+          <!-- 10. Intellectual Property -->
+          <section class="mb-8">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+              <span class="text-primary">10.</span>
+              {{ 'terms.section10.title' | translate }}
+            </h3>
+            <p class="text-slate-700 dark:text-slate-300 leading-relaxed mb-3">
+              {{ 'terms.section10.ownership' | translate }}
+            </p>
+            <p class="text-slate-700 dark:text-slate-300 leading-relaxed">
+              {{ 'terms.section10.rights' | translate }}
+            </p>
+          </section>
+
+          <!-- 11. Modifications -->
+          <section class="mb-8">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+              <span class="text-primary">11.</span>
+              {{ 'terms.section11.title' | translate }}
+            </h3>
+            <p class="text-slate-700 dark:text-slate-300 leading-relaxed mb-3">
+              {{ 'terms.section11.rights' | translate }}
+            </p>
+            <p class="text-slate-700 dark:text-slate-300 leading-relaxed">
+              {{ 'terms.section11.effective' | translate }}
+            </p>
+          </section>
+
+          <!-- 12. Termination -->
+          <section class="mb-8">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+              <span class="text-primary">12.</span>
+              {{ 'terms.section12.title' | translate }}
+            </h3>
+            <p class="text-slate-700 dark:text-slate-300 leading-relaxed mb-3">
+              {{ 'terms.section12.suspension' | translate }}
+            </p>
+            <p class="text-slate-700 dark:text-slate-300 leading-relaxed">
+              {{ 'terms.section12.uninstall' | translate }}
+            </p>
+          </section>
+
+          <!-- 13. Applicable Law -->
+          <section class="mb-8">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+              <span class="text-primary">13.</span>
+              {{ 'terms.section13.title' | translate }}
+            </h3>
+            <p class="text-slate-700 dark:text-slate-300 leading-relaxed mb-3">
+              {{ 'terms.section13.law' | translate }}
+            </p>
+            <p class="text-slate-700 dark:text-slate-300 leading-relaxed">
+              {{ 'terms.section13.jurisdiction' | translate }}
+            </p>
+          </section>
+
+          <!-- 14. Contact -->
+          <section class="mb-8">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+              <span class="text-primary">14.</span>
+              {{ 'terms.section14.title' | translate }}
+            </h3>
+            <p class="text-slate-700 dark:text-slate-300 leading-relaxed">
+              {{ 'terms.section14.contact' | translate }}
+            </p>
+          </section>
+
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="bg-slate-50 dark:bg-slate-800 px-8 py-6 border-t border-slate-200 dark:border-slate-700">
+        <div class="text-center">
+          <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
+            {{ 'terms.footer.thanks' | translate }}
+          </p>
+          <div class="flex justify-center gap-4">
+            <button 
+              (click)="navigateBack()"
+              class="px-6 py-2 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 rounded-lg transition-colors">
+              {{ 'common.back' | translate }}
+            </button>
+            <button 
+              (click)="navigateToHome()"
+              class="px-6 py-2 bg-primary text-white hover:bg-primary/90 rounded-lg transition-colors">
+              {{ 'common.continue' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
