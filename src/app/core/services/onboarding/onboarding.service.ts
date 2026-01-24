@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { LoggerService } from '../logger/logger.service';
 
 export interface OnboardingData {
   hasCompletedOnboarding: boolean;
@@ -17,7 +18,7 @@ export class OnboardingService {
   private onboardingDataSubject = new BehaviorSubject<OnboardingData>(this.loadOnboardingData());
   public onboardingData$ = this.onboardingDataSubject.asObservable();
 
-  constructor() {}
+  constructor(private logger: LoggerService) {}
 
   private loadOnboardingData(): OnboardingData {
     try {
@@ -31,7 +32,7 @@ export class OnboardingService {
         return data;
       }
     } catch (error) {
-      console.error('Error loading onboarding data:', error);
+      this.logger.error('ONBOARDING_SVC', 'loadOnboardingData', { info: 'Error loading onboarding data', error });
     }
     
     return {
@@ -45,7 +46,7 @@ export class OnboardingService {
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
       this.onboardingDataSubject.next(data);
     } catch (error) {
-      console.error('Error saving onboarding data:', error);
+      this.logger.error('ONBOARDING_SVC', 'saveOnboardingData', { info: 'Error saving onboarding data', error });
     }
   }
 

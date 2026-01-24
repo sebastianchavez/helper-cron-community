@@ -79,6 +79,7 @@ export class TranslationService {
       'you': 'Tú',
       'currentConversation': 'Conversación Actual',
       'noModelsAvailable': 'No hay modelos disponibles',
+      'selectModel': 'Seleccionar modelo de IA',
       'welcomeMessage': '¿En qué puedo ayudarte hoy?',
       'personalizedWelcome': 'Hola {name}, ¿en qué puedo ayudarte hoy?',
       'sendMessage': 'Envía un mensaje...',
@@ -302,7 +303,18 @@ export class TranslationService {
       
       // Sección 14
       'terms.section14.title': 'Contacto',
-      'terms.section14.contact': 'Para consultas relacionadas con estos Términos, el usuario puede contactar al desarrollador a través de los canales oficiales de HelperCron.'
+      'terms.section14.contact': 'Para consultas relacionadas con estos Términos, el usuario puede contactar al desarrollador a través de los canales oficiales de HelperCron.',
+      
+      // Alertas y confirmaciones
+      'chat.deleteConversationTitle': 'Eliminar conversación',
+      'chat.deleteConversationDescription': '¿Eliminar esta conversación? Se puede restaurar desde la papelera.',
+      'profile.deleteTitle': 'Eliminar perfil',
+      'folders.deleteTitle': 'Eliminar carpeta',
+      'models.deleteTitle': 'Eliminar modelo',
+      'models.deleteDescription': '¿Estás seguro de que deseas eliminar el modelo "{modelName}"?',
+      'models.deleteError': 'Error al eliminar el modelo',
+      'common.accept': 'Aceptar',
+      'common.error': 'Error'
     },
     en: {
       // Application
@@ -368,6 +380,7 @@ export class TranslationService {
       'you': 'You',
       'currentConversation': 'Current Conversation',
       'noModelsAvailable': 'No models available',
+      'selectModel': 'Select AI model',
       'welcomeMessage': 'How can I help you today?',
       'personalizedWelcome': 'Hello {name}, how can I help you today?',
       'sendMessage': 'Send a message...',
@@ -592,6 +605,17 @@ export class TranslationService {
       'noModels.description': 'To chat with the assistant, you need to install at least one AI model. We recommend starting with a lightweight model like Llama 3.2.',
       'noModels.installModels': 'Install Models',
       'noModels.cancel': 'Cancel',
+      
+      // Alerts and confirmations
+      'chat.deleteConversationTitle': 'Delete conversation',
+      'chat.deleteConversationDescription': 'Delete this conversation? It can be restored from trash.',
+      'profile.deleteTitle': 'Delete profile',
+      'folders.deleteTitle': 'Delete folder',
+      'models.deleteTitle': 'Delete model',
+      'models.deleteDescription': 'Are you sure you want to delete the model "{modelName}"?',
+      'models.deleteError': 'Error deleting the model',
+      'common.accept': 'Accept',
+      'common.error': 'Error'
     },
     pt: {
       // Aplicação
@@ -657,6 +681,7 @@ export class TranslationService {
       'you': 'Você',
       'currentConversation': 'Conversa Atual',
       'noModelsAvailable': 'Nenhum modelo disponível',
+      'selectModel': 'Selecionar modelo de IA',
       'welcomeMessage': 'Como posso ajudá-lo hoje?',
       'personalizedWelcome': 'Olá {name}, como posso ajudá-lo hoje?',
       'sendMessage': 'Envie uma mensagem...',
@@ -864,7 +889,18 @@ export class TranslationService {
       'noModels.subtitle': 'Instale um modelo para conversar',
       'noModels.description': 'Para conversar com o assistente, você precisa instalar pelo menos um modelo de IA. Recomendamos começar com um modelo leve como Llama 3.2.',
       'noModels.installModels': 'Instalar Modelos',
-      'noModels.cancel': 'Cancelar'
+      'noModels.cancel': 'Cancelar',
+      
+      // Alertas e confirmações
+      'chat.deleteConversationTitle': 'Excluir conversa',
+      'chat.deleteConversationDescription': 'Excluir esta conversa? Pode ser restaurada da lixeira.',
+      'profile.deleteTitle': 'Excluir perfil',
+      'folders.deleteTitle': 'Excluir pasta',
+      'models.deleteTitle': 'Excluir modelo',
+      'models.deleteDescription': 'Tem certeza de que deseja excluir o modelo "{modelName}"?',
+      'models.deleteError': 'Erro ao excluir o modelo',
+      'common.accept': 'Aceitar',
+      'common.error': 'Erro'
     },
     fr: {
       // Application
@@ -930,6 +966,7 @@ export class TranslationService {
       'you': 'Vous',
       'currentConversation': 'Conversation Actuelle',
       'noModelsAvailable': 'Aucun modèle disponible',
+      'selectModel': 'Sélectionner modèle IA',
       'welcomeMessage': 'Comment puis-je vous aider aujourd\'hui?',
       'personalizedWelcome': 'Bonjour {name}, comment puis-je vous aider aujourd\'hui?',
       'sendMessage': 'Envoyer un message...',
@@ -1135,6 +1172,21 @@ export class TranslationService {
       
       // Modal sans modèles
       'noModels.title': 'Aucun Modèle IA',
+      'noModels.subtitle': 'Installer un modèle pour converser',
+      'noModels.description': 'Pour converser avec l\'assistant, vous devez installer au moins un modèle IA. Nous recommandons de commencer avec un modèle léger comme Llama 3.2.',
+      'noModels.installModels': 'Installer des Modèles',
+      'noModels.cancel': 'Annuler',
+      
+      // Alertes et confirmations
+      'chat.deleteConversationTitle': 'Supprimer la conversation',
+      'chat.deleteConversationDescription': 'Supprimer cette conversation ? Elle peut être restaurée depuis la corbeille.',
+      'profile.deleteTitle': 'Supprimer le profil',
+      'folders.deleteTitle': 'Supprimer le dossier',
+      'models.deleteTitle': 'Supprimer le modèle',
+      'models.deleteDescription': 'Êtes-vous sûr de vouloir supprimer le modèle "{modelName}" ?',
+      'models.deleteError': 'Erreur lors de la suppression du modèle',
+      'common.accept': 'Accepter',
+      'common.error': 'Erreur'
     },
     de: {
       // Anwendung
@@ -1200,6 +1252,7 @@ export class TranslationService {
       'you': 'Sie',
       'currentConversation': 'Aktuelles Gespräch',
       'noModelsAvailable': 'Keine Modelle verfügbar',
+      'selectModel': 'KI-Modell auswählen',
       'welcomeMessage': 'Wie kann ich Ihnen heute helfen?',
       'personalizedWelcome': 'Hallo {name}, wie kann ich Ihnen heute helfen?',
       'sendMessage': 'Eine Nachricht senden...',
@@ -1398,6 +1451,21 @@ export class TranslationService {
       
       // Modal ohne Modelle
       'noModels.title': 'Keine KI-Modelle',
+      'noModels.subtitle': 'Modell zum Chatten installieren',
+      'noModels.description': 'Um mit dem Assistenten zu chatten, müssen Sie mindestens ein KI-Modell installieren. Wir empfehlen, mit einem leichten Modell wie Llama 3.2 zu beginnen.',
+      'noModels.installModels': 'Modelle installieren',
+      'noModels.cancel': 'Abbrechen',
+      
+      // Warnungen und Bestätigungen
+      'chat.deleteConversationTitle': 'Unterhaltung löschen',
+      'chat.deleteConversationDescription': 'Diese Unterhaltung löschen? Sie kann aus dem Papierkorb wiederhergestellt werden.',
+      'profile.deleteTitle': 'Profil löschen',
+      'folders.deleteTitle': 'Ordner löschen',
+      'models.deleteTitle': 'Modell löschen',
+      'models.deleteDescription': 'Sind Sie sicher, dass Sie das Modell "{modelName}" löschen möchten?',
+      'models.deleteError': 'Fehler beim Löschen des Modells',
+      'common.accept': 'Akzeptieren',
+      'common.error': 'Fehler'
     },
     zh: {
       // 应用程序
@@ -1463,6 +1531,7 @@ export class TranslationService {
       'you': '您',
       'currentConversation': '当前对话',
       'noModelsAvailable': '没有可用的模型',
+      'selectModel': '选择AI模型',
       'welcomeMessage': '今天我能为您做些什么？',
       'sendMessage': '发送消息...',
       'aiDisclaimer': '助手可能会出错。请考虑验证重要信息。',
@@ -1667,6 +1736,21 @@ export class TranslationService {
       
       // 无模型对话框
       'noModels.title': '无AI模型',
+      'noModels.subtitle': '安装模型开始聊天',
+      'noModels.description': '要与助手聊天，您需要安装至少一个AI模型。我们建议从轻量级模型如Llama 3.2开始。',
+      'noModels.installModels': '安装模型',
+      'noModels.cancel': '取消',
+      
+      // 警报和确认
+      'chat.deleteConversationTitle': '删除对话',
+      'chat.deleteConversationDescription': '删除此对话？可以从回收站恢复。',
+      'profile.deleteTitle': '删除配置文件',
+      'folders.deleteTitle': '删除文件夹',
+      'models.deleteTitle': '删除模型',
+      'models.deleteDescription': '确定要删除模型"{modelName}"吗？',
+      'models.deleteError': '删除模型时出错',
+      'common.accept': '接受',
+      'common.error': '错误'
     },
     ja: {
       // アプリケーション
@@ -1732,6 +1816,7 @@ export class TranslationService {
       'you': 'あなた',
       'currentConversation': '現在の会話',
       'noModelsAvailable': '利用可能なモデルがありません',
+      'selectModel': 'AIモデルを選択',
       'welcomeMessage': '今日はどのようなお手伝いができますか？',
       'sendMessage': 'メッセージを送信...',
       'aiDisclaimer': 'アシスタントは間違いを犯す可能性があります。重要な情報は確認することを検討してください。',
@@ -1938,6 +2023,21 @@ export class TranslationService {
       
       // モデルなしのモーダル
       'noModels.title': 'AIモデルなし',
+      'noModels.subtitle': 'チャット用モデルをインストール',
+      'noModels.description': 'アシスタントとチャットするには、少なくとも1つのAIモデルをインストールする必要があります。Llama 3.2のような軽量モデルから始めることをお勧めします。',
+      'noModels.installModels': 'モデルをインストール',
+      'noModels.cancel': 'キャンセル',
+      
+      // アラートと確認
+      'chat.deleteConversationTitle': '会話を削除',
+      'chat.deleteConversationDescription': 'この会話を削除しますか？ゴミ箱から復元できます。',
+      'profile.deleteTitle': 'プロフィールを削除',
+      'folders.deleteTitle': 'フォルダを削除',
+      'models.deleteTitle': 'モデルを削除',
+      'models.deleteDescription': 'モデル"{modelName}"を削除してもよろしいですか？',
+      'models.deleteError': 'モデルの削除中にエラーが発生しました',
+      'common.accept': '承諾',
+      'common.error': 'エラー'
     }
   };
 

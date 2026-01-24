@@ -6,6 +6,7 @@ import { TranslatePipe } from '../../core/pipes/translate.pipe';
 import { TranslationService } from '../../core/services/translation/translation.service';
 import { OnboardingService } from '../../core/services/onboarding/onboarding.service';
 import { UserService } from '../../core/services/user/user.service';
+import { LoggerService } from '../../core/services/logger/logger.service';
 
 interface WelcomeSlide {
   id: string;
@@ -69,7 +70,8 @@ export class WelcomeComponent implements OnInit, OnDestroy {
     private router: Router,
     private translationService: TranslationService,
     private onboardingService: OnboardingService,
-    private userService: UserService
+    private userService: UserService,
+    private logger: LoggerService
   ) {}
 
   ngOnInit(): void {
@@ -136,7 +138,7 @@ export class WelcomeComponent implements OnInit, OnDestroy {
       }, 500);
 
     } catch (error) {
-      console.error('Error completing onboarding:', error);
+      this.logger.error('WELCOME', 'completeOnboarding', { info: 'Error completing onboarding', error });
       this.isSubmitting = false;
     }
   }

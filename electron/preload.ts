@@ -170,3 +170,12 @@ contextBridge.exposeInMainWorld('agi', {
   // APIs de terminal
   executeTerminalCommand: (command: string) => ipcRenderer.invoke('terminal:execute', command),
 });
+
+// APIs específicas de Electron para manejo de ventana
+contextBridge.exposeInMainWorld('electronAPI', {
+  showWindow: () => ipcRenderer.invoke('window:show'),
+  restoreWindow: () => ipcRenderer.invoke('window:restore'),
+  minimizeWindow: () => ipcRenderer.invoke('window:minimize'),
+  maximizeWindow: () => ipcRenderer.invoke('window:maximize'),
+  closeWindow: () => ipcRenderer.invoke('window:close'),
+});

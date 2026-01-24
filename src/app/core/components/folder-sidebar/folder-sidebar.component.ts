@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
+import { NgxSimpliAlertService } from 'ngx-simpli-alert';
 import { FolderService, FolderWithChildren } from '../../services/folder/folder.service';
 import { FolderTreeItemComponent } from './folder-tree-item.component';
 import { TranslationService } from '../../services/translation/translation.service';
 import { TranslatePipe } from '../../pipes/translate.pipe';
+import { LoggerService } from '../../services/logger/logger.service';
 
 @Component({
   selector: 'app-folder-sidebar',
@@ -11,8 +13,11 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
   imports: [CommonModule, FolderTreeItemComponent, TranslatePipe],
   template: `
     <div class="flex flex-col gap-2">
-      <button (click)="openCreateFolderDialog()"
-        class="flex w-full cursor-pointer items-center justify-start rounded-lg h-9 px-3 hover:bg-slate-100 dark:hover:bg-[#1c2433] text-xs font-medium transition-colors gap-2 text-slate-600 dark:text-slate-400 group border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
+      <button (click)="(!loading && !isStreaming) && openCreateFolderDialog()"
+        [class.opacity-50]="loading || isStreaming"
+        [class.cursor-not-allowed]="loading || isStreaming"
+        [class.cursor-pointer]="!loading && !isStreaming"
+        class="flex w-full items-center justify-start rounded-lg h-9 px-3 hover:bg-slate-100 dark:hover:bg-[#1c2433] text-xs font-medium transition-colors gap-2 text-slate-600 dark:text-slate-400 group border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
         <span class="material-symbols-outlined group-hover:text-primary transition-colors"
           style="font-size: 20px;">create_new_folder</span>
         <span>{{ 'folders.newFolder' | translate }}</span>
@@ -20,16 +25,19 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
 
       <div *ngIf="folders.length > 0" class="flex flex-col gap-1 mt-2">
         <div *ngFor="let folder of folders" class="flex flex-col">
-          <div (click)="selectAndToggleFolder(folder.id)" 
+          <div (click)="(!loading && !isStreaming) && selectAndToggleFolder(folder.id)" 
             (drop)="onDrop($event, folder.id)"
             (dragover)="onDragOver($event)"
             (dragenter)="onDragEnter($event, folder.id)"
             (dragleave)="onDragLeave($event)"
             [ngClass]="{
               'bg-blue-100 dark:bg-blue-900/20': dragOverFolderId === folder.id,
-              'bg-slate-200 dark:bg-slate-700': selectedFolderId === folder.id
+              'bg-slate-200 dark:bg-slate-700': selectedFolderId === folder.id,
+              'opacity-50': loading || isStreaming,
+              'cursor-not-allowed': loading || isStreaming,
+              'cursor-pointer': !loading && !isStreaming
             }"
-            class="flex items-center gap-2 w-full rounded-lg px-2 py-1.5 text-xs text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#1c2433] transition-colors cursor-pointer group">
+            class="flex items-center gap-2 w-full rounded-lg px-2 py-1.5 text-xs text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#1c2433] transition-colors group">
             <span class="material-symbols-outlined text-[16px] transition-transform" 
               [style.transform]="getRotationStyle(folder.id)"
               style="font-size: 16px;">chevron_right</span>
@@ -37,13 +45,15 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
             <span class="truncate flex-1">{{ folder.name }}</span>
             <span class="text-[10px] text-slate-400 bg-slate-200 dark:bg-slate-700 px-1.5 rounded">{{ folder.conversation_count || 0 }}</span>
             
-            <button (click)="createChatInFolder($event, folder.id)"
-              class="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 hover:bg-green-100 dark:hover:bg-green-900/20 rounded mr-1">
+            <button (click)="(!loading && !isStreaming) && createChatInFolder($event, folder.id)"
+              [disabled]="loading || isStreaming"
+              class="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 hover:bg-green-100 dark:hover:bg-green-900/20 rounded mr-1 disabled:opacity-25">
               <span class="material-symbols-outlined text-[14px] text-green-600" style="font-size: 14px;">add</span>
             </button>
             
-            <button (click)="openDeleteFolderDialog($event, folder.id)" 
-              class="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 hover:bg-red-100 dark:hover:bg-red-900/20 rounded">
+            <button (click)="(!loading && !isStreaming) && openDeleteFolderDialog($event, folder.id)" 
+              [disabled]="loading || isStreaming"
+              class="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 hover:bg-red-100 dark:hover:bg-red-900/20 rounded disabled:opacity-25">
               <span class="material-symbols-outlined text-[14px] text-red-600" style="font-size: 14px;">delete</span>
             </button>
           </div>
@@ -55,6 +65,8 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
               [folder]="child"
               [expandedFolders]="expandedFolders"
               [selectedFolderId]="selectedFolderId"
+              [loading]="loading"
+              [isStreaming]="isStreaming"
               [level]="1"
               (toggleFolder)="toggleFolder($event)"
               (deleteFolder)="deleteFolderHandler($event)"
@@ -68,12 +80,15 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
           <div *ngIf="selectedFolderId === folder.id && conversations.length > 0" 
             class="w-full pt-2">
             <div *ngFor="let conv of conversations; trackBy: trackConversation" 
-              (click)="conversationSelected.emit(conv.id)"
+              (click)="(!loading && !isStreaming) && conversationSelected.emit(conv.id)"
               [class.bg-slate-200]="conv.id === selectedConversationId"
               [class.dark:bg-slate-700]="conv.id === selectedConversationId"
-              class="group pl-10 flex items-center w-full py-1.5 text-xs text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1c2433] transition-colors cursor-pointer">
+              [class.opacity-50]="loading || isStreaming"
+              [class.cursor-not-allowed]="loading || isStreaming"
+              [class.cursor-pointer]="!loading && !isStreaming"
+              class="group pl-10 flex items-center w-full py-1.5 text-xs text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1c2433] transition-colors">
               <span class="truncate">{{ conv.title || ('conversation' | translate) }}</span>
-              <button (click)="deleteConversation($event, conv.id)" [disabled]="loading"
+              <button (click)="deleteConversation($event, conv.id)" [disabled]="loading || isStreaming"
                 class="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 hover:bg-red-100 dark:hover:bg-red-900/20 rounded text-red-600 ml-auto">
                 <span class="material-symbols-outlined text-[12px]" style="font-size: 12px;">delete</span>
               </button>
@@ -118,6 +133,7 @@ export class FolderSidebarComponent implements OnInit {
   @Input() conversations: any[] = [];
   @Input() selectedConversationId: string | null = null;
   @Input() loading: boolean = false;
+  @Input() isStreaming: boolean = false;
   @Output() folderSelected = new EventEmitter<string | null>();
   @Output() folderCreated = new EventEmitter<void>();
   @Output() chatCreatedInFolder = new EventEmitter<string>();
@@ -131,7 +147,7 @@ export class FolderSidebarComponent implements OnInit {
   newFolderName = '';
   dragOverFolderId: string | null = null;
 
-  constructor(private folderService: FolderService, private translationService: TranslationService) {}
+  constructor(private folderService: FolderService, private translationService: TranslationService, private logger: LoggerService, private alertService: NgxSimpliAlertService) {}
 
   ngOnInit() {
     this.folderService.folders$.subscribe((folders: FolderWithChildren[]) => {
@@ -141,7 +157,7 @@ export class FolderSidebarComponent implements OnInit {
   }
 
   async loadFolders() {
-    await this.folderService.loadFolders();
+    await this.folderService.loadFoldersWithCount();
   }
 
   toggleFolder(folderId: string) {
@@ -192,9 +208,16 @@ export class FolderSidebarComponent implements OnInit {
 
   openDeleteFolderDialog(event: MouseEvent, folderId: string) {
     event.stopPropagation();
-    if (confirm(this.translationService.translate('folders.deleteConfirm'))) {
+    this.alertService.show({
+      title: this.translationService.translate('folders.deleteTitle'),
+      description: this.translationService.translate('folders.deleteConfirm'),
+      type: 'question',
+      confirmButtonText: this.translationService.translate('common.delete'),
+      cancelButtonText: this.translationService.translate('common.cancel')
+    }, 
+    () => {
       this.folderService.deleteFolder(folderId);
-    }
+    });
   }
 
   getRotationStyle(folderId: string): string {
@@ -202,9 +225,16 @@ export class FolderSidebarComponent implements OnInit {
   }
 
   deleteFolderHandler(folderId: string) {
-    if (confirm(this.translationService.translate('folders.deleteConfirm'))) {
+    this.alertService.show({
+      title: this.translationService.translate('folders.deleteTitle'),
+      description: this.translationService.translate('folders.deleteConfirm'),
+      type: 'question',
+      confirmButtonText: this.translationService.translate('common.delete'),
+      cancelButtonText: this.translationService.translate('common.cancel')
+    }, 
+    () => {
       this.folderService.deleteFolder(folderId);
-    }
+    });
   }
 
   onDragOver(event: DragEvent) {
@@ -232,7 +262,7 @@ export class FolderSidebarComponent implements OnInit {
     this.dragOverFolderId = null;
     
     const conversationId = event.dataTransfer?.getData('text/plain');
-    console.log('Drop event:', { conversationId, folderId }); // Debug
+    this.logger.log('FOLDER_SIDEBAR', 'onDrop', { info: 'Drop event', response: { conversationId, folderId } });
     
     if (conversationId) {
       this.conversationMoved.emit({conversationId, folderId});

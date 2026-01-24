@@ -12,6 +12,7 @@ import { registerFolderHandlers } from './ipc/folder.handler';
 import { setupUserProfileHandlers } from './ipc/user-profile.handler';
 import { registerTerminalHandler } from './ipc/terminal.handler';
 import { registerExternalLinkHandler } from './ipc/external-link.handler';
+import { registerWindowHandlers } from './ipc/window.handler';
 
 
 let win: BrowserWindow | null = null;
@@ -62,6 +63,7 @@ app.whenReady().then(() => {
     // Registrar handlers IPC globales
     setupUserProfileHandlers();
     registerExternalLinkHandler();
+    registerWindowHandlers();
     
     createWindow();
 });

@@ -8,6 +8,7 @@ import { TranslatePipe } from '../../core/pipes/translate.pipe';
 import { NavigationMenuComponent } from '../../core/components/navigation-menu/navigation-menu.component';
 import { AiModelsComponent } from '../../core/components/ai-models/ai-models.component';
 import { AIModelsService } from '../../core/services/ai-models/ai-models.service';
+import { LoggerService } from '../../core/services/logger/logger.service';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -36,7 +37,8 @@ export class SettingsComponent implements OnInit {
     private translationService: TranslationService,
     private terminalService: TerminalService,
     private ollamaStatusService: OllamaStatusService,
-    private aiModelsService: AIModelsService
+    private aiModelsService: AIModelsService,
+    private logger: LoggerService
   ) {}
 
   ngOnInit(): void {
@@ -66,9 +68,9 @@ export class SettingsComponent implements OnInit {
     this.checkingOllamaStatus = true;
     try {
       this.ollamaIsRunning = await this.terminalService.isOllamaRunning();
-      console.log('[Settings] Ollama running:', this.ollamaIsRunning);
+      this.logger.log('SETTINGS', 'checkOllamaStatus', { info: 'Ollama running', response: this.ollamaIsRunning });
     } catch (error: any) {
-      console.error('[Settings] Error checking Ollama status:', error);
+      this.logger.error('SETTINGS', 'checkOllamaStatus', { info: 'Error checking Ollama status', error });
       this.ollamaIsRunning = false;
     } finally {
       this.checkingOllamaStatus = false;
@@ -159,7 +161,7 @@ export class SettingsComponent implements OnInit {
   }
 
   openAbout(): void {
-    console.log('Mostrando información de la aplicación...');
+    this.logger.log('SETTINGS', 'openAbout', { info: 'Mostrando información de la aplicación' });
     this.showUserMenu = false;
   }
 
@@ -175,7 +177,7 @@ export class SettingsComponent implements OnInit {
       
       if (result.success) {
         this.ollamaStopMessage = result.message;
-        console.log('[Settings] Ollama stopped successfully:', result.message);
+        this.logger.log('SETTINGS', 'stopOllama', { info: 'Ollama stopped successfully', response: result.message });
         
         // Notify other components that Ollama has been stopped
         this.ollamaStatusService.notifyOllamaStopped();
@@ -198,7 +200,7 @@ export class SettingsComponent implements OnInit {
         }, 1500);
       } else {
         this.ollamaStopMessage = 'Error: ' + result.message;
-        console.error('[Settings] Error stopping Ollama:', result.message);
+        this.logger.error('SETTINGS', 'stopOllama', { info: 'Error stopping Ollama', error: result.message });
         
         // Limpiar mensaje después de 5 segundos para errores
         setTimeout(() => {
@@ -207,7 +209,7 @@ export class SettingsComponent implements OnInit {
       }
     } catch (error: any) {
       this.ollamaStopMessage = 'Error: ' + (error.message || 'Error desconocido');
-      console.error('[Settings] Exception stopping Ollama:', error);
+      this.logger.error('SETTINGS', 'stopOllama', { info: 'Exception stopping Ollama', error });
       
       // Limpiar mensaje después de 5 segundos para errores
       setTimeout(() => {

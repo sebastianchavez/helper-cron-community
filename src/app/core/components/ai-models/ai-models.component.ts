@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { NgxSimpliAlertService } from 'ngx-simpli-alert';
 import { AIModelsService, AIModel, OllamaStatus } from '../../services/ai-models/ai-models.service';
 import { TranslationService } from '../../services/translation/translation.service';
 import { OllamaStatusService, OllamaStatus as OllamaServiceStatus } from '../../services/ollama-status/ollama-status.service';
 import { TranslatePipe } from '../../pipes/translate.pipe';
+import { LoggerService } from '../../services/logger/logger.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -596,14 +598,16 @@ export class AiModelsComponent implements OnInit, OnDestroy {
     private aiModelsService: AIModelsService,
     private translationService: TranslationService,
     private ollamaStatusService: OllamaStatusService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private logger: LoggerService,
+    private alertService: NgxSimpliAlertService
   ) {}
 
   ngOnInit() {
     // Configurar listener de progreso de descarga
     if (window.agi?.chat?.onDownloadProgress) {
       this.downloadProgressCleanup = window.agi.chat.onDownloadProgress((progress) => {
-        console.log('Download progress received:', progress);
+        this.logger.log('AI_MODELS', 'ngOnInit', { info: 'Download progress received', response: progress });
         
         // Actualizar el progreso con información de fase
         this.downloadProgress.set(progress.modelName, {
@@ -624,7 +628,7 @@ export class AiModelsComponent implements OnInit, OnDestroy {
             }, 1000);
           } else if (progress.status === 'error') {
             // Mostrar error por más tiempo para que el usuario lo vea
-            console.error('Download error for model:', progress.modelName, progress.error);
+            this.logger.error('AI_MODELS', 'ngOnInit', { info: 'Download error for model', error: { modelName: progress.modelName, error: progress.error } });
           }
           
           // Limpiar progreso después de un momento (más tiempo para errores)
@@ -639,7 +643,7 @@ export class AiModelsComponent implements OnInit, OnDestroy {
         this.cdr.detectChanges();
       });
     } else {
-      console.warn('Download progress API not available');
+      this.logger.warn('AI_MODELS', 'ngOnInit', { info: 'Download progress API not available' });
     }
 
     // Suscribirse a los modelos
@@ -667,9 +671,9 @@ export class AiModelsComponent implements OnInit, OnDestroy {
     this.ollamaStatusService.status$
       .pipe(takeUntil(this.destroy$))
       .subscribe((status: OllamaServiceStatus) => {
-        console.log('[AIModels] Ollama status changed:', status);
+        this.logger.log('AI_MODELS', 'statusSubscription', { info: 'Ollama status changed', response: status });
         if (status === 'stopped') {
-          console.log('[AIModels] Ollama stopped, refreshing models list...');
+          this.logger.log('AI_MODELS', 'statusSubscription', { info: 'Ollama stopped, refreshing models list' });
           this.refreshModels();
         }
       });
@@ -702,7 +706,7 @@ export class AiModelsComponent implements OnInit, OnDestroy {
     try {
       this.ollamaStatus = await this.aiModelsService.checkOllamaStatus();
     } catch (error: any) {
-      console.error('Error checking Ollama status:', error);
+      this.logger.error('AI_MODELS', 'checkOllamaStatus', { info: 'Error checking Ollama status', error });
       this.ollamaStatus = { installed: false, running: false, error: 'Error al verificar el estado de Ollama' };
     }
   }
@@ -723,7 +727,7 @@ export class AiModelsComponent implements OnInit, OnDestroy {
         }
       }, 3000);
     } catch (error: any) {
-      console.error('Error starting Ollama:', error);
+      this.logger.error('AI_MODELS', 'startOllama', { info: 'Error starting Ollama', error });
       this.ollamaStatus = { ...this.ollamaStatus, error: 'Error al iniciar Ollama' };
     } finally {
       this.startingOllama = false;
@@ -733,7 +737,7 @@ export class AiModelsComponent implements OnInit, OnDestroy {
   async downloadModel(modelName: string) {
     if (this.downloadingModels.has(modelName)) return;
     
-    console.log(`Starting download for model: ${modelName}`);
+    this.logger.log('AI_MODELS', 'downloadModel', { info: `Starting download for model: ${modelName}` });
     this.downloadingModels.add(modelName);
     // Inicializar progreso con fase
     this.downloadProgress.set(modelName, {
@@ -747,18 +751,18 @@ export class AiModelsComponent implements OnInit, OnDestroy {
       if (window.agi?.chat?.downloadModel) {
         const result = await window.agi.chat.downloadModel(modelName);
         if (!result.success) {
-          console.error('Error downloading model:', result.error);
+          this.logger.error('AI_MODELS', 'downloadModel', { info: 'Error downloading model', error: result.error });
           this.downloadingModels.delete(modelName);
           this.downloadProgress.delete(modelName);
         }
         // El progreso y completion se maneja vía eventos
       } else {
-        console.error('Download model API not available');
+        this.logger.error('AI_MODELS', 'downloadModel', { info: 'Download model API not available' });
         this.downloadingModels.delete(modelName);
         this.downloadProgress.delete(modelName);
       }
     } catch (error: any) {
-      console.error('Error downloading model:', error);
+      this.logger.error('AI_MODELS', 'downloadModel', { info: 'Error downloading model', error });
       this.downloadingModels.delete(modelName);
       this.downloadProgress.delete(modelName);
     }
@@ -767,29 +771,45 @@ export class AiModelsComponent implements OnInit, OnDestroy {
   async deleteModel(modelName: string) {
     if (this.deletingModels.has(modelName)) return;
     
-    const confirmed = confirm(`¿Estás seguro de que deseas eliminar el modelo "${modelName}"?`);
-    if (!confirmed) return;
-    
-    this.deletingModels.add(modelName);
-    try {
-      if (window.agi?.chat?.deleteModel) {
-        const result = await window.agi.chat.deleteModel(modelName);
-        if (result.success) {
-          // Refrescar la lista de modelos después de la eliminación exitosa
-          await this.refreshModels();
+    this.alertService.show({
+      title: this.translationService.translate('models.deleteTitle'),
+      description: this.translationService.translate('models.deleteDescription').replace('{modelName}', modelName),
+      type: 'question',
+      confirmButtonText: this.translationService.translate('common.delete'),
+      cancelButtonText: this.translationService.translate('common.cancel')
+    }, 
+    async () => {
+      this.deletingModels.add(modelName);
+      try {
+        if (window.agi?.chat?.deleteModel) {
+          const result = await window.agi.chat.deleteModel(modelName);
+          if (result.success) {
+            // Refrescar la lista de modelos después de la eliminación exitosa
+            await this.refreshModels();
+          } else {
+            this.logger.error('AI_MODELS', 'deleteModel', { info: 'Error deleting model', error: result.error });
+            this.alertService.show({
+              title: this.translationService.translate('common.error'),
+              description: `${this.translationService.translate('models.deleteError')}: ${result.error}`,
+              type: 'danger',
+              confirmButtonText: this.translationService.translate('common.accept')
+            });
+          }
         } else {
-          console.error('Error deleting model:', result.error);
-          alert(`Error al eliminar el modelo: ${result.error}`);
+          this.logger.error('AI_MODELS', 'deleteModel', { info: 'Delete model API not available' });
         }
-      } else {
-        console.error('Delete model API not available');
+      } catch (error: any) {
+        this.logger.error('AI_MODELS', 'deleteModel', { info: 'Error deleting model', error });
+        this.alertService.show({
+          title: this.translationService.translate('common.error'),
+          description: `${this.translationService.translate('models.deleteError')}: ${error.message}`,
+          type: 'danger',
+          confirmButtonText: this.translationService.translate('common.accept')
+        });
+      } finally {
+        this.deletingModels.delete(modelName);
       }
-    } catch (error: any) {
-      console.error('Error deleting model:', error);
-      alert(`Error al eliminar el modelo: ${error.message}`);
-    } finally {
-      this.deletingModels.delete(modelName);
-    }
+    });
   }
 
   isDownloading(modelName: string): boolean {

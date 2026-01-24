@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { LoggerService } from '../logger/logger.service';
 
 interface UserProfile {
   name: string;
@@ -12,7 +13,7 @@ export class UserService {
   private userSubject = new BehaviorSubject<UserProfile | null>(null);
   public user$ = this.userSubject.asObservable();
 
-  constructor() {
+  constructor(private logger: LoggerService) {
     this.loadUserProfile();
   }
 
@@ -25,7 +26,7 @@ export class UserService {
         this.userSubject.next(null);
       }
     } catch (error) {
-      console.error('Error loading user profile:', error);
+      this.logger.error('USER_SVC', 'loadUserProfile', { info: 'Error loading user profile', error });
       this.userSubject.next(null);
     }
   }
@@ -46,10 +47,10 @@ export class UserService {
       if (response?.success) {
         this.userSubject.next(user);
       } else {
-        console.error('Error updating user:', response?.error);
+        this.logger.error('USER_SVC', 'updateUser', { info: 'Error updating user', error: response?.error });
       }
     } catch (error) {
-      console.error('Error updating user:', error);
+      this.logger.error('USER_SVC', 'updateUser', { info: 'Error updating user', error });
       // Aunque falle la persistencia, actualizamos el estado local
       this.userSubject.next(user);
     }
@@ -61,10 +62,10 @@ export class UserService {
       if (response?.success) {
         this.userSubject.next(null);
       } else {
-        console.error('Error clearing user:', response?.error);
+        this.logger.error('USER_SVC', 'clearUser', { info: 'Error clearing user', error: response?.error });
       }
     } catch (error) {
-      console.error('Error clearing user:', error);
+      this.logger.error('USER_SVC', 'clearUser', { info: 'Error clearing user', error });
       this.userSubject.next(null);
     }
   }

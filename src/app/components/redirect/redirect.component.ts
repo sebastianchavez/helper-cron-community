@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { OnboardingService } from '../../core/services/onboarding/onboarding.service';
+import { LoggerService } from '../../core/services/logger/logger.service';
 
 @Component({
   selector: 'app-redirect',
@@ -15,7 +16,8 @@ export class RedirectComponent implements OnInit {
 
   constructor(
     private onboardingService: OnboardingService,
-    private router: Router
+    private router: Router,
+    private logger: LoggerService
   ) { }
 
   ngOnInit(): void {
@@ -23,14 +25,14 @@ export class RedirectComponent implements OnInit {
     const shouldShow = this.onboardingService.shouldShowOnboarding();
     const onboardingData = this.onboardingService.getOnboardingData();
     
-    console.log('Redirect Component - Onboarding Data:', onboardingData);
-    console.log('Redirect Component - Should show onboarding:', shouldShow);
+    this.logger.log('REDIRECT', 'ngOnInit', { info: 'Onboarding Data', response: onboardingData });
+    this.logger.log('REDIRECT', 'ngOnInit', { info: 'Should show onboarding', response: shouldShow });
     
     if (shouldShow) {
-      console.log('Redirecting to welcome page...');
+      this.logger.log('REDIRECT', 'ngOnInit', { info: 'Redirecting to welcome page' });
       this.router.navigate(['/welcome']);
     } else {
-      console.log('Redirecting to chatbot page...');
+      this.logger.log('REDIRECT', 'ngOnInit', { info: 'Redirecting to chatbot page' });
       this.router.navigate(['/chatbot']);
     }
   }

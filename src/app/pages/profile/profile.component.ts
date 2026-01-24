@@ -2,10 +2,12 @@ import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NgxSimpliAlertService } from 'ngx-simpli-alert';
 import { TranslationService } from '../../core/services/translation/translation.service';
 import { TranslatePipe } from '../../core/pipes/translate.pipe';
 import { NavigationMenuComponent } from '../../core/components/navigation-menu/navigation-menu.component';
 import { UserService } from '../../core/services/user/user.service';
+import { LoggerService } from '../../core/services/logger/logger.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -28,7 +30,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private router: Router,
     private translationService: TranslationService,
-    private userService: UserService
+    private userService: UserService,
+    private logger: LoggerService,
+    private alertService: NgxSimpliAlertService
   ) {
     this.profileForm = this.fb.group({
       name: ['', Validators.required]
@@ -76,7 +80,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       }
     } catch (error) {
       this.showMessage(this.translationService.translate('profile.loadError'), 'error');
-      console.error('Error loading profile:', error);
+      this.logger.error('PROFILE', 'loadProfile', { info: 'Error loading profile', error });
     }
   }
 
@@ -96,31 +100,36 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.showMessage(this.translationService.translate('profile.saveSuccess'), 'success');
     } catch (error) {
       this.showMessage(this.translationService.translate('profile.saveError'), 'error');
-      console.error('Error saving profile:', error);
+      this.logger.error('PROFILE', 'saveProfile', { info: 'Error saving profile', error });
     } finally {
       this.loading = false;
     }
   }
 
   async deleteProfile(): Promise<void> {
-    if (!confirm(this.translationService.translate('profile.deleteConfirm'))) {
-      return;
-    }
+    this.alertService.show({
+      title: this.translationService.translate('profile.deleteTitle'),
+      description: this.translationService.translate('profile.deleteConfirm'),
+      type: 'question',
+      confirmButtonText: this.translationService.translate('common.delete'),
+      cancelButtonText: this.translationService.translate('common.cancel')
+    }, 
+    async () => {
+      this.loading = true;
+      this.message = '';
 
-    this.loading = true;
-    this.message = '';
-
-    try {
-      // Usar el UserService para eliminar (que ahora maneja la persistencia)
-      await this.userService.clearUser();
-      this.showMessage(this.translationService.translate('profile.deleteSuccess'), 'success');
-      this.profileForm.reset();
-    } catch (error) {
-      this.showMessage(this.translationService.translate('profile.deleteError'), 'error');
-      console.error('Error deleting profile:', error);
-    } finally {
-      this.loading = false;
-    }
+      try {
+        // Usar el UserService para eliminar (que ahora maneja la persistencia)
+        await this.userService.clearUser();
+        this.showMessage(this.translationService.translate('profile.deleteSuccess'), 'success');
+        this.profileForm.reset();
+      } catch (error) {
+        this.showMessage(this.translationService.translate('profile.deleteError'), 'error');
+        this.logger.error('PROFILE', 'deleteProfile', { info: 'Error deleting profile', error });
+      } finally {
+        this.loading = false;
+      }
+    });
   }
 
   goBack(): void {
@@ -183,7 +192,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   openAbout(): void {
-    console.log('Mostrando información de la aplicación...');
+    this.logger.log('PROFILE', 'openAbout', { info: 'Mostrando información de la aplicación' });
     this.showUserMenu = false;
   }
 

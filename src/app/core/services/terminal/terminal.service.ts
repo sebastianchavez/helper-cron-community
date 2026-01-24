@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
+import { LoggerService } from '../logger/logger.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TerminalService {
-  constructor() {}
+  constructor(private logger: LoggerService) {}
 
   /**
    * Verificar si Ollama está ejecutándose verificando el proceso activo
@@ -17,12 +18,12 @@ export class TerminalService {
       const command = 'tasklist /FI "IMAGENAME eq ollama.exe" 2>nul | find /I "ollama.exe"';
       return (window as any).agi.executeTerminalCommand(command).then(
         (result: any) => {
-          console.log('[TerminalService] Ollama process check:', result);
+          this.logger.log('TERMINAL_SVC', 'isOllamaRunning', { info: 'Ollama process check', response: result });
           // Si el comando encuentra ollama.exe, devuelve true
           return result.success && result.output && result.output.toLowerCase().includes('ollama.exe');
         },
         (error: any) => {
-          console.log('[TerminalService] Ollama process check failed:', error);
+          this.logger.error('TERMINAL_SVC', 'isOllamaRunning', { info: 'Ollama process check failed (Windows)', error });
           return false;
         }
       );
@@ -31,11 +32,11 @@ export class TerminalService {
       const command = 'pgrep -f ollama > /dev/null';
       return (window as any).agi.executeTerminalCommand(command).then(
         (result: any) => {
-          console.log('[TerminalService] Ollama process check:', result);
+          this.logger.log('TERMINAL_SVC', 'isOllamaRunning', { info: 'Ollama process check', response: result });
           return result.success;
         },
         (error: any) => {
-          console.log('[TerminalService] Ollama process check failed:', error);
+          this.logger.error('TERMINAL_SVC', 'isOllamaRunning', { info: 'Ollama process check failed (Unix)', error });
           return false;
         }
       );
@@ -75,7 +76,7 @@ export class TerminalService {
     
     return (window as any).agi.executeTerminalCommand(command).then(
       (result: any) => {
-        console.log('[TerminalService] Stop command result:', result);
+        this.logger.log('TERMINAL_SVC', 'stopOllamaWindows', { info: 'Stop command result', response: result });
         
         // Verificar el resultado del comando
         if (result.success) {
@@ -96,7 +97,7 @@ export class TerminalService {
         }
       },
       (error: any) => {
-        console.error('[TerminalService] Error executing stop command:', error);
+        this.logger.error('TERMINAL_SVC', 'stopOllamaWindows', { info: 'Error executing stop command', error });
         return {
           success: false,
           message: 'Error al ejecutar comando: ' + (error.message || 'Error desconocido')

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { LoggerService } from '../logger/logger.service';
 
 export interface AIModel {
   id: string;
@@ -45,7 +46,7 @@ export class AIModelsService {
   public error$ = this.errorSubject.asObservable();
   public ollamaStatus$ = this.ollamaStatusSubject.asObservable();
 
-  constructor() {}
+  constructor(private logger: LoggerService) {}
 
   async loadModels(): Promise<void> {
     this.loadingSubject.next(true);
@@ -70,16 +71,16 @@ export class AIModelsService {
 
       // Verificar si window.agi está disponible
       if (!window.agi?.chat?.listModels) {
-        console.error('Agi API not available');
+        this.logger.error('AI_MODELS_SVC', 'loadModels', { info: 'Agi API not available' });
         throw new Error('Agi API not available');
       }
 
-      console.log('Requesting models from Ollama...');
+      this.logger.log('AI_MODELS_SVC', 'loadModels', { info: 'Requesting models from Ollama' });
       
       // Obtener modelos reales de Ollama usando la misma API que el chatbot
       const ollamaModels = await window.agi.chat.listModels();
-      console.log('Ollama response:', ollamaModels);
-      console.log('Ollama models found:', ollamaModels.length);
+      this.logger.log('AI_MODELS_SVC', 'loadModels', { info: 'Ollama response', response: ollamaModels });
+      this.logger.log('AI_MODELS_SVC', 'loadModels', { info: `Ollama models found: ${ollamaModels.length}` });
       
       // Convertir modelos de Ollama al formato AIModel
       const aiModels: AIModel[] = ollamaModels.map(model => ({
@@ -92,10 +93,10 @@ export class AIModelsService {
         family: model.details?.family || 'unknown'
       }));
       
-      console.log('AI models processed:', aiModels);
+      this.logger.log('AI_MODELS_SVC', 'loadModels', { info: 'AI models processed', response: aiModels });
       this.modelsSubject.next(aiModels);
     } catch (error) {
-      console.error('Error loading AI models:', error);
+      this.logger.error('AI_MODELS_SVC', 'loadModels', { info: 'Error loading AI models', error });
       this.errorSubject.next('OLLAMA_CONNECTION_ERROR');
       this.modelsSubject.next([]);
     } finally {
@@ -116,7 +117,7 @@ export class AIModelsService {
         return defaultStatus;
       }
     } catch (error: any) {
-      console.error('Error checking Ollama status:', error);
+      this.logger.error('AI_MODELS_SVC', 'checkOllamaStatus', { info: 'Error checking Ollama status', error });
       const errorStatus = { installed: false, running: false, error: error?.message || 'Error desconocido' };
       this.ollamaStatusSubject.next(errorStatus);
       return errorStatus;
@@ -136,7 +137,7 @@ export class AIModelsService {
         return { success: false, error: 'Ollama service management not available' };
       }
     } catch (error: any) {
-      console.error('Error starting Ollama:', error);
+      this.logger.error('AI_MODELS_SVC', 'startOllama', { info: 'Error starting Ollama', error });
       return { success: false, error: error?.message || 'Error desconocido' };
     }
   }

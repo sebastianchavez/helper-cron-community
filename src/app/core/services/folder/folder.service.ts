@@ -25,7 +25,7 @@ export class FolderService {
   selectedFolder$ = this.selectedFolderSubject.asObservable();
 
   constructor() {
-    this.loadFolders();
+    this.loadFoldersWithCount();
   }
 
   async loadFolders() {
@@ -33,25 +33,30 @@ export class FolderService {
     this.foldersSubject.next(tree ?? []);
   }
 
+  async loadFoldersWithCount() {
+    const foldersWithCount = await this.getFoldersWithCount();
+    this.foldersSubject.next(foldersWithCount ?? []);
+  }
+
   async createFolder(name: string, parentId?: string) {
     const folder = await window.agi?.folder.create(name, parentId);
-    await this.loadFolders();
+    await this.loadFoldersWithCount();
     return folder;
   }
 
   async updateFolder(id: string, name: string) {
     await window.agi?.folder.update(id, name);
-    await this.loadFolders();
+    await this.loadFoldersWithCount();
   }
 
   async deleteFolder(id: string) {
     await window.agi?.folder.delete(id);
-    await this.loadFolders();
+    await this.loadFoldersWithCount();
   }
 
   async moveFolder(folderId: string, newParentId?: string) {
     await window.agi?.folder.move(folderId, newParentId);
-    await this.loadFolders();
+    await this.loadFoldersWithCount();
   }
 
   selectFolder(folder: Folder | null) {

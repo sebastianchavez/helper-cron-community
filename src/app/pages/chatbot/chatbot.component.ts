@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, HostListener, NgZone, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, NgZone, OnInit, OnDestroy, ViewChild,  } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import { ExecutionEngineService } from '../../core/services/execution-engine/execution-engine.service';
+import { NgxSimpliAlertService } from 'ngx-simpli-alert';
 import { ChatService } from '../../core/services/chat/chat.service';
 import { FolderSidebarComponent } from '../../core/components/folder-sidebar/folder-sidebar.component';
 import { FolderService } from '../../core/services/folder/folder.service';
@@ -11,7 +11,7 @@ import { TranslationService } from '../../core/services/translation/translation.
 import { TranslatePipe } from '../../core/pipes/translate.pipe';
 import { UserService } from '../../core/services/user/user.service';
 import { AIModelsService, OllamaStatus } from '../../core/services/ai-models/ai-models.service';
-import { TerminalService } from '../../core/services/terminal/terminal.service';
+import { LoggerService } from '../../core/services/logger/logger.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -27,14 +27,16 @@ import { Subscription } from 'rxjs';
 })
 export class ChatbotComponent implements OnInit, OnDestroy {
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
+  @ViewChild('chatInput') private chatInput!: ElementRef<HTMLTextAreaElement>;
   input = '';
   messages: any[] = [];
 
   models: any[] = [];
-  selectedModel = 'llama3';
+  selectedModel = '';
   showModelDropdown = false;
 
   loading = false;
+  folderLoading = false;
   typingText = 'Pensando...';
   streamingMessageId: string | null = null;
   isStreaming = false;
@@ -47,6 +49,7 @@ export class ChatbotComponent implements OnInit, OnDestroy {
   private dotsInterval: any;
   private streamCleanup: (() => void) | null = null;
   private userSubscription?: Subscription;
+  private selectFolderTimeout: any;
 
   currentConversationId: string | null = null;
 
@@ -69,7 +72,6 @@ export class ChatbotComponent implements OnInit, OnDestroy {
 
 
   constructor(
-    private engine: ExecutionEngineService,
     private chat: ChatService,
     private ngZone: NgZone,
     private sanitizer: DomSanitizer,
@@ -78,7 +80,8 @@ export class ChatbotComponent implements OnInit, OnDestroy {
     private translationService: TranslationService,
     private userService: UserService,
     private aiModelsService: AIModelsService,
-    private terminalService: TerminalService
+    private logger: LoggerService,
+    private alertService: NgxSimpliAlertService
   ) {
     this.chat.messages$.subscribe(msgs => {
       this.messages = msgs;
@@ -115,12 +118,13 @@ export class ChatbotComponent implements OnInit, OnDestroy {
       await this.newConversation();
     }
 
+
   }
 
   async loadConversations() {
-    console.log('[CHAT] loadConversations called'); // Debug
+    this.logger.log('CHATBOT', 'loadConversations', { info: 'loadConversations called' });
     this.conversations = await window.agi?.chatDb.listConversations() || [];
-    console.log(`[CHAT] Loaded ${this.conversations.length} root conversations`, this.conversations); // Debug
+    this.logger.log('CHATBOT', 'loadConversations', { info: `Loaded ${this.conversations.length} root conversations`, response: this.conversations });
   }
 
   async openConversation(conversationId: string) {
@@ -128,6 +132,9 @@ export class ChatbotComponent implements OnInit, OnDestroy {
     if (this.loading) {
       this.stopResponse(); // Detener cualquier operación en curso
     }
+
+    // **Asegurar estados limpios al abrir conversación**
+    this.ensureCleanState('abriendo conversación');
 
     this.selectedConversationId = conversationId;
     this.currentConversationId = conversationId;
@@ -147,16 +154,26 @@ export class ChatbotComponent implements OnInit, OnDestroy {
       }
     }
 
-    // 4️⃣ asegurar que el chat esté habilitado
-    this.loading = false;
-    this.isStreaming = false;
+    // 4️⃣ **asegurar nuevamente que el chat esté habilitado**
+    this.ensureCleanState('después de cargar mensajes');
     this.shouldScrollToBottom = true;
   }
 
   async newConversation() {
+    // Asegurar estados limpios al iniciar una nueva conversación
+    this.ensureCleanState('iniciando nueva conversación');
+    
     const conv = await window.agi?.chatDb.createConversation('Nuevo chat', this.selectedFolderId || undefined);
     this.conversations.unshift(conv);
     await this.openConversation(conv.id);
+    
+    // Recargar carpetas para actualizar conteos
+    this.folderLoading = true;
+    await this.folderService.loadFoldersWithCount();
+    this.folderLoading = false;
+    
+    // Asegurar estados limpios después de cargar
+    this.ensureCleanState('después de crear nueva conversación');
   }
 
   async loadModels() {
@@ -167,33 +184,49 @@ export class ChatbotComponent implements OnInit, OnDestroy {
         // Mostrar todos los modelos instalados
         this.models = allModels;
 
-        // Buscar llama3 en cualquier variante (llama3, llama3:latest, etc.)
-        const llama3Model = this.models.find(m => 
-          m.name.toLowerCase().startsWith('llama3')
-        );
-
-        if (llama3Model) {
-          // Usar llama3 si está disponible
-          this.selectedModel = llama3Model.name;
-        } else if (this.models.length > 0) {
-          // Si llama3 no está disponible, usar el primer modelo
-          this.selectedModel = this.models[0].name;
+        // Cargar modelo guardado en localStorage
+        const savedModel = this.loadSelectedModelFromStorage();
+        
+        if (savedModel && this.models.some(m => m.name === savedModel)) {
+          // Si hay un modelo guardado y está disponible, usarlo
+          this.selectedModel = savedModel;
+        } else {
+          // Si no hay modelo guardado o no está disponible, no seleccionar ninguno
+          this.selectedModel = '';
         }
-        // Si no hay modelos, mantiene 'llama3' como fallback
       } catch (error) {
-        console.error('Error loading models:', error);
-        // En caso de error, mantiene llama3 como fallback
+        this.logger.error('CHATBOT', 'loadModels', { info: 'Error loading models', error });
+        // En caso de error, no seleccionar modelo
+        this.selectedModel = '';
       }
     }
   }
 
   selectModel(modelName: string) {
     this.selectedModel = modelName;
+    this.saveSelectedModelToStorage(modelName);
     this.showModelDropdown = false;
   }
 
   toggleModelDropdown() {
     this.showModelDropdown = !this.showModelDropdown;
+  }
+
+  private saveSelectedModelToStorage(modelName: string) {
+    try {
+      localStorage.setItem('selectedAIModel', modelName);
+    } catch (error) {
+      this.logger.error('CHATBOT', 'saveSelectedModelToStorage', { info: 'Error saving model to localStorage', error });
+    }
+  }
+
+  private loadSelectedModelFromStorage(): string | null {
+    try {
+      return localStorage.getItem('selectedAIModel');
+    } catch (error) {
+      this.logger.error('CHATBOT', 'loadSelectedModelFromStorage', { info: 'Error loading model from localStorage', error });
+      return null;
+    }
   }
 
   ngAfterViewChecked() {
@@ -211,7 +244,7 @@ export class ChatbotComponent implements OnInit, OnDestroy {
         element.scrollTop = element.scrollHeight;
       }
     } catch (err) {
-      console.error('Error al hacer scroll:', err);
+      this.logger.error('CHATBOT', 'scrollToBottom', { info: 'Error al hacer scroll', error: err });
     }
   }
 
@@ -223,15 +256,72 @@ export class ChatbotComponent implements OnInit, OnDestroy {
   }
 
   private buildContext(limit = 12) {
-    return this.chat
+    const userMessages = this.chat
       .getMessages()
       .filter(m => (m.role === 'user' || m.role === 'assistant') && m.content.trim() !== '')
       .slice(-limit);
+
+    // Obtener el idioma actual del usuario
+    const currentLanguage = this.translationService.getCurrentLanguage();
+    const languageInstruction = this.getLanguageInstruction(currentLanguage);
+
+    // Agregar instrucción de idioma al inicio del contexto
+    const systemMessage = {
+      role: 'system',
+      content: languageInstruction
+    };
+
+    return [systemMessage, ...userMessages];
+  }
+
+  private getLanguageInstruction(languageCode: string): string {
+    const languageMap: { [key: string]: string } = {
+      'es': 'Responde siempre en español. Mantén un tono profesional y claro.',
+      'en': 'Always respond in English. Maintain a professional and clear tone.',
+      'fr': 'Réponds toujours en français. Maintiens un ton professionnel et clair.',
+      'de': 'Antworte immer auf Deutsch. Verwende einen professionellen und klaren Ton.',
+      'it': 'Rispondi sempre in italiano. Mantieni un tono professionale e chiaro.',
+      'pt': 'Responde sempre em português. Mantém um tom profissional e claro.',
+      'zh': '始终用中文回答。保持专业和清晰的语调。',
+      'ja': '日本語で回答してください。プロフェッショナルで明確な口調を保ってください。',
+      'ko': '항상 한국어로 답변해 주세요. 전문적이고 명확한 어조를 유지해 주세요.',
+      'ru': 'Всегда отвечайте на русском языке. Поддерживайте профессиональный и ясный тон.',
+      'ar': 'اجب دائماً باللغة العربية. حافظ على نبرة مهنية وواضحة.',
+      'hi': 'हमेशा हिंदी में उत्तर दें। पेशेवर और स्पष्ट स्वर बनाए रखें।'
+    };
+
+    return languageMap[languageCode] || languageMap['es']; // Default to Spanish if language not found
+  }
+
+  private getTitleInstruction(languageCode: string): string {
+    const titleInstructionMap: { [key: string]: string } = {
+      'es': 'Genera un título corto (máximo 6 palabras) que resuma el mensaje del usuario. No uses comillas, emojis ni puntuación final. Responde solo en español.',
+      'en': 'Generate a short title (maximum 6 words) that summarizes the user message. Do not use quotes, emojis or final punctuation. Respond only in English.',
+      'fr': 'Génère un titre court (maximum 6 mots) qui résume le message de l\'utilisateur. N\'utilise pas de guillemets, d\'emojis ou de ponctuation finale. Réponds seulement en français.',
+      'de': 'Erzeuge einen kurzen Titel (maximal 6 Wörter), der die Benutzernachricht zusammenfasst. Verwende keine Anführungszeichen, Emojis oder Endzeichen. Antworte nur auf Deutsch.',
+      'it': 'Genera un titolo breve (massimo 6 parole) che riassuma il messaggio dell\'utente. Non usare virgolette, emoji o punteggiatura finale. Rispondi solo in italiano.',
+      'pt': 'Gera um título curto (máximo 6 palavras) que resuma a mensagem do usuário. Não uses aspas, emojis ou pontuação final. Responde apenas em português.',
+      'zh': '生成一个简短的标题（最多6个词）来总结用户信息。不要使用引号、表情符号或结尾标点。仅用中文回答。',
+      'ja': 'ユーザーメッセージを要約する短いタイトル（最大6語）を生成してください。引用符、絵文字、最終句読点は使用しないでください。日本語でのみ回答してください。',
+      'ko': '사용자 메시지를 요약하는 짧은 제목(최대 6단어)을 생성하세요. 따옴표, 이모지 또는 마침 구두점을 사용하지 마세요. 한국어로만 답변하세요.',
+      'ru': 'Сгенерируйте короткий заголовок (максимум 6 слов), который резюмирует сообщение пользователя. Не используйте кавычки, эмодзи или конечные знаки препинания. Отвечайте только на русском языке.',
+      'ar': 'أنشئ عنواناً قصيراً (أقصى 6 كلمات) يلخص رسالة المستخدم. لا تستخدم علامات اقتباس أو رموز تعبيرية أو علامات ترقيم نهائية. أجب بالعربية فقط.',
+      'hi': 'उपयोगकर्ता संदेश का सारांश देने वाला एक छोटा शीर्षक (अधिकतम 6 शब्द) बनाएं। उद्धरण चिह्न, इमोजी या अंतिम विराम चिह्न का उपयोग न करें। केवल हिंदी में उत्तर दें।'
+    };
+
+    return titleInstructionMap[languageCode] || titleInstructionMap['es'];
   }
 
 
   async send() {
     if (!this.input.trim()) return;
+
+    // Verificar si hay modelo seleccionado
+    if (!this.selectedModel) {
+      // Mostrar mensaje o abrir dropdown para seleccionar modelo
+      this.toggleModelDropdown();
+      return;
+    }
 
     // Verificar si hay modelos disponibles
     if (this.models.length === 0) {
@@ -262,13 +352,14 @@ export class ChatbotComponent implements OnInit, OnDestroy {
 
       if (totalMessages === 1 && this.currentConversationId) {
         try {
+          const currentLanguage = this.translationService.getCurrentLanguage();
+          const titleInstruction = this.getTitleInstruction(currentLanguage);
+          
           const res = await window.agi?.chat.send(
             [
               {
                 role: 'system',
-                content:
-                  'Genera un título corto (máximo 6 palabras) que resuma el mensaje del usuario. ' +
-                  'No uses comillas, emojis ni puntuación final.',
+                content: titleInstruction
               },
               { role: 'user', content: userMessage },
             ],
@@ -285,14 +376,14 @@ export class ChatbotComponent implements OnInit, OnDestroy {
 
             // refrescar sidebar respetando la carpeta seleccionada
             if (this.selectedFolderId) {
-              const conversationsByFolder = await window.agi?.chatDb.getConversationsByFolder?.(this.selectedFolderId) || [];
-              this.conversations = conversationsByFolder;
+              // Recargar la vista de carpeta completa para mantener la estructura correcta
+              await this.selectFolder(this.selectedFolderId);
             } else {
               await this.loadConversations();
             }
           }
         } catch (err) {
-          console.warn('No se pudo generar título:', err);
+          this.logger.warn('CHATBOT', 'sendMessage', { info: 'No se pudo generar título', error: err });
         }
       }
 
@@ -350,6 +441,14 @@ export class ChatbotComponent implements OnInit, OnDestroy {
                   role: 'assistant',
                   content: last.content,
                 });
+
+                // Actualizar vista de conversaciones respetando la carpeta seleccionada
+                if (this.selectedFolderId) {
+                  // Recargar la vista de carpeta completa para mantener la estructura correcta
+                  await this.selectFolder(this.selectedFolderId);
+                } else {
+                  await this.loadConversations();
+                }
               }
             }
           });
@@ -358,7 +457,7 @@ export class ChatbotComponent implements OnInit, OnDestroy {
           // Ejecutar dentro de la zona de Angular
           this.ngZone.run(() => {
             // Error en streaming
-            console.error('Error en streaming:', error);
+            this.logger.error('CHATBOT', 'sendMessage', { info: 'Error en streaming', error });
             this.loading = false;
             this.isStreaming = false;
             this.stopTypingAnimation();
@@ -467,6 +566,9 @@ export class ChatbotComponent implements OnInit, OnDestroy {
     }
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
+    }
+    if (this.selectFolderTimeout) {
+      clearTimeout(this.selectFolderTimeout);
     }
   }
 
@@ -592,9 +694,9 @@ export class ChatbotComponent implements OnInit, OnDestroy {
 
   copyCodeToClipboard(code: string) {
     navigator.clipboard.writeText(code).then(() => {
-      console.log('Código copiado al portapapeles');
+      this.logger.log('CHATBOT', 'copyCodeToClipboard', { info: 'Código copiado al portapapeles' });
     }).catch(err => {
-      console.error('Error al copiar código:', err);
+      this.logger.error('CHATBOT', 'copyCodeToClipboard', { info: 'Error al copiar código', error: err });
     });
   }
 
@@ -609,7 +711,7 @@ export class ChatbotComponent implements OnInit, OnDestroy {
           const code = decodeURIComponent(atob(base64Code));
           this.copyCodeToClipboard(code);
         } catch (error) {
-          console.error('Error al decodificar código:', error);
+          this.logger.error('CHATBOT', 'handleCodeCopyClick', { info: 'Error al decodificar código', error });
         }
       }
     }
@@ -621,51 +723,102 @@ export class ChatbotComponent implements OnInit, OnDestroy {
     return div.innerHTML;
   }
 
-  private escapeForAttribute(text: string): string {
-    return text
-      .replace(/\\/g, '\\\\')
-      .replace(/`/g, '\\`')
-      .replace(/\$/g, '\\$');
+  /**
+   * Garantiza que todos los estados estén limpios para la interacción del usuario
+   */
+  private ensureCleanState(reason: string = 'general'): void {
+    this.loading = false;
+    this.isStreaming = false;
+    
+    // Si hay un input, asegurar que esté habilitado
+    if (this.chatInput?.nativeElement) {
+      this.chatInput.nativeElement.disabled = false;
+      this.chatInput.nativeElement.readOnly = false;
+    }
+    
+    this.logger.log('CHATBOT', 'ensureCleanState', { 
+      info: `Estados limpiados: ${reason}`,
+      response: {
+        loading: this.loading,
+        isStreaming: this.isStreaming,
+        inputDisabled: this.chatInput?.nativeElement?.disabled,
+        inputReadOnly: this.chatInput?.nativeElement?.readOnly
+      }
+    });
   }
 
   async deleteConversation(event: MouseEvent, conversationId: string) {
     event.stopPropagation(); // Evitar que se abra la conversación
     
-    if (!confirm('¿Eliminar esta conversación? Se puede restaurar desde la papelera.')) {
-      return;
-    }
+    this.alertService.show({
+      title: this.translationService.translate('chat.deleteConversationTitle'),
+      description: this.translationService.translate('chat.deleteConversationDescription'),
+      type: 'question',
+      confirmButtonText: this.translationService.translate('common.delete'),
+      cancelButtonText: this.translationService.translate('common.cancel')
+    }, 
+    async () => {
+      await window.agi?.chatDb.deleteConversation(conversationId);
 
-    await window.agi?.chatDb.deleteConversation(conversationId);
+      // **LIMPIAR ESTADOS INMEDIATAMENTE**
+      this.ensureCleanState('después de eliminar conversación');
 
-    // Remover de la lista actual
-    this.conversations = this.conversations.filter(c => c.id !== conversationId);
+      // Remover de la lista actual
+      this.conversations = this.conversations.filter(c => c.id !== conversationId);
 
-    // Si eliminamos la conversación activa, abrir otra o crear nueva
-    if (this.currentConversationId === conversationId) {
-      if (this.conversations.length > 0) {
-        await this.openConversation(this.conversations[0].id);
-      } else {
-        await this.newConversation();
+      // Si eliminamos la conversación activa, abrir otra o crear nueva
+      if (this.currentConversationId === conversationId) {
+        if (this.conversations.length > 0) {
+          await this.openConversation(this.conversations[0].id);
+        } else {
+          await this.newConversation();
+        }
       }
-    }
+      
+      // **ASEGURAR ESTADO LIMPIO NUEVAMENTE**
+      this.ensureCleanState('después de eliminar conversación y abrir/crear nueva');
+      
+      // Recargar carpetas para actualizar conteos
+      this.folderLoading = true;
+      await this.folderService.loadFoldersWithCount();
+      this.folderLoading = false;
+      
+      // **NO HAY ACCIONES DE FOCUS: El usuario puede hacer clic donde necesite**
+      this.logger.log('CHATBOT', 'deleteConversation', { 
+        info: 'Conversación eliminada exitosamente - sin restauración automática de focus'
+      });
+    });
   }
 
   async selectFolder(folderId: string | null) {
-    console.log(`[CHAT] selectFolder called with folderId: ${folderId}`); // Debug
+    // Evitar múltiples llamadas con debounce
+    if (this.selectFolderTimeout) {
+      clearTimeout(this.selectFolderTimeout);
+    }
+    
+    this.selectFolderTimeout = setTimeout(async () => {
+      await this.performSelectFolder(folderId);
+    }, 200);
+  }
+
+  private async performSelectFolder(folderId: string | null) {
+    this.logger.log('CHATBOT', 'selectFolder', { info: `selectFolder called with folderId: ${folderId}` });
     this.selectedFolderId = folderId;
     
     if (folderId) {
-      // Cargar solo las conversaciones de la carpeta para el sidebar
+      // Cargar conversaciones de la carpeta y las del root por separado
       const conversationsByFolder = await window.agi?.chatDb.getConversationsByFolder?.(folderId) || [];
-      console.log(`[CHAT] Found ${conversationsByFolder.length} conversations in folder ${folderId}`, conversationsByFolder); // Debug
+      const rootConversations = await window.agi?.chatDb.listConversations?.() || [];
       
-      // Marcar las conversaciones para distinguir entre carpeta y root
+      this.logger.log('CHATBOT', 'selectFolder', { info: `Found ${conversationsByFolder.length} conversations in folder ${folderId}`, response: conversationsByFolder });
+      
+      // Crear una lista combinada con marcadores apropiados
       this.conversations = [
         ...conversationsByFolder.map((conv: any) => ({...conv, isFromSelectedFolder: true})),
-        ...(await window.agi?.chatDb.listConversations?.() || []).map((conv: any) => ({...conv, isFromSelectedFolder: false}))
+        ...rootConversations.filter((conv: any) => !conversationsByFolder.find(fc => fc.id === conv.id)).map((conv: any) => ({...conv, isFromSelectedFolder: false}))
       ];
     } else {
-      console.log('[CHAT] Loading root conversations'); // Debug
+      this.logger.log('CHATBOT', 'selectFolder', { info: 'Loading root conversations' });
       await this.loadConversations();
     }
   }
@@ -735,10 +888,8 @@ export class ChatbotComponent implements OnInit, OnDestroy {
 
   closeApp() {
     // Por ahora solo cerrar el menú, la funcionalidad de cerrar app se puede implementar después
-    console.log('Cerrar aplicación solicitado');
+    this.logger.log('CHATBOT', 'closeApp', { info: 'Cerrar aplicación solicitado' });
     this.showUserMenu = false;
-    // Alternativamente, podrías usar window.close() pero puede no funcionar en Electron
-    // window.close();
   }
 
   @HostListener('document:click', ['$event'])
@@ -773,17 +924,17 @@ export class ChatbotComponent implements OnInit, OnDestroy {
   }
 
   async moveConversationToFolder(data: {conversationId: string, folderId: string}) {
-    console.log('moveConversationToFolder called:', data); // Debug
+    this.logger.log('CHATBOT', 'moveConversationToFolder', { info: 'moveConversationToFolder called', response: data });
     
     try {
       // Verificar que el método existe
       if (!window.agi?.chatDb.moveConversationToFolder) {
-        console.error('moveConversationToFolder method not found');
+        this.logger.error('CHATBOT', 'moveConversationToFolder', { info: 'moveConversationToFolder method not found' });
         return;
       }
       
       await window.agi.chatDb.moveConversationToFolder(data.conversationId, data.folderId);
-      console.log('Move successful, updating UI...'); // Debug
+      this.logger.log('CHATBOT', 'moveConversationToFolder', { info: 'Move successful, updating UI' });
       
       // Remover la conversación de la lista actual
       this.conversations = this.conversations.filter(c => c.id !== data.conversationId);
@@ -798,11 +949,13 @@ export class ChatbotComponent implements OnInit, OnDestroy {
       }
       
       // Recargar carpetas para actualizar conteos
-      await this.folderService.loadFolders();
+      this.folderLoading = true;
+      await this.folderService.loadFoldersWithCount();
+      this.folderLoading = false;
       
-      console.log(`Conversación movida a carpeta ${data.folderId} - UI actualizada`);
+      this.logger.log('CHATBOT', 'moveConversationToFolder', { info: `Conversación movida a carpeta ${data.folderId} - UI actualizada` });
     } catch (error) {
-      console.error('Error moviendo conversación:', error);
+      this.logger.error('CHATBOT', 'moveConversationToFolder', { info: 'Error moviendo conversación', error });
     }
   }
 
@@ -817,6 +970,11 @@ export class ChatbotComponent implements OnInit, OnDestroy {
     // Cambiar a esa carpeta y abrir el chat
     await this.selectFolder(folderId);
     await this.openConversation(conv.id);
+    
+    // Recargar carpetas para actualizar conteos
+    this.folderLoading = true;
+    await this.folderService.loadFoldersWithCount();
+    this.folderLoading = false;
   }
 
   private getInitials(name: string): string {
@@ -847,7 +1005,7 @@ export class ChatbotComponent implements OnInit, OnDestroy {
         this.showOllamaModal = true;
       }
     } catch (error) {
-      console.error('Error checking Ollama on startup:', error);
+      this.logger.error('CHATBOT', 'checkOllamaOnStartup', { info: 'Error checking Ollama on startup', error });
       this.ollamaStatus = { installed: false, running: false, error: 'Error al verificar Ollama' };
       this.showOllamaModal = true;
     }
@@ -876,7 +1034,7 @@ export class ChatbotComponent implements OnInit, OnDestroy {
         this.isStartingOllama = false;
       }
     } catch (error: any) {
-      console.error('Error starting Ollama:', error);
+      this.logger.error('CHATBOT', 'startOllamaService', { info: 'Error starting Ollama', error });
       this.ollamaStartError = error?.message || 'Error al iniciar Ollama';
       this.isStartingOllama = false;
     }

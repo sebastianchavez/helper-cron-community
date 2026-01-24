@@ -43,6 +43,7 @@
     "@fontsource/material-symbols-outlined": "^5.2.32",
     "@tailwindcss/forms": "^0.5.10",
     "better-sqlite3": "^12.5.0",
+    "ngx-simpli-alert": "^19.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"

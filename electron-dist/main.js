@@ -17,6 +17,7 @@ const folder_handler_1 = require("./ipc/folder.handler");
 const user_profile_handler_1 = require("./ipc/user-profile.handler");
 const terminal_handler_1 = require("./ipc/terminal.handler");
 const external_link_handler_1 = require("./ipc/external-link.handler");
+const window_handler_1 = require("./ipc/window.handler");
 let win = null;
 function createWindow() {
     win = new electron_1.BrowserWindow({
@@ -58,6 +59,7 @@ electron_1.app.whenReady().then(() => {
     // Registrar handlers IPC globales
     (0, user_profile_handler_1.setupUserProfileHandlers)();
     (0, external_link_handler_1.registerExternalLinkHandler)();
+    (0, window_handler_1.registerWindowHandlers)();
     createWindow();
 });
 electron_1.app.on('window-all-closed', async () => {

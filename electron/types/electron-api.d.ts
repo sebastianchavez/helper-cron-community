@@ -100,5 +100,12 @@ declare global {
             stopTerminalProcess: (processId: string) => Promise<{ success: boolean; output?: string; error?: string }>;
             listTerminalProcesses: () => Promise<string[]>;
         };
+        electronAPI?: {
+            showWindow: () => Promise<{ success: boolean; error?: string }>;
+            restoreWindow: () => Promise<{ success: boolean; error?: string }>;
+            minimizeWindow: () => Promise<{ success: boolean; error?: string }>;
+            maximizeWindow: () => Promise<{ success: boolean; error?: string }>;
+            closeWindow: () => Promise<{ success: boolean; error?: string }>;
+        };
     }
 }
