@@ -13,6 +13,11 @@ interface OllamaModel {
   };
 }
 
+// Declaración global para Node.js
+declare global {
+    var setOllamaStartedByApp: (started: boolean) => void;
+}
+
 declare global {
     interface Window {
         agi?: {

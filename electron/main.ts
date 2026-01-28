@@ -16,6 +16,7 @@ import { registerWindowHandlers } from './ipc/window.handler';
 
 
 let win: BrowserWindow | null = null;
+let ollamaStartedByApp = false;
 
 function createWindow() {
     win = new BrowserWindow({
@@ -46,7 +47,6 @@ function createWindow() {
     }
     win.setMenu(null);
 
-    
     registerJobHandlers(win);
     registerFileDiffHandler();
     registerOllamaChatHandler();
@@ -57,7 +57,7 @@ function createWindow() {
     registerTerminalHandler();
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
     initDb();
     
     // Registrar handlers IPC globales
@@ -65,49 +65,74 @@ app.whenReady().then(() => {
     registerExternalLinkHandler();
     registerWindowHandlers();
     
+    // Función para establecer el estado de Ollama iniciado por la aplicación
+    global.setOllamaStartedByApp = (started: boolean) => {
+        ollamaStartedByApp = started;
+        console.log(`[MAIN] Ollama started by app status set to: ${started}`);
+    };
+    
+    // Verificar al inicio si Ollama ya está ejecutándose
+    try {
+        const response = await fetch('http://localhost:11434/api/tags');
+        if (response.ok) {
+            console.log('[MAIN] Ollama is already running, not started by this app');
+            ollamaStartedByApp = false;
+        }
+    } catch (error) {
+        // Ollama no está ejecutándose, lo cual es normal
+        console.log('[MAIN] Ollama is not running at startup');
+        ollamaStartedByApp = false;
+    }
+    
     createWindow();
 });
 
 app.on('window-all-closed', async () => {
-    // Detener Ollama antes de cerrar la aplicación
-    console.log('[MAIN] Stopping Ollama before closing app...');
-    try {
-        // En Windows, detener ollama.exe
-        if (process.platform === 'win32') {
-            await new Promise<void>((resolve) => {
-                exec('taskkill /F /IM ollama.exe 2>nul', (error) => {
-                    // Ignorar errores si el proceso no está ejecutándose
-                    console.log('[MAIN] Ollama stop command executed');
-                    resolve();
+    // Detener Ollama solo si fue iniciado por la aplicación
+    if (ollamaStartedByApp) {
+        console.log('[MAIN] Stopping Ollama (started by app) before closing app...');
+        try {
+            // En Windows, detener ollama.exe
+            if (process.platform === 'win32') {
+                await new Promise<void>((resolve) => {
+                    exec('taskkill /F /IM ollama.exe 2>nul', (error) => {
+                        // Ignorar errores si el proceso no está ejecutándose
+                        console.log('[MAIN] Ollama stop command executed');
+                        resolve();
+                    });
                 });
-            });
-        } else {
-            // En Unix/Linux/Mac
-            await new Promise<void>((resolve) => {
-                exec('pkill -f ollama', (error) => {
-                    console.log('[MAIN] Ollama stop command executed');
-                    resolve();
+            } else {
+                // En Unix/Linux/Mac
+                await new Promise<void>((resolve) => {
+                    exec('pkill -f ollama', (error) => {
+                        console.log('[MAIN] Ollama stop command executed');
+                        resolve();
+                    });
                 });
-            });
+            }
+        } catch (error) {
+            console.error('[MAIN] Error stopping Ollama:', error);
         }
-    } catch (error) {
-        console.error('[MAIN] Error stopping Ollama:', error);
+    } else {
+        console.log('[MAIN] Ollama was not started by this app, skipping cleanup');
     }
     
     if (process.platform !== 'darwin') app.quit();
 });
 
 app.on('before-quit', async (event) => {
-    console.log('[MAIN] App is about to quit, ensuring Ollama is stopped...');
-    // Detener Ollama antes de salir completamente
-    try {
-        if (process.platform === 'win32') {
-            exec('taskkill /F /IM ollama.exe 2>nul', () => {});
-        } else {
-            exec('pkill -f ollama', () => {});
+    if (ollamaStartedByApp) {
+        console.log('[MAIN] App is about to quit, ensuring Ollama (started by app) is stopped...');
+        // Detener Ollama antes de salir completamente
+        try {
+            if (process.platform === 'win32') {
+                exec('taskkill /F /IM ollama.exe 2>nul', () => {});
+            } else {
+                exec('pkill -f ollama', () => {});
+            }
+        } catch (error) {
+            console.error('[MAIN] Error in before-quit Ollama cleanup:', error);
         }
-    } catch (error) {
-        console.error('[MAIN] Error in before-quit Ollama cleanup:', error);
     }
 });
 

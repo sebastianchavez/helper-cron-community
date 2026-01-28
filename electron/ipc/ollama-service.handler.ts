@@ -86,6 +86,13 @@ function getOllamaCommand(): string {
 // Iniciar Ollama
 async function startOllama(): Promise<{ success: boolean; error?: string }> {
   try {
+    // Primero verificar si ya está ejecutándose
+    const alreadyRunning = await isOllamaRunning();
+    if (alreadyRunning) {
+      console.log('[OLLAMA] Service is already running, not started by this app');
+      return { success: true };
+    }
+    
     const ollamaCommand = getOllamaCommand();
     
     // Iniciar Ollama como servicio en segundo plano SIN ventana externa
@@ -110,6 +117,11 @@ async function startOllama(): Promise<{ success: boolean; error?: string }> {
     const running = await isOllamaRunning();
     
     if (running) {
+      // Marcar que Ollama fue iniciado por esta aplicación
+      if (global.setOllamaStartedByApp) {
+        global.setOllamaStartedByApp(true);
+      }
+      console.log('[OLLAMA] Service started successfully by this app');
       return { success: true };
     } else {
       return { success: false, error: 'El servicio se inició pero no responde' };
