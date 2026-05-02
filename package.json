@@ -1,7 +1,7 @@
 {
   "name": "brodapp",
   "description": "HelperCron - A desktop application for chatting with artificial intelligence",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "author": "Schavez",
   "main": "electron-dist/main.js",
   "scripts": {

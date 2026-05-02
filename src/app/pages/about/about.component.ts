@@ -29,7 +29,7 @@ export class AboutComponent implements OnInit {
 
   private loadVersionInfo() {
     // Obtener versión de la aplicación
-    this.appVersion = '1.0.0'; // Versión fija por ahora
+    this.appVersion = '2.0.0'; // Versión fija por ahora
     
     // Obtener información del sistema
     this.platform = this.getPlatformName();
