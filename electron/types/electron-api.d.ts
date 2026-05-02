@@ -57,27 +57,22 @@ declare global {
                     onError: (error: string) => void
                 ) => () => void;
             };
-            plan: {
-                generate: (userMessage: string, model?: string) => Promise<
-                    | { ok: true; plan: any }
-                    | { ok: false; error: string }>;
-            };
             chatDb: {
                 createConversation(title?: string, folderId?: string): Promise<any>;
                 listConversations(): Promise<any[]>;
                 getConversationsByFolder(folderId: string): Promise<any[]>;
+                getConversation(conversationId: string): Promise<any>;
                 addMessage(payload: {
-                conversationId: string;
-                role: 'user' | 'assistant' | 'system';
-                content: string;
+                    conversationId: string;
+                    role: 'user' | 'assistant' | 'system';
+                    content: string;
                 }): Promise<any>;
                 getMessages(conversationId: string): Promise<any[]>;
                 deleteConversation(conversationId: string): Promise<void>;
-                restoreConversation(conversationId: string): Promise<void>;
-                permanentDeleteConversation(conversationId: string): Promise<void>;
-                listDeletedConversations(): Promise<any[]>;
                 updateConversationTitle(conversationId: string, title: string): Promise<void>;
                 moveConversationToFolder(conversationId: string, folderId?: string): Promise<void>;
+                updateConversationAssociatedFolder(conversationId: string, folderPath: string): Promise<any>;
+                removeConversationAssociatedFolder(conversationId: string): Promise<any>;
             };
             folder: {
                 create(name: string, parentId?: string): Promise<any>;
@@ -88,6 +83,12 @@ declare global {
                 delete(id: string): Promise<void>;
                 move(folderId: string, newParentId?: string): Promise<void>;
                 getWithCount(): Promise<any[]>;
+                listContents(dirPath: string): Promise<{ success: boolean; contents?: string[]; error?: string }>;
+                selectDialog(): Promise<{ success: boolean; folderPath?: string; canceled?: boolean; error?: string }>;
+            };
+            file: {
+                writeText(filePath: string, content: string, options?: { overwrite?: boolean }): Promise<{ success: boolean; filePath?: string; size?: number; created?: boolean; updated?: boolean; exists?: boolean; error?: string }>;
+                readText(filePath: string): Promise<{ success: boolean; content?: string; size?: number; error?: string }>;
             };
             userProfile: {
                 get(): Promise<{ success: boolean; data?: any; error?: string }>;
@@ -99,7 +100,26 @@ declare global {
                 startService(): Promise<{ success: boolean; error?: string }>;
                 isInstalled(): Promise<boolean>;
             };
+            flow: {
+                list(): Promise<any[]>;
+                get(id: string): Promise<any>;
+                create(data: { name: string; description?: string; icon?: string; iconColor?: string; iconBg?: string }): Promise<any>;
+                update(id: string, data: {
+                    name?: string; description?: string; icon?: string; iconColor?: string; iconBg?: string;
+                    blocksCount?: number; canvasBlocks?: string; connections?: string; endNodes?: string;
+                    startNodeX?: number; startNodeY?: number;
+                    scheduleType?: string; intervalValue?: number; intervalUnit?: string;
+                    specificTime?: string; selectedDays?: string; enabled?: number;
+                }): Promise<any>;
+                delete(id: string): Promise<void>;
+                duplicate(id: string): Promise<any>;
+            };
+            executionLog: {
+                listByRange(from: string, to: string): Promise<any[]>;
+                listByFlow(flowId: string, limit?: number): Promise<any[]>;
+            };
             openExternalLink: (url: string) => Promise<{ success: boolean; error?: string }>;
+            showItemInFolder: (filePath: string) => Promise<{ success: boolean; error?: string }>;
             executeTerminalCommand: (command: string) => Promise<{ success: boolean; output?: string; error?: string; exitCode?: number }>;
             startTerminalProcess: (command: string, processId?: string) => Promise<{ success: boolean; output?: string; error?: string }>;
             stopTerminalProcess: (processId: string) => Promise<{ success: boolean; output?: string; error?: string }>;

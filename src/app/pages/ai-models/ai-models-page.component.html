@@ -1,0 +1,78 @@
+<div class="flex h-screen overflow-hidden bg-background-light dark:bg-background-dark" style="width: -webkit-fill-available;">
+  <!-- Sidebar -->
+  <app-navigation-menu [currentPage]="'ai-models'"></app-navigation-menu>
+
+  <main class="flex flex-1 flex-col h-full">
+    <!-- Header -->
+    <header class="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
+      <div class="flex items-center gap-3">
+        <button (click)="navigateBack()"
+          class="flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-primary transition-colors">
+          <span class="material-symbols-outlined" style="font-size: 20px;">arrow_back</span>
+          <span class="font-medium">{{ 'settings.title' | translate }}</span>
+        </button>
+      </div>
+      <h1 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+        <span class="material-symbols-outlined text-primary" style="font-size: 24px;">smart_toy</span>
+        {{ 'models.title' | translate }}
+      </h1>
+      <div></div>
+    </header>
+
+    <!-- Content -->
+    <div class="flex-1 overflow-y-auto p-6">
+      <div class="max-w-3xl mx-auto space-y-6">
+
+        <!-- Description -->
+        <div class="flex items-start gap-4 p-5 bg-gradient-to-r from-primary/5 to-transparent dark:from-primary/10 rounded-xl border border-primary/10 dark:border-primary/20">
+          <span class="material-symbols-outlined text-primary flex-shrink-0 mt-0.5" style="font-size: 28px;">neurology</span>
+          <div>
+            <h2 class="text-base font-semibold text-slate-900 dark:text-white mb-1">{{ 'models.pageDescription' | translate }}</h2>
+            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{{ 'models.providersSubDesc' | translate }}</p>
+          </div>
+        </div>
+
+        <!-- Loading -->
+        <div *ngIf="loading" class="flex justify-center py-10">
+          <div class="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+        </div>
+
+        <ng-container *ngIf="!loading">
+
+          <!-- ==================== Ollama Local ==================== -->
+          <div class="bg-white dark:bg-gray-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+            <div class="p-5">
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+                  <span class="material-symbols-outlined text-blue-600 dark:text-blue-400" style="font-size: 22px;">computer</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1">
+                    <h3 class="text-base font-semibold text-slate-900 dark:text-white">Ollama Local</h3>
+                    <span class="text-xs px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full">{{ 'models.providers.local' | translate }}</span>
+                  </div>
+                  <p class="text-sm text-slate-500 dark:text-slate-400">{{ 'models.providers.ollamaLocalDesc' | translate }}</p>
+                </div>
+              </div>
+            </div>
+            <!-- Ollama model manager -->
+            <div class="border-t border-slate-200 dark:border-slate-700 px-5 pb-5 pt-4">
+              <app-ai-models></app-ai-models>
+            </div>
+          </div>
+
+        </ng-container>
+
+        <!-- Navigate to chatbot -->
+        <div class="flex justify-center pt-2">
+          <button (click)="navigateToChatbot()"
+            class="flex items-center gap-2 text-sm text-primary hover:underline">
+            <span class="material-symbols-outlined" style="font-size: 16px;">chat</span>
+            {{ 'models.goToChatbot' | translate }}
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>

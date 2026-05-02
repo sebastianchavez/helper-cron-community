@@ -1,0 +1,443 @@
+<!-- Canvas Area -->
+<div class="flex-1 relative overflow-hidden">
+  <!-- Canvas toast notification -->
+  <div *ngIf="canvasToast"
+    class="absolute top-3 left-1/2 -translate-x-1/2 z-[200] flex items-center gap-2 px-3 py-2 rounded-lg bg-red-600 text-white text-xs font-medium shadow-lg pointer-events-none">
+    <span class="material-symbols-outlined" style="font-size: 15px;">error</span>
+    {{ canvasToast }}
+  </div>
+  <!-- Canvas (scroll container) -->
+  <div 
+    class="canvas-grid absolute inset-0 overflow-auto"
+    (dragover)="onCanvasDragOver($event)"
+    (drop)="onCanvasDrop($event)"
+    (click)="onDeselectClick()"
+    (contextmenu)="onCanvasContextMenu($event)">
+    <!-- Sizer: determines scrollbar range -->
+    <div
+      [style.min-width.px]="3000 * zoomLevel / 100"
+      [style.min-height.px]="3000 * zoomLevel / 100"
+      style="position: relative; overflow: hidden;">
+      <!-- Scaled content wrapper -->
+      <div
+        [style.transform]="'scale(' + zoomLevel / 100 + ')'"
+        [style.transformOrigin]="'top left'"
+        style="position: absolute; top: 0; left: 0; width: 3000px; height: 3000px;">
+    
+      <!-- SVG Connectors layer -->
+      <svg class="absolute inset-0 pointer-events-none" style="min-width: 3000px; min-height: 3000px; z-index: 1;">
+        <defs>
+          <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="fill-slate-400 dark:fill-slate-500" />
+          </marker>
+          <marker id="arrowhead-active" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="fill-primary" />
+          </marker>
+        </defs>
+
+        <!-- Existing connections -->
+        <g *ngFor="let conn of connections">
+          <path 
+            [attr.d]="getConnectionPath(conn)"
+            [attr.class]="getConnectionClass(conn)"
+            marker-end="url(#arrowhead)" />
+          <!-- Invisible wider path for easier click to delete -->
+          <path 
+            [attr.d]="getConnectionPath(conn)"
+            fill="none"
+            stroke="transparent"
+            stroke-width="12"
+            style="pointer-events: stroke; cursor: pointer;"
+            (click)="removeConnection(conn); $event.stopPropagation()" />
+        </g>
+
+        <!-- Pending connection being drawn -->
+        <path 
+          *ngIf="pendingConnection"
+          [attr.d]="getPendingConnectionPath()"
+          class="pending-connector-line"
+          marker-end="url(#arrowhead-active)" />
+      </svg>
+
+      <!-- Start Node -->
+      <div 
+        class="absolute flex flex-col items-center cursor-move"
+        [style.left.px]="startNodeX"
+        [style.top.px]="startNodeY"
+        style="z-index: 2;"
+        (mousedown)="onStartNodeMouseDown($event)"
+        (click)="$event.stopPropagation()">
+        <div class="w-14 h-14 rounded-full bg-emerald-500 dark:bg-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-200 dark:shadow-emerald-900/40">
+          <span class="material-symbols-outlined text-white" style="font-size: 24px;">play_arrow</span>
+        </div>
+        <span class="mt-1.5 text-xs font-medium text-slate-500 dark:text-slate-400">{{ 'taskBuilder.start' | translate }}</span>
+        <!-- Output connector (bottom) -->
+        <div 
+          class="connector-handle connector-output"
+          (mousedown)="onConnectorOutputDragStart($event, 'start')"
+          [class.connected]="hasOutputConnection('start')">
+          <div class="connector-dot"></div>
+        </div>
+      </div>
+
+      <!-- Flow Blocks on Canvas -->
+      <div 
+        *ngFor="let block of canvasBlocks"
+        class="absolute"
+        [style.left.px]="block.x"
+        [style.top.px]="block.y"
+        [class.ring-2]="selectedBlock?.id === block.id && !isForkJoinBlock(block)"
+        [class.ring-primary]="selectedBlock?.id === block.id && !isForkJoinBlock(block)"
+        style="z-index: 2;"
+        (mousedown)="onBlockMouseDown($event, block)"
+        (contextmenu)="onBlockContextMenu($event, block)"
+        (click)="$event.stopPropagation()">
+
+        <!-- ========== FORK / JOIN bar rendering ========== -->
+        <ng-container *ngIf="isForkJoinBlock(block)">
+          <!-- Input connector (top) -->
+          <div 
+            class="connector-handle connector-input connector-input-forkjoin"
+            [class.connector-hovered]="hoveredInputId === block.id"
+            [class.connected]="hasInputConnection(block.id)"
+            (mousedown)="onConnectorInputDragStart($event, block.id)">
+            <div class="connector-dot"></div>
+          </div>
+
+          <!-- Fork/Join bar body -->
+          <div class="fork-join-bar cursor-move"
+            [class.fork-join-bar-selected]="selectedBlock?.id === block.id"
+            [class.fork-bar]="block.type === 'fork'"
+            [class.join-bar]="block.type === 'join'">
+          </div>
+          <span class="fork-join-label"
+            [class.text-amber-600]="block.type === 'fork'"
+            [class.dark:text-amber-400]="block.type === 'fork'"
+            [class.text-sky-600]="block.type === 'join'"
+            [class.dark:text-sky-400]="block.type === 'join'">
+            <span class="material-symbols-outlined" style="font-size: 12px;">{{ block.icon }}</span>
+            {{ block.label | translate }}
+          </span>
+
+          <!-- Output connector (bottom) -->
+          <div 
+            class="connector-handle connector-output connector-output-forkjoin"
+            [class.connected]="hasOutputConnection(block.id)"
+            (mousedown)="onConnectorOutputDragStart($event, block.id)">
+            <div class="connector-dot"></div>
+          </div>
+        </ng-container>
+
+        <!-- ========== Regular block rendering ========== -->
+        <ng-container *ngIf="!isForkJoinBlock(block)">
+        <!-- Input connector (top) -->
+        <div 
+          class="connector-handle connector-input"
+          [class.connector-hovered]="hoveredInputId === block.id"
+          [class.connected]="hasInputConnection(block.id)"
+          (mousedown)="onConnectorInputDragStart($event, block.id)">
+          <div class="connector-dot"></div>
+        </div>
+
+        <!-- Block body -->
+        <div class="w-[200px] bg-white dark:bg-gray-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow p-3 cursor-move">
+          <div class="flex items-center gap-2 mb-2">
+            <div [class]="block.bgColor + ' rounded-lg p-1.5'" class="border border-slate-100 dark:border-slate-700">
+              <span class="material-symbols-outlined" [class]="block.iconColor" style="font-size: 18px;">{{ block.icon }}</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <span class="text-sm font-medium text-slate-700 dark:text-slate-200 truncate block">{{ block.label | translate }}</span>
+              <span *ngIf="block.config?.['customName']" class="text-[10px] text-slate-400 dark:text-slate-500 truncate block leading-tight">{{ block.config?.['customName'] }}</span>
+            </div>
+          </div>
+          <!-- local-storage preview -->
+          <div class="text-xs text-slate-500 dark:text-slate-400 px-1" *ngIf="block.type === 'local-storage' && block.config?.['key']">
+            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 font-mono text-[10px]">
+              {{ block.config?.['action'] === 'set' ? 'SET' : 'GET' }}
+            </span>
+            <span class="ml-1 font-mono">{{ block.config?.['key'] }}</span>
+            <span class="ml-1 text-slate-400 dark:text-slate-500">({{ block.config?.['format'] || 'string' }})</span>
+          </div>
+          <!-- api-rest preview -->
+          <div class="text-xs text-slate-500 dark:text-slate-400 px-1" *ngIf="block.type === 'api-rest' && block.config?.['url']">
+            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded font-mono text-[10px]"
+              [class]="block.config?.['method'] === 'POST' ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300' 
+                     : block.config?.['method'] === 'PUT' ? 'bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'
+                     : block.config?.['method'] === 'PATCH' ? 'bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300'
+                     : block.config?.['method'] === 'DELETE' ? 'bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+                     : 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'">
+              {{ block.config?.['method'] || 'GET' }}
+            </span>
+            <span class="ml-1 font-mono truncate" style="max-width: 130px; display: inline-block; vertical-align: middle;">{{ block.config?.['url'] }}</span>
+          </div>
+          <!-- web-scraping preview -->
+          <div class="text-xs text-slate-500 dark:text-slate-400 px-1" *ngIf="block.type === 'web-scraping' && block.config?.['url']">
+            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 font-mono text-[10px]">
+              RPA
+            </span>
+            <span class="ml-1 font-mono truncate text-[10px]" style="max-width: 120px; display: inline-block; vertical-align: middle;">{{ block.config?.['url'] }}</span>
+            <div class="mt-0.5" *ngIf="block.config?.['steps']?.length">
+              <span class="inline-flex items-center gap-0.5 px-1 py-0 rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-[9px] font-medium">
+                {{ block.config?.['steps']?.length }} {{ block.config?.['steps']?.length === 1 ? 'step' : 'steps' }}
+              </span>
+            </div>
+          </div>
+          <!-- generic preview -->
+          <div class="text-xs text-slate-500 dark:text-slate-400 px-1" *ngIf="block.type !== 'local-storage' && block.type !== 'api-rest' && block.type !== 'web-scraping' && block.type !== 'set-variable' && block.config?.['name']">
+            {{ block.config?.['name'] }}
+          </div>
+          <!-- set-variable preview -->
+          <div class="text-xs text-slate-500 dark:text-slate-400 px-1" *ngIf="block.type === 'set-variable' && block.config?.['assignments']?.length > 0">
+            <div *ngFor="let a of block.config?.['assignments']" class="flex items-center gap-0.5 mb-0.5">
+              <span class="inline-flex items-center px-1 py-0 rounded bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 font-mono text-[9px]">SET</span>
+              <span class="font-mono text-[10px] text-amber-600 dark:text-amber-400">{{ a.name }}</span>
+              <span class="text-[10px] text-slate-400">=</span>
+              <span class="font-mono text-[10px] truncate" style="max-width: 80px; display: inline-block; vertical-align: middle;">{{ a.value }}</span>
+            </div>
+          </div>
+          <!-- Output variable badge -->
+          <div class="mt-1.5 px-1" *ngIf="block.config?.['outputVar']">
+            <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 text-[10px] font-mono">
+              <span class="material-symbols-outlined" style="font-size: 11px;">bookmark</span>
+              &#8594; {{ block.config?.['outputVar'] }}
+            </span>
+          </div>
+          <!-- Mappings badge -->
+          <div class="mt-1 px-1" *ngIf="block.config?.['mappings']?.length > 0">
+            <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 text-[10px] font-mono">
+              <span class="material-symbols-outlined" style="font-size: 11px;">account_tree</span>
+              {{ block.config?.['mappings']?.length }} mapping{{ block.config?.['mappings']?.length > 1 ? 's' : '' }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Output connector (bottom) - for normal blocks (not api-rest) -->
+        <div 
+          *ngIf="block.type !== 'api-rest'"
+          class="connector-handle connector-output"
+          [class.connected]="hasOutputConnection(block.id)"
+          (mousedown)="onConnectorOutputDragStart($event, block.id)">
+          <div class="connector-dot"></div>
+        </div>
+
+        <!-- Triple output connectors for API-REST blocks -->
+        <ng-container *ngIf="block.type === 'api-rest'">
+          <!-- 2xx Success (left) -->
+          <div
+            class="connector-handle connector-output connector-apirest-success"
+            [class.connected]="hasPortConnection(block.id, '2xx')"
+            [title]="'taskBuilder.apiRestSuccess' | translate"
+            (mousedown)="onConnectorOutputDragStart($event, block.id, '2xx')">
+            <div class="connector-dot connector-dot-2xx"></div>
+          </div>
+          <!-- 4xx Client Error (center) -->
+          <div
+            class="connector-handle connector-output connector-apirest-client"
+            [class.connected]="hasPortConnection(block.id, '4xx')"
+            [title]="'taskBuilder.apiRestClientError' | translate"
+            (mousedown)="onConnectorOutputDragStart($event, block.id, '4xx')">
+            <div class="connector-dot connector-dot-4xx"></div>
+          </div>
+          <!-- 5xx Server Error (right) -->
+          <div
+            class="connector-handle connector-output connector-apirest-server"
+            [class.connected]="hasPortConnection(block.id, '5xx')"
+            [title]="'taskBuilder.apiRestServerError' | translate"
+            (mousedown)="onConnectorOutputDragStart($event, block.id, '5xx')">
+            <div class="connector-dot connector-dot-5xx"></div>
+          </div>
+        </ng-container>
+        </ng-container>
+      </div>
+
+      <!-- End Nodes (multiple, draggable) -->
+      <div 
+        *ngFor="let endNode of endNodes"
+        class="absolute flex flex-col items-center"
+        style="z-index: 2;"
+        [style.left.px]="endNode.x"
+        [style.top.px]="endNode.y"
+        [class.ring-2]="selectedEndNode?.id === endNode.id"
+        [class.ring-red-400]="selectedEndNode?.id === endNode.id"
+        [class.rounded-full]="selectedEndNode?.id === endNode.id"
+        (mousedown)="onEndNodeMouseDown($event, endNode)"
+        (click)="$event.stopPropagation()">
+        <!-- Input connector (top) -->
+        <div 
+          class="connector-handle connector-input connector-input-end"
+          [class.connector-hovered]="hoveredInputId === endNode.id"
+          [class.connected]="hasInputConnection(endNode.id)"
+          (mousedown)="onConnectorInputDragStart($event, endNode.id)">
+          <div class="connector-dot"></div>
+        </div>
+        <div class="w-14 h-14 rounded-full bg-red-500 dark:bg-red-600 flex items-center justify-center shadow-lg shadow-red-200 dark:shadow-red-900/40 cursor-move">
+          <span class="material-symbols-outlined text-white" style="font-size: 24px;">stop</span>
+        </div>
+        <span class="mt-1.5 text-xs font-medium text-slate-500 dark:text-slate-400">{{ 'taskBuilder.end' | translate }}</span>
+        <!-- Delete button (only if more than 1 end node) -->
+        <button 
+          *ngIf="endNodes.length > 1"
+          (click)="deleteEndNode(endNode); $event.stopPropagation()"
+          class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-red-100 dark:bg-red-900/50 hover:bg-red-200 dark:hover:bg-red-800 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+          style="opacity: 1; z-index: 20;">
+          <span class="material-symbols-outlined text-red-500 dark:text-red-400" style="font-size: 12px;">close</span>
+        </button>
+      </div>
+        </div><!-- /scaled content wrapper -->
+      </div><!-- /sizer -->
+    </div><!-- /scroll container -->
+
+    <!-- Zoom Controls -->
+    <div class="absolute bottom-4 left-4 flex items-center gap-1 bg-white dark:bg-gray-800 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm p-1">
+      <button 
+        (click)="zoomOut()"
+        class="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400 transition-colors">
+        <span class="material-symbols-outlined" style="font-size: 18px;">remove</span>
+      </button>
+      <span class="text-xs font-medium text-slate-600 dark:text-slate-400 min-w-[40px] text-center">{{ zoomLevel }}%</span>
+      <button 
+        (click)="zoomIn()"
+        class="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400 transition-colors">
+        <span class="material-symbols-outlined" style="font-size: 18px;">add</span>
+      </button>
+    </div>
+
+    <!-- Canvas Toolbar -->
+    <div class="absolute bottom-4 right-4 flex items-center gap-1 bg-white dark:bg-gray-800 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm p-1">
+      <button 
+        (click)="autoLayout()"
+        class="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400 transition-colors"
+        [title]="'taskBuilder.autoLayout' | translate">
+        <span class="material-symbols-outlined" style="font-size: 18px;">auto_fix_high</span>
+      </button>
+      <button 
+        (click)="addEndNode()"
+        class="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400 transition-colors"
+        [title]="'taskBuilder.addEndNode' | translate">
+        <span class="material-symbols-outlined" style="font-size: 18px;">add_circle</span>
+      </button>
+      <div class="w-px h-5 bg-slate-200 dark:bg-slate-700"></div>
+      <button 
+        (click)="toggleLogPanel()"
+        class="p-1.5 rounded transition-colors"
+        [class]="showLogPanel 
+          ? 'bg-primary/10 text-primary dark:text-primary-light' 
+          : 'hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400'"
+        [title]="'taskBuilder.toggleTerminal' | translate">
+        <span class="material-symbols-outlined" style="font-size: 18px;">terminal</span>
+      </button>
+      <button 
+        (click)="resetZoom()"
+        class="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400 transition-colors"
+        [title]="'taskBuilder.resetZoom' | translate">
+        <span class="material-symbols-outlined" style="font-size: 18px;">fit_screen</span>
+      </button>
+    </div>
+
+    <!-- Log / Terminal Panel -->
+    <div 
+      *ngIf="showLogPanel"
+      class="log-panel absolute bottom-0 left-0 right-0 border-t border-slate-200 dark:border-slate-700 bg-slate-900 dark:bg-gray-950 flex flex-col"
+      [style.height.px]="logPanelHeight"
+      style="z-index: 30;">
+      <!-- Resize handle -->
+      <div
+        class="absolute -top-1.5 left-0 right-0 h-3 cursor-row-resize z-10 group flex items-center justify-center"
+        (mousedown)="onLogResizeStart($event)">
+        <div class="w-10 h-1 rounded-full bg-slate-600 group-hover:bg-slate-400 transition-colors"></div>
+      </div>
+      <!-- Panel header -->
+      <div class="flex items-center justify-between px-4 py-2 border-b border-slate-700 dark:border-slate-800 bg-slate-800 dark:bg-gray-900">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-slate-400" style="font-size: 16px;">terminal</span>
+          <span class="text-xs font-semibold text-slate-300 uppercase tracking-wider">{{ 'taskBuilder.terminal' | translate }}</span>
+          <span *ngIf="logEntries.length" class="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-700 text-slate-400">{{ logEntries.length }}</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <button 
+            (click)="clearLogs()"
+            class="p-1 rounded hover:bg-slate-700 text-slate-400 hover:text-slate-300 transition-colors"
+            [title]="'taskBuilder.clearLogs' | translate">
+            <span class="material-symbols-outlined" style="font-size: 15px;">delete_sweep</span>
+          </button>
+          <button 
+            (click)="toggleLogPanel()"
+            class="p-1 rounded hover:bg-slate-700 text-slate-400 hover:text-slate-300 transition-colors">
+            <span class="material-symbols-outlined" style="font-size: 15px;">close</span>
+          </button>
+        </div>
+      </div>
+      <!-- Log entries -->
+      <div #logScrollContainer class="flex-1 overflow-y-auto px-4 py-2 font-mono text-xs leading-5 log-scroll">
+        <div *ngIf="logEntries.length === 0" class="text-slate-500 italic py-4 text-center">
+          {{ 'taskBuilder.logEmpty' | translate }}
+        </div>
+        <div *ngFor="let entry of logEntries" class="flex gap-2 py-0.5">
+          <span class="text-slate-500 select-none shrink-0">{{ entry.time }}</span>
+          <span 
+            [class]="entry.type === 'success' ? 'text-emerald-400' : entry.type === 'error' ? 'text-red-400' : entry.type === 'warn' ? 'text-amber-400' : 'text-slate-300'"
+            class="break-all">{{ entry.message }}</span>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- Context Menu -->
+<div
+  *ngIf="contextMenuVisible"
+  class="fixed z-[500] bg-white dark:bg-gray-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl py-1 min-w-[180px]"
+  [style.left.px]="contextMenuX"
+  [style.top.px]="contextMenuY"
+  (click)="$event.stopPropagation()">
+
+  <!-- Copy -->
+  <button *ngIf="contextMenuBlock"
+    (click)="ctxCopy()"
+    class="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-gray-700 transition-colors">
+    <span class="material-symbols-outlined text-slate-400 dark:text-slate-500" style="font-size: 17px;">content_copy</span>
+    {{ 'canvas.ctxCopy' | translate }}
+  </button>
+
+  <!-- Cut -->
+  <button *ngIf="contextMenuBlock"
+    (click)="ctxCut()"
+    class="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-gray-700 transition-colors">
+    <span class="material-symbols-outlined text-slate-400 dark:text-slate-500" style="font-size: 17px;">content_cut</span>
+    {{ 'canvas.ctxCut' | translate }}
+  </button>
+
+  <!-- Paste -->
+  <button
+    (click)="ctxPaste()"
+    [disabled]="!clipboardBlock"
+    class="w-full flex items-center gap-2.5 px-3 py-2 text-sm transition-colors"
+    [class]="clipboardBlock
+      ? 'text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-gray-700'
+      : 'text-slate-300 dark:text-slate-600 cursor-not-allowed'">
+    <span class="material-symbols-outlined" style="font-size: 17px;"
+      [class]="clipboardBlock ? 'text-slate-400 dark:text-slate-500' : 'text-slate-300 dark:text-slate-600'">content_paste</span>
+    {{ 'canvas.ctxPaste' | translate }}
+  </button>
+
+  <!-- Divider -->
+  <div *ngIf="contextMenuBlock" class="my-1 border-t border-slate-100 dark:border-slate-700"></div>
+
+  <!-- Duplicate -->
+  <button *ngIf="contextMenuBlock"
+    (click)="ctxDuplicate()"
+    class="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-gray-700 transition-colors">
+    <span class="material-symbols-outlined text-slate-400 dark:text-slate-500" style="font-size: 17px;">copy_all</span>
+    {{ 'canvas.ctxDuplicate' | translate }}
+  </button>
+
+  <!-- Divider before delete -->
+  <div *ngIf="contextMenuBlock" class="my-1 border-t border-slate-100 dark:border-slate-700"></div>
+
+  <!-- Delete -->
+  <button *ngIf="contextMenuBlock"
+    (click)="ctxDelete()"
+    class="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+    <span class="material-symbols-outlined text-red-400 dark:text-red-500" style="font-size: 17px;">delete</span>
+    {{ 'canvas.ctxDelete' | translate }}
+  </button>
+</div>

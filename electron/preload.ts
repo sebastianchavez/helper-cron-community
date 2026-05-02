@@ -101,10 +101,6 @@ contextBridge.exposeInMainWorld('agi', {
       return cleanup;
     }
   },
-  plan: {
-    generate: (userMessage: string, model = 'llama3') =>
-      ipcRenderer.invoke('ollama:plan', { userMessage, model }),
-  },
   chatDb: {
     createConversation: (title?: string, folderId?: string) =>
       ipcRenderer.invoke('chat:conversation:create', title, folderId),
@@ -112,6 +108,8 @@ contextBridge.exposeInMainWorld('agi', {
       ipcRenderer.invoke('chat:conversation:list'),
     getConversationsByFolder: (folderId: string) =>
       ipcRenderer.invoke('chat:conversation:by-folder', folderId),
+    getConversation: (conversationId: string) =>
+      ipcRenderer.invoke('chat:conversation:get', conversationId),
     addMessage: (payload: {
       conversationId: string;
       role: 'user' | 'assistant' | 'system';
@@ -122,16 +120,14 @@ contextBridge.exposeInMainWorld('agi', {
       ipcRenderer.invoke('chat:message:list', conversationId),
     deleteConversation: (conversationId: string) =>
       ipcRenderer.invoke('chat:conversation:delete', conversationId),
-    restoreConversation: (conversationId: string) =>
-      ipcRenderer.invoke('chat:conversation:restore', conversationId),
-    permanentDeleteConversation: (conversationId: string) =>
-      ipcRenderer.invoke('chat:conversation:permanent-delete', conversationId),
-    listDeletedConversations: () =>
-      ipcRenderer.invoke('chat:conversation:list-deleted'),
     updateConversationTitle: (conversationId: string, title: string) =>
       ipcRenderer.invoke('chat:conversation:updateTitle', { conversationId, title }),
     moveConversationToFolder: (conversationId: string, folderId?: string) =>
       ipcRenderer.invoke('chat:conversation:move-to-folder', { conversationId, folderId }),
+    updateConversationAssociatedFolder: (conversationId: string, folderPath: string) =>
+      ipcRenderer.invoke('chat:conversation:update-associated-folder', { conversationId, folderPath }),
+    removeConversationAssociatedFolder: (conversationId: string) =>
+      ipcRenderer.invoke('chat:conversation:remove-associated-folder', conversationId),
   },
   folder: {
     create: (name: string, parentId?: string) =>
@@ -150,6 +146,10 @@ contextBridge.exposeInMainWorld('agi', {
       ipcRenderer.invoke('folder:move', folderId, newParentId),
     getWithCount: () =>
       ipcRenderer.invoke('folder:get-with-count'),
+    listContents: (dirPath: string) =>
+      ipcRenderer.invoke('directory:list-contents', dirPath),
+    selectDialog: () =>
+      ipcRenderer.invoke('folder:select-dialog'),
   },
   ollama: {
     checkStatus: () => ipcRenderer.invoke('ollama:check-status'),
@@ -167,8 +167,43 @@ contextBridge.exposeInMainWorld('agi', {
   // API para abrir enlaces externos
   openExternalLink: (url: string) => ipcRenderer.invoke('open-external-link', url),
   
+  // APIs de archivos
+  file: {
+    writeText: (filePath: string, content: string, options?: any) =>
+      ipcRenderer.invoke('file:write-text', filePath, content, options),
+    readText: (filePath: string) =>
+      ipcRenderer.invoke('file:read-text', filePath),
+  },
+  
+  // APIs de flows
+  flow: {
+    list: () => ipcRenderer.invoke('flow:list'),
+    get: (id: string) => ipcRenderer.invoke('flow:get', id),
+    create: (data: { name: string; description?: string; icon?: string; iconColor?: string; iconBg?: string }) =>
+      ipcRenderer.invoke('flow:create', data),
+    update: (id: string, data: {
+      name?: string; description?: string; icon?: string; iconColor?: string; iconBg?: string;
+      blocksCount?: number; canvasBlocks?: string; connections?: string; endNodes?: string;
+      startNodeX?: number; startNodeY?: number;
+      scheduleType?: string; intervalValue?: number; intervalUnit?: string;
+      specificTime?: string; selectedDays?: string; enabled?: number;
+    }) => ipcRenderer.invoke('flow:update', id, data),
+    delete: (id: string) => ipcRenderer.invoke('flow:delete', id),
+    duplicate: (id: string) => ipcRenderer.invoke('flow:duplicate', id),
+  },
+
+  // APIs de execution logs
+  executionLog: {
+    listByRange: (from: string, to: string) => ipcRenderer.invoke('executionLog:listByRange', from, to),
+    listByFlow: (flowId: string, limit?: number) => ipcRenderer.invoke('executionLog:listByFlow', flowId, limit),
+  },
+
+  showItemInFolder: (filePath: string) => ipcRenderer.invoke('show-item-in-folder', filePath),
+
   // APIs de terminal
   executeTerminalCommand: (command: string) => ipcRenderer.invoke('terminal:execute', command),
+
+
 });
 
 // APIs específicas de Electron para manejo de ventana

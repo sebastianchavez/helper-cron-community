@@ -1,0 +1,284 @@
+<!-- Config Header -->
+<div class="px-5 py-4 border-b border-slate-200 dark:border-slate-700">
+  <h2 class="text-sm font-semibold text-slate-800 dark:text-slate-200">{{ 'taskBuilder.flowConfig' | translate }}</h2>
+  <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{{ 'taskBuilder.flowConfigDesc' | translate }}</p>
+</div>
+
+<!-- Schedule Section -->
+<div class="px-5 py-4 border-b border-slate-200 dark:border-slate-700">
+  <div class="flex items-center justify-between mb-3">
+    <div class="flex items-center gap-2">
+      <span class="material-symbols-outlined text-primary" style="font-size: 18px;">schedule</span>
+      <h3 class="text-sm font-semibold text-slate-700 dark:text-slate-300">{{ 'taskBuilder.schedule' | translate }}</h3>
+    </div>
+    <label class="relative inline-flex items-center cursor-pointer">
+      <input type="checkbox" [ngModel]="scheduleEnabled" (ngModelChange)="scheduleEnabledChange.emit($event); scheduleEnabled = $event" class="sr-only peer" />
+      <div class="w-9 h-5 bg-slate-200 dark:bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+    </label>
+  </div>
+
+  <div *ngIf="!scheduleEnabled" class="flex items-start gap-2 p-2.5 rounded-lg bg-slate-50 dark:bg-gray-800/50">
+    <span class="material-symbols-outlined text-slate-400 flex-shrink-0" style="font-size: 14px; margin-top: 1px;">info</span>
+    <span class="text-[11px] text-slate-400 dark:text-slate-500">{{ 'taskBuilder.scheduleDisabledHint' | translate }}</span>
+  </div>
+
+  <div *ngIf="scheduleEnabled">
+
+  <!-- Schedule Type Tabs -->
+  <div class="flex bg-slate-100 dark:bg-gray-800 rounded-lg p-0.5 mb-4">
+    <button 
+      (click)="setScheduleType('interval')"
+      [class]="scheduleType === 'interval' 
+        ? 'flex-1 py-1.5 text-xs font-medium rounded-md bg-white dark:bg-gray-700 text-slate-800 dark:text-slate-200 shadow-sm transition-all' 
+        : 'flex-1 py-1.5 text-xs font-medium rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-all'">
+      {{ 'taskBuilder.scheduleInterval' | translate }}
+    </button>
+    <button 
+      (click)="setScheduleType('specific')"
+      [class]="scheduleType === 'specific' 
+        ? 'flex-1 py-1.5 text-xs font-medium rounded-md bg-white dark:bg-gray-700 text-slate-800 dark:text-slate-200 shadow-sm transition-all' 
+        : 'flex-1 py-1.5 text-xs font-medium rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-all'">
+      {{ 'taskBuilder.scheduleSpecific' | translate }}
+    </button>
+  </div>
+
+  <!-- Interval Config -->
+  <div *ngIf="scheduleType === 'interval'" class="space-y-3">
+    <div>
+      <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">{{ 'taskBuilder.every' | translate }}</label>
+      <div class="flex gap-2">
+        <input 
+          type="number" 
+          [ngModel]="intervalValue"
+          (ngModelChange)="onIntervalValueChange($event)"
+          min="1"
+          class="w-20 px-3 py-1.5 text-sm bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors" />
+        <select 
+          [ngModel]="intervalUnit"
+          (ngModelChange)="onIntervalUnitChange($event)"
+          class="flex-1 px-3 py-1.5 text-sm bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors">
+          <option value="minutes">{{ 'taskBuilder.minutes' | translate }}</option>
+          <option value="hours">{{ 'taskBuilder.hours' | translate }}</option>
+          <option value="days">{{ 'taskBuilder.days' | translate }}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Specific Time Config -->
+  <div *ngIf="scheduleType === 'specific'" class="space-y-3">
+    <div>
+      <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">{{ 'taskBuilder.time' | translate }}</label>
+      <input 
+        type="time" 
+        [ngModel]="specificTime"
+        (ngModelChange)="onSpecificTimeChange($event)"
+        class="w-full px-3 py-1.5 text-sm bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors" />
+    </div>
+    <!-- Weekday selector -->
+    <div>
+      <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-2">{{ 'taskBuilder.repeatOn' | translate }}</label>
+      <div class="flex gap-1">
+        <button 
+          *ngFor="let day of weekdays"
+          (click)="toggleDay(day.key)"
+          [class]="selectedDays[day.key] 
+            ? 'w-9 h-9 rounded-full text-xs font-medium bg-primary text-white transition-all' 
+            : 'w-9 h-9 rounded-full text-xs font-medium bg-slate-100 dark:bg-gray-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-gray-700 transition-all'">
+          {{ day.labelKey | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- Available Variables Section -->
+<div *ngIf="getAvailableBlockVars().length > 0" class="border-b border-slate-200 dark:border-slate-700">
+  <div class="px-5 py-3 flex items-center gap-2">
+    <span class="material-symbols-outlined text-amber-500" style="font-size: 18px;">data_object</span>
+    <h3 class="text-sm font-semibold text-slate-700 dark:text-slate-300 flex-1">{{ 'taskBuilder.availableVars' | translate }}</h3>
+  </div>
+  <div class="px-3 pb-3 flex flex-col gap-2">
+    <div class="flex flex-wrap gap-1.5">
+      <span *ngFor="let v of getAvailableBlockVars()"
+        (click)="copyVar(v.name)"
+        class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-mono cursor-pointer select-none transition-colors duration-150"
+        [ngClass]="copiedVarName === v.name ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300'"
+        [title]="copiedVarName === v.name ? ('taskBuilder.copied' | translate) : v.blockLabel">
+        <span class="material-symbols-outlined" style="font-size: 12px;">{{ copiedVarName === v.name ? 'check' : 'bookmark' }}</span>
+        {{ '{' + '{' + v.name + '}}' }}
+      </span>
+    </div>
+    <p class="text-[10px] text-slate-400 dark:text-slate-500">{{ 'taskBuilder.varUsageHint' | translate }}</p>
+  </div>
+</div>
+
+<!-- Memory Variables Section -->
+<div class="border-b border-slate-200 dark:border-slate-700">
+  <!-- Header / Toggle -->
+  <button
+    (click)="toggleMemoryPanel()"
+    class="w-full px-5 py-3.5 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-gray-800/50 transition-colors">
+    <div class="flex items-center gap-2">
+      <span class="material-symbols-outlined text-cyan-500" style="font-size: 18px;">database</span>
+      <h3 class="text-sm font-semibold text-slate-700 dark:text-slate-300">{{ 'taskBuilder.memVarTitle' | translate }}</h3>
+    </div>
+    <div class="flex items-center gap-2">
+      <span *ngIf="memoryVariables.length > 0"
+        class="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-cyan-100 dark:bg-cyan-900/40 text-cyan-700 dark:text-cyan-300">
+        {{ memoryVariables.length }}
+      </span>
+      <span class="material-symbols-outlined text-slate-400 transition-transform duration-200"
+        [class.rotate-180]="memoryVarsExpanded"
+        style="font-size: 16px;">expand_more</span>
+    </div>
+  </button>
+
+  <!-- Expanded Content -->
+  <div *ngIf="memoryVarsExpanded" class="px-5 pb-4">
+
+    <!-- Search + Refresh -->
+    <div class="flex items-center gap-2 mb-3">
+      <div class="relative flex-1">
+        <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" style="font-size: 14px;">search</span>
+        <input
+          type="text"
+          [(ngModel)]="memorySearchQuery"
+          [placeholder]="'taskBuilder.memVarSearch' | translate"
+          class="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-colors" />
+      </div>
+      <button
+        (click)="refreshMemoryVariables()"
+        class="p-1.5 rounded-lg text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 dark:hover:bg-cyan-900/30 transition-colors"
+        [title]="'taskBuilder.memVarRefresh' | translate">
+        <span class="material-symbols-outlined" [class.animate-spin]="memoryLoading" style="font-size: 16px;">refresh</span>
+      </button>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="memoryLoading" class="flex items-center justify-center py-4">
+      <span class="material-symbols-outlined text-slate-400 animate-spin" style="font-size: 20px;">progress_activity</span>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!memoryLoading && filteredMemoryVariables.length === 0"
+      class="flex flex-col items-center py-4 text-center">
+      <span class="material-symbols-outlined text-slate-300 dark:text-slate-600 mb-1" style="font-size: 28px;">folder_off</span>
+      <span class="text-xs text-slate-400 dark:text-slate-500">{{ 'taskBuilder.memVarEmpty' | translate }}</span>
+    </div>
+
+    <!-- Variable Lists -->
+    <div *ngIf="!memoryLoading && filteredMemoryVariables.length > 0" class="space-y-3">
+
+      <!-- This Flow -->
+      <div *ngIf="currentFlowVars.length > 0">
+        <div class="flex items-center gap-1.5 mb-2">
+          <span class="material-symbols-outlined text-emerald-500" style="font-size: 12px;">circle</span>
+          <span class="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+            {{ 'taskBuilder.memVarThisFlow' | translate }}
+          </span>
+        </div>
+        <div class="space-y-1.5">
+          <div *ngFor="let v of currentFlowVars"
+            class="group p-2.5 rounded-lg bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-200/50 dark:border-emerald-800/30 hover:border-emerald-300 dark:hover:border-emerald-700 transition-colors">
+            <div class="flex items-center justify-between mb-1">
+              <div class="flex items-center gap-1.5 min-w-0">
+                <span class="material-symbols-outlined text-cyan-500" style="font-size: 13px;">key</span>
+                <code class="text-xs font-mono font-semibold text-slate-800 dark:text-slate-200 truncate">{{ v.key }}</code>
+              </div>
+              <div class="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button (click)="copyKeyToClipboard(v.key)"
+                  class="p-1 rounded text-slate-400 hover:text-cyan-600 transition-colors"
+                  [title]="'taskBuilder.memVarCopy' | translate">
+                  <span class="material-symbols-outlined" style="font-size: 13px;">content_copy</span>
+                </button>
+                <button *ngIf="v.value !== null" (click)="deleteMemoryKey(v.key)"
+                  class="p-1 rounded text-slate-400 hover:text-red-500 transition-colors"
+                  [title]="'taskBuilder.memVarDelete' | translate">
+                  <span class="material-symbols-outlined" style="font-size: 13px;">delete</span>
+                </button>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 mt-1">
+              <span class="text-[10px] px-1.5 py-0.5 rounded font-medium"
+                [ngClass]="{
+                  'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400': v.action === 'get',
+                  'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400': v.action === 'set',
+                  'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400': v.action === 'both'
+                }">
+                {{ v.action === 'get' ? 'GET' : v.action === 'set' ? 'SET' : 'GET/SET' }}
+              </span>
+              <span class="text-[10px] text-slate-500 dark:text-slate-400 truncate"
+                [title]="v.value ?? ''">
+                {{ truncateValue(v.value, 40) }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Other Flows -->
+      <div *ngIf="otherFlowVars.length > 0">
+        <div class="flex items-center gap-1.5 mb-2">
+          <span class="material-symbols-outlined text-slate-400" style="font-size: 12px;">circle</span>
+          <span class="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+            {{ 'taskBuilder.memVarOtherFlows' | translate }}
+          </span>
+        </div>
+        <div class="space-y-1.5">
+          <div *ngFor="let v of otherFlowVars"
+            class="group p-2.5 rounded-lg bg-slate-50/50 dark:bg-gray-800/30 border border-slate-200/50 dark:border-slate-700/30 hover:border-slate-300 dark:hover:border-slate-600 transition-colors">
+            <div class="flex items-center justify-between mb-1">
+              <div class="flex items-center gap-1.5 min-w-0">
+                <span class="material-symbols-outlined text-slate-400" style="font-size: 13px;">key</span>
+                <code class="text-xs font-mono font-semibold text-slate-700 dark:text-slate-300 truncate">{{ v.key }}</code>
+              </div>
+              <div class="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button (click)="copyKeyToClipboard(v.key)"
+                  class="p-1 rounded text-slate-400 hover:text-cyan-600 transition-colors"
+                  [title]="'taskBuilder.memVarCopy' | translate">
+                  <span class="material-symbols-outlined" style="font-size: 13px;">content_copy</span>
+                </button>
+                <button *ngIf="v.value !== null" (click)="deleteMemoryKey(v.key)"
+                  class="p-1 rounded text-slate-400 hover:text-red-500 transition-colors"
+                  [title]="'taskBuilder.memVarDelete' | translate">
+                  <span class="material-symbols-outlined" style="font-size: 13px;">delete</span>
+                </button>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 mt-1">
+              <span class="text-[10px] px-1.5 py-0.5 rounded font-medium"
+                [ngClass]="{
+                  'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400': v.action === 'get',
+                  'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400': v.action === 'set',
+                  'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400': v.action === 'both'
+                }">
+                {{ v.action === 'get' ? 'GET' : v.action === 'set' ? 'SET' : 'GET/SET' }}
+              </span>
+              <span class="text-[10px] text-slate-400 dark:text-slate-500 italic truncate">{{ v.flowName }}</span>
+              <span class="text-[10px] text-slate-500 dark:text-slate-400 truncate ml-auto"
+                [title]="v.value ?? ''">
+                {{ truncateValue(v.value, 30) }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info hint -->
+    <div class="flex items-start gap-2 mt-3 p-2.5 rounded-lg bg-slate-50 dark:bg-gray-800/50">
+      <span class="material-symbols-outlined text-slate-400 flex-shrink-0" style="font-size: 13px; margin-top: 1px;">info</span>
+      <span class="text-[10px] text-slate-400 dark:text-slate-500 leading-relaxed">{{ 'taskBuilder.memVarHint' | translate }}</span>
+    </div>
+  </div>
+</div>
+
+<!-- Block Config Panel (delegated to child component) -->
+<app-block-config-panel
+  [selectedBlock]="selectedBlock"
+  [canvasBlocks]="canvasBlocks"
+  (configApplied)="configApplied.emit()"
+  (blockDeleted)="blockDeleted.emit()">
+</app-block-config-panel>

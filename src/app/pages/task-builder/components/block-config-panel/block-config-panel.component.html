@@ -1,0 +1,706 @@
+<!-- Block Parameters (when a block is selected) -->
+<div *ngIf="selectedBlock" class="px-5 py-4 border-b border-slate-200 dark:border-slate-700">
+  <div class="flex items-center gap-2 mb-4">
+    <span class="material-symbols-outlined text-primary" style="font-size: 18px;">tune</span>
+    <h3 class="text-sm font-semibold text-slate-700 dark:text-slate-300">{{ 'taskBuilder.blockParams' | translate }}</h3>
+  </div>
+
+  <!-- Custom block name (optional, common to all blocks) -->
+  <div class="mb-3">
+    <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">{{ 'taskBuilder.blockCustomName' | translate }}</label>
+    <input 
+      type="text" 
+      [(ngModel)]="blockCustomName"
+      [placeholder]="'taskBuilder.blockCustomNamePlaceholder' | translate"
+      class="w-full px-3 py-1.5 text-sm bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors" />
+  </div>
+
+  <!-- Local Storage specific config -->
+  <div *ngIf="selectedBlock.type === 'local-storage'" class="space-y-3">
+    <!-- Action (get / set) -->
+    <div>
+      <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">{{ 'taskBuilder.lsAction' | translate }}</label>
+      <div class="flex bg-slate-100 dark:bg-gray-800 rounded-lg p-0.5">
+        <button 
+          (click)="lsAction = 'get'"
+          [class]="lsAction === 'get' 
+            ? 'flex-1 py-1.5 text-xs font-medium rounded-md bg-white dark:bg-gray-700 text-slate-800 dark:text-slate-200 shadow-sm transition-all' 
+            : 'flex-1 py-1.5 text-xs font-medium rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-all'">
+          <span class="material-symbols-outlined align-middle mr-1" style="font-size: 14px;">download</span>
+          {{ 'taskBuilder.lsActionGet' | translate }}
+        </button>
+        <button 
+          (click)="lsAction = 'set'"
+          [class]="lsAction === 'set' 
+            ? 'flex-1 py-1.5 text-xs font-medium rounded-md bg-white dark:bg-gray-700 text-slate-800 dark:text-slate-200 shadow-sm transition-all' 
+            : 'flex-1 py-1.5 text-xs font-medium rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-all'">
+          <span class="material-symbols-outlined align-middle mr-1" style="font-size: 14px;">upload</span>
+          {{ 'taskBuilder.lsActionSet' | translate }}
+        </button>
+      </div>
+    </div>
+    <!-- Key -->
+    <div>
+      <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">{{ 'taskBuilder.lsKey' | translate }}</label>
+      <input 
+        type="text" 
+        [(ngModel)]="lsKey"
+        [placeholder]="'taskBuilder.lsKeyPlaceholder' | translate"
+        class="w-full px-3 py-1.5 text-sm bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors font-mono" />
+    </div>
+    <!-- Format (json / string) -->
+    <div>
+      <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">{{ 'taskBuilder.lsFormat' | translate }}</label>
+      <div class="flex bg-slate-100 dark:bg-gray-800 rounded-lg p-0.5">
+        <button 
+          (click)="lsFormat = 'string'"
+          [class]="lsFormat === 'string' 
+            ? 'flex-1 py-1.5 text-xs font-medium rounded-md bg-white dark:bg-gray-700 text-slate-800 dark:text-slate-200 shadow-sm transition-all' 
+            : 'flex-1 py-1.5 text-xs font-medium rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-all'">
+          {{ 'taskBuilder.lsFormatString' | translate }}
+        </button>
+        <button 
+          (click)="lsFormat = 'json'"
+          [class]="lsFormat === 'json' 
+            ? 'flex-1 py-1.5 text-xs font-medium rounded-md bg-white dark:bg-gray-700 text-slate-800 dark:text-slate-200 shadow-sm transition-all' 
+            : 'flex-1 py-1.5 text-xs font-medium rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-all'">
+          {{ 'taskBuilder.lsFormatJson' | translate }}
+        </button>
+      </div>
+      <p *ngIf="lsFormat === 'json'" class="text-xs text-slate-400 dark:text-slate-500 mt-1 flex items-center gap-1">
+        <span class="material-symbols-outlined" style="font-size: 14px;">info</span>
+        {{ 'taskBuilder.lsFormatHint' | translate }}
+      </p>
+      <p *ngIf="lsFormat === 'json' && lsAction === 'get'" class="text-xs text-blue-500 dark:text-blue-400 mt-1 flex items-start gap-1">
+        <span class="material-symbols-outlined" style="font-size: 14px; margin-top: 1px;">tips_and_updates</span>
+        {{ 'taskBuilder.lsJsonGetHint' | translate }}
+      </p>
+    </div>
+    <!-- Value (only for set action) -->
+    <div *ngIf="lsAction === 'set'">
+      <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">{{ 'taskBuilder.lsValue' | translate }}</label>
+      <textarea 
+        [(ngModel)]="lsValue"
+        [placeholder]="'taskBuilder.lsValuePlaceholder' | translate"
+        rows="4"
+        class="w-full px-3 py-1.5 text-sm bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors resize-none font-mono"></textarea>
+    </div>
+  </div>
+
+  <!-- API Rest block specific config -->
+  <div *ngIf="selectedBlock.type === 'api-rest'" class="space-y-3">
+    <div>
+      <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">{{ 'taskBuilder.apiMethod' | translate }}</label>
+      <div class="flex bg-slate-100 dark:bg-gray-800 rounded-lg p-0.5 gap-0.5">
+        <button 
+          *ngFor="let m of apiMethods"
+          (click)="apiMethod = $any(m)"
+          [class]="apiMethod === m 
+            ? 'flex-1 py-1.5 text-[10px] font-bold rounded-md bg-white dark:bg-gray-700 text-slate-800 dark:text-slate-200 shadow-sm transition-all' 
+            : 'flex-1 py-1.5 text-[10px] font-medium rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-all'">
+          {{ m }}
+        </button>
+      </div>
+    </div>
+    <div>
+      <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">{{ 'taskBuilder.apiUrl' | translate }}</label>
+      <input 
+        type="text" 
+        [(ngModel)]="apiUrl"
+        [placeholder]="'taskBuilder.apiUrlPlaceholder' | translate"
+        class="w-full px-3 py-1.5 text-sm bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors font-mono" />
+    </div>
+    <div>
+      <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">{{ 'taskBuilder.apiHeaders' | translate }}</label>
+      <textarea 
+        [(ngModel)]="apiHeaders"
+        [placeholder]="'taskBuilder.apiHeadersPlaceholder' | translate"
+        rows="3"
+        class="w-full px-3 py-1.5 text-sm bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors resize-none font-mono"></textarea>
+      <p class="text-xs text-slate-400 dark:text-slate-500 mt-1 flex items-center gap-1">
+        <span class="material-symbols-outlined" style="font-size: 14px;">info</span>
+        {{ 'taskBuilder.apiHeadersHint' | translate }}
+      </p>
+    </div>
+    <div *ngIf="apiMethod !== 'GET' && apiMethod !== 'DELETE'">
+      <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">{{ 'taskBuilder.apiBody' | translate }}</label>
+      <textarea 
+        [(ngModel)]="apiBody"
+        [placeholder]="'taskBuilder.apiBodyPlaceholder' | translate"
+        rows="5"
+        class="w-full px-3 py-1.5 text-sm bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors resize-none font-mono"></textarea>
+    </div>
+    <!-- Output port legend -->
+    <div class="mt-1 p-2.5 rounded-lg bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-slate-600">
+      <p class="text-xs font-medium text-slate-600 dark:text-slate-400 mb-2">{{ 'taskBuilder.apiOutputPorts' | translate }}</p>
+      <div class="flex flex-col gap-1.5">
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center justify-center w-10 h-5 rounded text-[10px] font-bold bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700/60 shrink-0">2xx</span>
+          <span class="text-[11px] text-slate-500 dark:text-slate-400">{{ 'taskBuilder.apiOutputSuccessDesc' | translate }}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center justify-center w-10 h-5 rounded text-[10px] font-bold bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-700/60 shrink-0">4xx</span>
+          <span class="text-[11px] text-slate-500 dark:text-slate-400">{{ 'taskBuilder.apiOutputClientDesc' | translate }}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center justify-center w-10 h-5 rounded text-[10px] font-bold bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 border border-red-300 dark:border-red-700/60 shrink-0">5xx</span>
+          <span class="text-[11px] text-slate-500 dark:text-slate-400">{{ 'taskBuilder.apiOutputServerDesc' | translate }}</span>
+        </div>
+      </div>
+    </div>
+    <!-- Variable insertion chips -->
+    <div *ngIf="getAllAvailableVars().length > 0" class="mt-1 p-2.5 rounded-lg bg-amber-50/50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800/40">
+      <p class="text-[10px] font-medium text-slate-500 dark:text-slate-400 mb-1.5">{{ 'taskBuilder.availableVars' | translate }}</p>
+      <div class="flex flex-wrap gap-1.5">
+        <div *ngFor="let v of getAllAvailableVars()" class="flex items-center rounded-full overflow-hidden border border-amber-300 dark:border-amber-700/60">
+          <span
+            [ngClass]="v.isGlobal
+              ? 'px-2 py-0.5 text-[10px] font-mono text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-900/30'
+              : 'px-2 py-0.5 text-[10px] font-mono text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/20'">
+            {{ '{' + '{' + v.name + '}}' }}
+          </span>
+          <button
+            (click)="insertVariable(v.name, 'apiUrl')"
+            class="px-1.5 py-0.5 text-[9px] font-bold text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors border-l border-amber-300 dark:border-amber-700/60"
+            title="Insert in URL">URL</button>
+          <button
+            (click)="insertVariable(v.name, 'apiHeaders')"
+            class="px-1.5 py-0.5 text-[9px] font-bold text-slate-500 hover:text-green-600 dark:hover:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors border-l border-amber-300 dark:border-amber-700/60"
+            title="Insert in Headers">HDR</button>
+          <button
+            *ngIf="apiMethod !== 'GET' && apiMethod !== 'DELETE'"
+            (click)="insertVariable(v.name, 'apiBody')"
+            class="px-1.5 py-0.5 text-[9px] font-bold text-slate-500 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors border-l border-amber-300 dark:border-amber-700/60"
+            title="Insert in Body">BODY</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Web Scraping block specific config -->
+  <div *ngIf="selectedBlock.type === 'web-scraping'" class="space-y-3">
+    <div>
+      <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">{{ 'taskBuilder.scrapingUrl' | translate }}</label>
+      <input 
+        type="text" 
+        [(ngModel)]="scrapingUrl"
+        [placeholder]="'taskBuilder.scrapingUrlPlaceholder' | translate"
+        class="w-full px-3 py-1.5 text-sm bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-400/30 focus:border-indigo-400 transition-colors font-mono" />
+    </div>
+    <div>
+      <label class="flex items-center gap-3 cursor-pointer">
+        <input 
+          type="checkbox" 
+          [(ngModel)]="scrapingHeadless"
+          class="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-indigo-500 focus:ring-indigo-400/30" />
+        <span class="text-sm text-slate-700 dark:text-slate-300">{{ 'taskBuilder.scrapingHeadless' | translate }}</span>
+      </label>
+      <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-1 ml-7">{{ 'taskBuilder.scrapingHeadlessHint' | translate }}</p>
+    </div>
+    <div class="flex items-center justify-between pt-2">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-indigo-500" style="font-size: 16px;">list_alt</span>
+        <span class="text-xs font-semibold text-slate-700 dark:text-slate-300">{{ 'taskBuilder.scrapingSteps' | translate }}</span>
+        <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">{{ scrapingSteps.length }}</span>
+      </div>
+      <button 
+        (click)="addScrapingStep()"
+        class="flex items-center gap-1 px-2 py-1 text-[11px] font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-md transition-colors">
+        <span class="material-symbols-outlined" style="font-size: 14px;">add</span>
+        {{ 'taskBuilder.scrapingAddStep' | translate }}
+      </button>
+    </div>
+    <div *ngIf="scrapingSteps.length === 0" class="p-3 rounded-lg bg-slate-50 dark:bg-gray-800 border border-dashed border-slate-200 dark:border-slate-600 text-center">
+      <span class="material-symbols-outlined text-slate-300 dark:text-slate-600 mb-1" style="font-size: 24px;">mouse</span>
+      <p class="text-[11px] text-slate-400 dark:text-slate-500">{{ 'taskBuilder.scrapingNoSteps' | translate }}</p>
+    </div>
+    <div *ngFor="let step of scrapingSteps; let i = index; trackBy: trackStepByIndex" 
+      class="p-2.5 rounded-lg bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-slate-600 space-y-2">
+      <div class="flex items-center gap-1.5">
+        <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 w-5 text-center">{{ i + 1 }}</span>
+        <select 
+          [(ngModel)]="step.action"
+          class="flex-1 px-2 py-1 text-[11px] bg-white dark:bg-gray-700 border border-slate-200 dark:border-slate-600 rounded text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-indigo-400/30 focus:border-indigo-400 transition-colors">
+          <option *ngFor="let a of scrapingActions" [value]="a.value">{{ a.labelKey | translate }}</option>
+        </select>
+        <button 
+          (click)="moveScrapingStepUp(i)"
+          [disabled]="i === 0"
+          class="p-0.5 rounded hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-400 dark:text-slate-500 transition-colors disabled:opacity-30">
+          <span class="material-symbols-outlined" style="font-size: 14px;">keyboard_arrow_up</span>
+        </button>
+        <button 
+          (click)="moveScrapingStepDown(i)"
+          [disabled]="i === scrapingSteps.length - 1"
+          class="p-0.5 rounded hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-400 dark:text-slate-500 transition-colors disabled:opacity-30">
+          <span class="material-symbols-outlined" style="font-size: 14px;">keyboard_arrow_down</span>
+        </button>
+        <button 
+          (click)="removeScrapingStep(i)"
+          class="p-0.5 rounded hover:bg-red-50 dark:hover:bg-red-900/20 text-red-400 hover:text-red-500 transition-colors">
+          <span class="material-symbols-outlined" style="font-size: 14px;">close</span>
+        </button>
+      </div>
+      <div *ngIf="stepNeedsSelector(step.action)">
+        <input 
+          type="text" 
+          [(ngModel)]="step.selector"
+          [placeholder]="'taskBuilder.scrapingSelectorPlaceholder' | translate"
+          class="w-full px-2 py-1 text-[11px] bg-white dark:bg-gray-700 border border-slate-200 dark:border-slate-600 rounded text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-400/30 focus:border-indigo-400 transition-colors font-mono" />
+      </div>
+      <div *ngIf="stepNeedsValue(step.action)">
+        <input 
+          type="text" 
+          [(ngModel)]="step.value"
+          [placeholder]="step.action === 'navigate' ? ('taskBuilder.scrapingValueUrl' | translate) 
+                       : step.action === 'evaluate' ? ('taskBuilder.scrapingValueScript' | translate)
+                       : step.action === 'wait' ? ('taskBuilder.scrapingValueWait' | translate)
+                       : step.action === 'scroll' ? ('taskBuilder.scrapingValueScroll' | translate)
+                       : ('taskBuilder.scrapingValueText' | translate)"
+          class="w-full px-2 py-1 text-[11px] bg-white dark:bg-gray-700 border border-slate-200 dark:border-slate-600 rounded text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-400/30 focus:border-indigo-400 transition-colors font-mono" />
+      </div>
+      <div *ngIf="stepNeedsAttribute(step.action)">
+        <select 
+          [(ngModel)]="step.attribute"
+          class="w-full px-2 py-1 text-[11px] bg-white dark:bg-gray-700 border border-slate-200 dark:border-slate-600 rounded text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-indigo-400/30 focus:border-indigo-400 transition-colors">
+          <option value="">textContent</option>
+          <option value="textContent">textContent</option>
+          <option value="innerHTML">innerHTML</option>
+          <option value="outerHTML">outerHTML</option>
+          <option value="href">href</option>
+          <option value="src">src</option>
+          <option value="value">value</option>
+          <option value="alt">alt</option>
+          <option value="title">title</option>
+          <option value="class">class</option>
+        </select>
+      </div>
+      <div *ngIf="stepNeedsVarName(step.action)">
+        <input 
+          type="text" 
+          [(ngModel)]="step.varName"
+          [placeholder]="'taskBuilder.scrapingVarNamePlaceholder' | translate"
+          class="w-full px-2 py-1 text-[11px] bg-white dark:bg-gray-700 border border-slate-200 dark:border-slate-600 rounded text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-amber-400/30 focus:border-amber-400 transition-colors font-mono" />
+      </div>
+    </div>
+    <div class="mt-2 p-3 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-700/50">
+      <p class="text-xs font-medium text-indigo-700 dark:text-indigo-300 mb-2">{{ 'taskBuilder.scrapingHowItWorks' | translate }}</p>
+      <div class="flex items-start gap-2 mb-1.5">
+        <span class="material-symbols-outlined text-indigo-500 flex-shrink-0" style="font-size: 14px; margin-top: 1px;">arrow_right</span>
+        <span class="text-[11px] text-indigo-600 dark:text-indigo-400">{{ 'taskBuilder.scrapingHint1' | translate }}</span>
+      </div>
+      <div class="flex items-start gap-2 mb-1.5">
+        <span class="material-symbols-outlined text-indigo-500 flex-shrink-0" style="font-size: 14px; margin-top: 1px;">arrow_right</span>
+        <span class="text-[11px] text-indigo-600 dark:text-indigo-400">{{ 'taskBuilder.scrapingHint2' | translate }}</span>
+      </div>
+      <div class="flex items-start gap-2">
+        <span class="material-symbols-outlined text-indigo-500 flex-shrink-0" style="font-size: 14px; margin-top: 1px;">arrow_right</span>
+        <span class="text-[11px] text-indigo-600 dark:text-indigo-400">{{ 'taskBuilder.scrapingHint3' | translate }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Save Log block specific config -->
+  <div *ngIf="selectedBlock.type === 'save-log'" class="space-y-3">
+    <!-- Log Name -->
+    <div>
+      <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">{{ 'taskBuilder.saveLogName' | translate }}</label>
+      <input 
+        type="text" 
+        [(ngModel)]="saveLogName"
+        [placeholder]="'taskBuilder.saveLogNamePlaceholder' | translate"
+        class="w-full px-3 py-1.5 text-sm bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-400/30 focus:border-orange-400 transition-colors font-mono" />
+      <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-1 flex items-start gap-1">
+        <span class="material-symbols-outlined" style="font-size: 13px; margin-top: 1px;">info</span>
+        {{ 'taskBuilder.saveLogNameHint' | translate }}
+      </p>
+    </div>
+
+    <!-- Log Value -->
+    <div>
+      <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">{{ 'taskBuilder.saveLogValue' | translate }}</label>
+      <textarea 
+        [(ngModel)]="saveLogValue"
+        [placeholder]="'taskBuilder.saveLogValuePlaceholder' | translate"
+        rows="4"
+        class="w-full px-3 py-1.5 text-sm bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-400/30 focus:border-orange-400 transition-colors resize-none font-mono"></textarea>
+      <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-1 flex items-start gap-1">
+        <span class="material-symbols-outlined" style="font-size: 13px; margin-top: 1px;">info</span>
+        {{ 'taskBuilder.saveLogValueHint' | translate }}
+      </p>
+    </div>
+
+    <!-- How it works -->
+    <div class="mt-2 p-3 rounded-lg bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-700/50">
+      <p class="text-xs font-medium text-orange-700 dark:text-orange-300 mb-2">{{ 'taskBuilder.saveLogHowItWorks' | translate }}</p>
+      <div class="flex items-start gap-2 mb-1.5">
+        <span class="material-symbols-outlined text-orange-500 flex-shrink-0" style="font-size: 14px; margin-top: 1px;">arrow_right</span>
+        <span class="text-[11px] text-orange-600 dark:text-orange-400">{{ 'taskBuilder.saveLogHint1' | translate }}</span>
+      </div>
+      <div class="flex items-start gap-2 mb-1.5">
+        <span class="material-symbols-outlined text-orange-500 flex-shrink-0" style="font-size: 14px; margin-top: 1px;">arrow_right</span>
+        <span class="text-[11px] text-orange-600 dark:text-orange-400">{{ 'taskBuilder.saveLogHint2' | translate }}</span>
+      </div>
+      <div class="flex items-start gap-2">
+        <span class="material-symbols-outlined text-orange-500 flex-shrink-0" style="font-size: 14px; margin-top: 1px;">arrow_right</span>
+        <span class="text-[11px] text-orange-600 dark:text-orange-400">{{ 'taskBuilder.saveLogHint3' | translate }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Log block config -->
+  <div *ngIf="selectedBlock.type === 'delete-log'" class="space-y-3">
+    <!-- Mode -->
+    <div>
+      <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">{{ 'taskBuilder.deleteLogMode' | translate }}</label>
+      <div class="flex gap-2">
+        <button
+          (click)="deleteLogMode = 'by-name'"
+          [class]="deleteLogMode === 'by-name'
+            ? 'flex-1 py-1.5 text-xs font-semibold rounded-lg bg-red-500 text-white'
+            : 'flex-1 py-1.5 text-xs font-medium rounded-lg bg-slate-100 dark:bg-gray-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-gray-700 transition-colors'">
+          {{ 'taskBuilder.deleteLogModeByName' | translate }}
+        </button>
+        <button
+          (click)="deleteLogMode = 'all'"
+          [class]="deleteLogMode === 'all'
+            ? 'flex-1 py-1.5 text-xs font-semibold rounded-lg bg-red-500 text-white'
+            : 'flex-1 py-1.5 text-xs font-medium rounded-lg bg-slate-100 dark:bg-gray-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-gray-700 transition-colors'">
+          {{ 'taskBuilder.deleteLogModeAll' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Log name (only for by-name mode) -->
+    <div *ngIf="deleteLogMode === 'by-name'">
+      <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">{{ 'taskBuilder.deleteLogName' | translate }}</label>
+      <input
+        type="text"
+        [(ngModel)]="deleteLogName"
+        [placeholder]="'taskBuilder.deleteLogNamePlaceholder' | translate"
+        class="w-full px-3 py-1.5 text-sm bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-400/30 focus:border-red-400 transition-colors font-mono" />
+      <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-1 flex items-start gap-1">
+        <span class="material-symbols-outlined" style="font-size: 13px; margin-top: 1px;">info</span>
+        {{ 'taskBuilder.deleteLogNameHint' | translate }}
+      </p>
+    </div>
+
+    <!-- All mode warning -->
+    <div *ngIf="deleteLogMode === 'all'" class="p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700/50">
+      <div class="flex items-start gap-2">
+        <span class="material-symbols-outlined text-red-500 flex-shrink-0" style="font-size: 18px; margin-top: 1px;">warning</span>
+        <span class="text-xs text-red-700 dark:text-red-300">{{ 'taskBuilder.deleteLogAllWarning' | translate }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fork block info -->
+  <div *ngIf="selectedBlock.type === 'fork'" class="space-y-3">
+    <div class="p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50">
+      <p class="text-xs font-medium text-amber-700 dark:text-amber-300 mb-2">{{ 'taskBuilder.forkHowItWorks' | translate }}</p>
+      <div class="flex items-start gap-2 mb-1.5">
+        <span class="material-symbols-outlined text-amber-500 flex-shrink-0" style="font-size: 14px; margin-top: 1px;">arrow_right</span>
+        <span class="text-[11px] text-amber-600 dark:text-amber-400">{{ 'taskBuilder.forkHint1' | translate }}</span>
+      </div>
+      <div class="flex items-start gap-2 mb-1.5">
+        <span class="material-symbols-outlined text-amber-500 flex-shrink-0" style="font-size: 14px; margin-top: 1px;">arrow_right</span>
+        <span class="text-[11px] text-amber-600 dark:text-amber-400">{{ 'taskBuilder.forkHint2' | translate }}</span>
+      </div>
+      <div class="flex items-start gap-2">
+        <span class="material-symbols-outlined text-amber-500 flex-shrink-0" style="font-size: 14px; margin-top: 1px;">arrow_right</span>
+        <span class="text-[11px] text-amber-600 dark:text-amber-400">{{ 'taskBuilder.forkHint3' | translate }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Join block info -->
+  <div *ngIf="selectedBlock.type === 'join'" class="space-y-3">
+    <div class="p-3 rounded-lg bg-sky-50 dark:bg-sky-900/20 border border-sky-200 dark:border-sky-700/50">
+      <p class="text-xs font-medium text-sky-700 dark:text-sky-300 mb-2">{{ 'taskBuilder.joinHowItWorks' | translate }}</p>
+      <div class="flex items-start gap-2 mb-1.5">
+        <span class="material-symbols-outlined text-sky-500 flex-shrink-0" style="font-size: 14px; margin-top: 1px;">arrow_right</span>
+        <span class="text-[11px] text-sky-600 dark:text-sky-400">{{ 'taskBuilder.joinHint1' | translate }}</span>
+      </div>
+      <div class="flex items-start gap-2 mb-1.5">
+        <span class="material-symbols-outlined text-sky-500 flex-shrink-0" style="font-size: 14px; margin-top: 1px;">arrow_right</span>
+        <span class="text-[11px] text-sky-600 dark:text-sky-400">{{ 'taskBuilder.joinHint2' | translate }}</span>
+      </div>
+      <div class="flex items-start gap-2">
+        <span class="material-symbols-outlined text-sky-500 flex-shrink-0" style="font-size: 14px; margin-top: 1px;">arrow_right</span>
+        <span class="text-[11px] text-sky-600 dark:text-sky-400">{{ 'taskBuilder.joinHint3' | translate }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Prompt block config -->
+  <div *ngIf="selectedBlock.type === 'ai-prompt'" class="space-y-3">
+    <!-- Ollama status warning -->
+    <div *ngIf="ollamaChecking" class="flex items-center gap-2 p-2.5 rounded-lg bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-slate-600">
+      <div class="w-4 h-4 border-2 border-violet-300 border-t-violet-600 rounded-full animate-spin"></div>
+      <span class="text-[11px] text-slate-500 dark:text-slate-400">{{ 'taskBuilder.aiCheckingOllama' | translate }}</span>
+    </div>
+    <div *ngIf="!ollamaChecking && !ollamaRunning" class="p-2.5 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700/50">
+      <div class="flex items-center gap-2 mb-1">
+        <span class="material-symbols-outlined text-red-500" style="font-size: 16px;">error</span>
+        <span class="text-xs font-semibold text-red-700 dark:text-red-300">{{ 'taskBuilder.aiOllamaNotRunning' | translate }}</span>
+      </div>
+      <p class="text-[11px] text-red-600 dark:text-red-400 ml-6">{{ 'taskBuilder.aiOllamaNotRunningDesc' | translate }}</p>
+      <button
+        (click)="checkOllamaStatus()"
+        class="mt-2 ml-6 inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium rounded-md bg-red-100 dark:bg-red-800/30 text-red-700 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-800/50 transition-colors">
+        <span class="material-symbols-outlined" style="font-size: 13px;">refresh</span>
+        {{ 'taskBuilder.aiRetryCheck' | translate }}
+      </button>
+    </div>
+    <div *ngIf="!ollamaChecking && ollamaRunning" class="flex items-center gap-2 p-2 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-700/50">
+      <span class="material-symbols-outlined text-emerald-500" style="font-size: 15px;">check_circle</span>
+      <span class="text-[11px] font-medium text-emerald-700 dark:text-emerald-300">{{ 'taskBuilder.aiOllamaRunning' | translate }}</span>
+    </div>
+    <!-- Model -->
+    <div>
+      <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">{{ 'taskBuilder.aiModel' | translate }}</label>
+      <div class="flex gap-2">
+        <input 
+          type="text" 
+          [(ngModel)]="aiModel"
+          (ngModelChange)="aiModelError = false"
+          [placeholder]="'taskBuilder.aiModelPlaceholder' | translate"
+          [class.border-red-400]="aiModelError"
+          [class.dark:border-red-500]="aiModelError"
+          class="flex-1 min-w-0 px-3 py-1.5 text-sm bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-400/30 focus:border-violet-400 transition-colors font-mono" />
+        <button
+          (click)="openModelPicker()"
+          class="flex-shrink-0 flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium rounded-lg bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 hover:bg-violet-200 dark:hover:bg-violet-800/40 border border-violet-200 dark:border-violet-700/50 transition-colors">
+          <span class="material-symbols-outlined" style="font-size: 15px;">search</span>
+          {{ 'taskBuilder.aiModelBrowse' | translate }}
+        </button>
+      </div>
+      <p *ngIf="aiModelError" class="text-[11px] text-red-500 dark:text-red-400 mt-1 flex items-center gap-1">
+        <span class="material-symbols-outlined" style="font-size: 13px;">error</span>
+        {{ 'taskBuilder.aiModelRequired' | translate }}
+      </p>
+      <p *ngIf="!aiModelError" class="text-[11px] text-slate-400 dark:text-slate-500 mt-1 flex items-start gap-1">
+        <span class="material-symbols-outlined" style="font-size: 13px; margin-top: 1px;">info</span>
+        {{ 'taskBuilder.aiModelHint' | translate }}
+      </p>
+    </div>
+    <!-- User Prompt -->
+    <div>
+      <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">{{ 'taskBuilder.aiPrompt' | translate }}</label>
+      <textarea 
+        [(ngModel)]="aiPrompt"
+        [placeholder]="'taskBuilder.aiPromptPlaceholder' | translate"
+        rows="5"
+        class="w-full px-3 py-1.5 text-sm bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-400/30 focus:border-violet-400 transition-colors resize-none"></textarea>
+    </div>
+
+    <!-- Variables hint -->
+    <div class="mt-1 p-2.5 rounded-lg bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-700/50">
+      <p class="text-xs font-medium text-violet-700 dark:text-violet-300 mb-1.5 flex items-center gap-1">
+        <span class="material-symbols-outlined" style="font-size: 14px;">data_object</span>
+        {{ 'taskBuilder.aiVarsHint' | translate }}
+      </p>
+      <p class="text-[11px] text-violet-600 dark:text-violet-400">{{ 'taskBuilder.aiVarsHintDesc' | translate }}</p>
+    </div>
+  </div>
+
+  <!-- ── Model Picker Modal ── -->
+  <div *ngIf="showModelPickerModal"
+    class="fixed inset-0 z-[300] flex items-center justify-center p-4"
+    (click)="showModelPickerModal = false">
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+    <div class="relative w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden"
+      (click)="$event.stopPropagation()">
+      <!-- Header -->
+      <div class="flex items-center justify-between px-4 py-3 border-b border-slate-100 dark:border-slate-700">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-violet-500" style="font-size: 18px;">memory</span>
+          <h3 class="text-sm font-semibold text-slate-800 dark:text-slate-100">{{ 'taskBuilder.aiModelPickerTitle' | translate }}</h3>
+        </div>
+        <button (click)="showModelPickerModal = false"
+          class="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-gray-700 text-slate-400 dark:text-slate-500 transition-colors">
+          <span class="material-symbols-outlined" style="font-size: 18px;">close</span>
+        </button>
+      </div>
+      <!-- Search -->
+      <div class="px-4 pt-3 pb-2">
+        <div class="flex items-center gap-2 px-3 py-1.5 bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-slate-600 rounded-lg">
+          <span class="material-symbols-outlined text-slate-400" style="font-size: 16px;">search</span>
+          <input
+            type="text"
+            [(ngModel)]="modelSearchQuery"
+            [placeholder]="'taskBuilder.aiModelSearchPlaceholder' | translate"
+            class="flex-1 text-sm bg-transparent text-slate-700 dark:text-slate-300 placeholder-slate-400 outline-none" />
+          <button *ngIf="modelSearchQuery" (click)="modelSearchQuery = ''"
+            class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+            <span class="material-symbols-outlined" style="font-size: 15px;">close</span>
+          </button>
+        </div>
+      </div>
+      <!-- Content -->
+      <div class="px-4 pb-4 max-h-80 overflow-y-auto">
+        <!-- Loading -->
+        <div *ngIf="modelsLoading" class="flex items-center justify-center py-8 gap-2 text-slate-400">
+          <div class="w-5 h-5 border-2 border-violet-300 border-t-violet-600 rounded-full animate-spin"></div>
+          <span class="text-sm">{{ 'taskBuilder.aiModelLoading' | translate }}</span>
+        </div>
+        <!-- Empty -->
+        <div *ngIf="!modelsLoading && !hasAnyFilteredModels"
+          class="flex flex-col items-center justify-center py-8 text-slate-400 gap-1">
+          <span class="material-symbols-outlined" style="font-size: 32px;">sentiment_dissatisfied</span>
+          <p class="text-sm">{{ 'taskBuilder.aiModelNoResults' | translate }}</p>
+        </div>
+        <!-- Grouped list -->
+        <ng-container *ngIf="!modelsLoading">
+          <ng-container *ngFor="let group of providerGroups">
+            <ng-container *ngIf="getFilteredGroupModels(group).length > 0">
+              <!-- Group header -->
+              <button
+                (click)="collapsedGroups[group.id] = !collapsedGroups[group.id]"
+                class="flex items-center gap-2 w-full px-2 py-1.5 mt-1 hover:bg-slate-50 dark:hover:bg-slate-700/40 rounded-md transition-colors">
+                <span class="material-symbols-outlined text-slate-400" style="font-size:14px;">{{ group.icon }}</span>
+                <span class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">{{ group.label }}</span>
+                <span class="ml-auto text-[11px] text-slate-400">{{ getFilteredGroupModels(group).length }}</span>
+                <span class="material-symbols-outlined text-slate-400 transition-transform duration-200"
+                  [class.-rotate-180]="collapsedGroups[group.id]"
+                  style="font-size:14px;">expand_more</span>
+              </button>
+              <!-- Group models -->
+              <ng-container *ngIf="!collapsedGroups[group.id]">
+                <button *ngFor="let m of getFilteredGroupModels(group)"
+                  (click)="selectModel(m.id)"
+                  class="w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-900/20 border border-transparent hover:border-violet-200 dark:hover:border-violet-700/50 transition-all text-left"
+                  [ngClass]="m.id === aiModel ? 'bg-violet-50 dark:bg-violet-900/20 border-violet-300 dark:border-violet-700/50' : ''">
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <span class="material-symbols-outlined text-violet-500 flex-shrink-0" style="font-size: 16px;">
+                      {{ m.id === aiModel ? 'radio_button_checked' : 'radio_button_unchecked' }}
+                    </span>
+                    <p class="text-sm font-medium text-slate-800 dark:text-slate-100 font-mono truncate">{{ m.displayName }}</p>
+                  </div>
+                  <span *ngIf="m.badge" class="text-[10px] font-medium text-violet-500 dark:text-violet-400 flex-shrink-0 bg-violet-50 dark:bg-violet-900/30 px-1.5 py-0.5 rounded">{{ m.badge }}</span>
+                  <span *ngIf="m.size && !m.badge" class="text-[10px] font-medium text-slate-400 dark:text-slate-500 flex-shrink-0">{{ m.size }}</span>
+                </button>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <!-- Set Variable block config -->
+  <div *ngIf="selectedBlock.type === 'set-variable'" class="space-y-3">
+    <div class="flex items-center justify-between mb-1">
+      <label class="text-xs font-medium text-slate-600 dark:text-slate-400">{{ 'taskBuilder.setVarAssignments' | translate }}</label>
+      <button 
+        (click)="setVarAssignments.push({ name: '', value: '' })"
+        class="inline-flex items-center gap-0.5 px-2 py-0.5 text-[10px] font-medium rounded-md bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-700/50 hover:bg-amber-100 dark:hover:bg-amber-800/40 transition-colors cursor-pointer">
+        <span class="material-symbols-outlined" style="font-size: 12px;">add</span>
+        {{ 'taskBuilder.setVarAdd' | translate }}
+      </button>
+    </div>
+
+    <div *ngFor="let assignment of setVarAssignments; let i = index" class="p-2.5 rounded-lg bg-slate-50 dark:bg-gray-800/50 border border-slate-200 dark:border-slate-600 space-y-2">
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">#{{ i + 1 }}</span>
+        <button 
+          *ngIf="setVarAssignments.length > 1"
+          (click)="setVarAssignments.splice(i, 1)"
+          class="p-0.5 rounded hover:bg-red-100 dark:hover:bg-red-900/30 text-slate-400 hover:text-red-500 transition-colors cursor-pointer">
+          <span class="material-symbols-outlined" style="font-size: 14px;">close</span>
+        </button>
+      </div>
+      <div>
+        <label class="block text-[10px] font-medium text-slate-500 dark:text-slate-400 mb-0.5">{{ 'taskBuilder.setVarName' | translate }}</label>
+        <input 
+          type="text" 
+          [(ngModel)]="assignment.name"
+          [placeholder]="'taskBuilder.setVarNamePlaceholder' | translate"
+          class="w-full px-2.5 py-1 text-xs bg-white dark:bg-gray-800 border border-slate-200 dark:border-slate-600 rounded-md text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-400/30 focus:border-amber-400 transition-colors font-mono" />
+      </div>
+      <div>
+        <label class="block text-[10px] font-medium text-slate-500 dark:text-slate-400 mb-0.5">{{ 'taskBuilder.setVarValue' | translate }}</label>
+        <textarea 
+          [(ngModel)]="assignment.value"
+          [placeholder]="'taskBuilder.setVarValuePlaceholder' | translate"
+          rows="2"
+          class="w-full px-2.5 py-1 text-xs bg-white dark:bg-gray-800 border border-slate-200 dark:border-slate-600 rounded-md text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-400/30 focus:border-amber-400 transition-colors resize-none font-mono"></textarea>
+      </div>
+    </div>
+
+    <!-- Hint -->
+    <div class="mt-1 p-2.5 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50">
+      <p class="text-xs font-medium text-amber-700 dark:text-amber-300 mb-1 flex items-center gap-1">
+        <span class="material-symbols-outlined" style="font-size: 14px;">info</span>
+        {{ 'taskBuilder.setVarHint' | translate }}
+      </p>
+      <p class="text-[11px] text-amber-600 dark:text-amber-400">{{ 'taskBuilder.setVarHintDesc' | translate }}</p>
+    </div>
+  </div>
+
+  <!-- Generic block config -->
+  <div *ngIf="selectedBlock.type !== 'local-storage' && selectedBlock.type !== 'api-rest' && selectedBlock.type !== 'web-scraping' && selectedBlock.type !== 'save-log' && selectedBlock.type !== 'delete-log' && selectedBlock.type !== 'fork' && selectedBlock.type !== 'join' && selectedBlock.type !== 'ai-prompt' && selectedBlock.type !== 'set-variable'" class="space-y-3">
+    <div>
+      <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">{{ 'taskBuilder.paramName' | translate }}</label>
+      <input 
+        type="text" 
+        [(ngModel)]="blockParamName"
+        [placeholder]="'taskBuilder.paramNamePlaceholder' | translate"
+        class="w-full px-3 py-1.5 text-sm bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors" />
+    </div>
+    <div>
+      <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">{{ 'taskBuilder.paramMessage' | translate }}</label>
+      <textarea 
+        [(ngModel)]="blockParamMessage"
+        [placeholder]="'taskBuilder.paramMessagePlaceholder' | translate"
+        rows="3"
+        class="w-full px-3 py-1.5 text-sm bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors resize-none"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- Output Variable -->
+<div *ngIf="selectedBlock" class="px-5 py-4 border-b border-slate-200 dark:border-slate-700">
+  <div class="flex items-center gap-2 mb-3">
+    <span class="material-symbols-outlined text-amber-500" style="font-size: 18px;">data_object</span>
+    <h3 class="text-sm font-semibold text-slate-700 dark:text-slate-300">{{ 'taskBuilder.outputVar' | translate }}</h3>
+  </div>
+  <div>
+    <input 
+      type="text" 
+      [(ngModel)]="outputVar"
+      [placeholder]="'taskBuilder.outputVarPlaceholder' | translate"
+      class="w-full px-3 py-1.5 text-sm bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-400/30 focus:border-amber-400 transition-colors font-mono" />
+    <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-1.5 flex items-start gap-1">
+      <span class="material-symbols-outlined" style="font-size: 13px; margin-top: 1px;">info</span>
+      {{ 'taskBuilder.outputVarHint' | translate }}
+    </p>
+  </div>
+</div>
+
+<!-- Action Buttons -->
+<div *ngIf="selectedBlock" class="px-5 py-4">
+  <div class="flex gap-2">
+    <button 
+      (click)="applyBlockConfig()"
+      [class]="applyFeedback
+        ? 'flex-1 py-2 text-sm font-medium bg-green-500 text-white rounded-lg transition-all flex items-center justify-center gap-1.5'
+        : 'flex-1 py-2 text-sm font-medium bg-primary hover:bg-primary-dark text-white rounded-lg transition-all flex items-center justify-center gap-1.5'">
+      <span *ngIf="applyFeedback" class="material-symbols-outlined" style="font-size: 16px;">check_circle</span>
+      <span>{{ applyFeedback ? ('taskBuilder.applyDone' | translate) : ('taskBuilder.apply' | translate) }}</span>
+    </button>
+    <button 
+      (click)="deleteSelectedBlock()"
+      class="px-4 py-2 text-sm font-medium bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50 rounded-lg transition-colors">
+      <span class="material-symbols-outlined" style="font-size: 18px;">delete</span>
+    </button>
+  </div>
+</div>
+
+<!-- Empty state when no block selected -->
+<div *ngIf="!selectedBlock" class="flex-1 flex items-center justify-center px-5">
+  <div class="text-center">
+    <span class="material-symbols-outlined text-slate-300 dark:text-slate-600 mb-2" style="font-size: 40px;">touch_app</span>
+    <p class="text-sm text-slate-400 dark:text-slate-500">{{ 'taskBuilder.selectBlockHint' | translate }}</p>
+  </div>
+</div>

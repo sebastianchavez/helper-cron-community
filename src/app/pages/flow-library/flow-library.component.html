@@ -1,0 +1,232 @@
+﻿<div class="flex h-screen overflow-hidden bg-background-light dark:bg-background-dark" style="width: -webkit-fill-available;">
+
+  <!-- Navigation Menu -->
+  <app-navigation-menu [currentPage]="'flow-library'"></app-navigation-menu>
+
+  <main class="flex-1 overflow-y-auto">
+    <!-- Header -->
+    <div class="px-8 pt-8 pb-0">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+        <div>
+          <h1 class="text-2xl font-bold text-slate-900 dark:text-white">{{ 'flowLibrary.title' | translate }}</h1>
+          <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">{{ 'flowLibrary.subtitle' | translate }}</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <!-- Search -->
+          <div class="flex items-stretch rounded-lg h-10 overflow-hidden border border-slate-200 dark:border-slate-700 bg-white dark:bg-gray-800 min-w-[200px]">
+            <div class="text-slate-400 flex items-center justify-center pl-3">
+              <span class="material-symbols-outlined" style="font-size: 20px;">search</span>
+            </div>
+            <input
+              [(ngModel)]="searchQuery"
+              (ngModelChange)="onSearchChange()"
+              class="flex w-full min-w-0 flex-1 border-none bg-transparent text-slate-900 dark:text-white focus:ring-0 placeholder:text-slate-400 dark:placeholder:text-slate-500 px-3 text-sm"
+              [placeholder]="'flowLibrary.searchPlaceholder' | translate"/>
+          </div>
+
+          <!-- View toggle -->
+          <div class="flex bg-white dark:bg-gray-800 border border-slate-200 dark:border-slate-700 rounded-lg p-1">
+            <button
+              (click)="viewMode = 'grid'"
+              class="p-1.5 rounded transition-colors"
+              [ngClass]="viewMode === 'grid' ? 'bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'">
+              <span class="material-symbols-outlined" style="font-size: 20px;">grid_view</span>
+            </button>
+            <button
+              (click)="viewMode = 'list'"
+              class="p-1.5 rounded transition-colors"
+              [ngClass]="viewMode === 'list' ? 'bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'">
+              <span class="material-symbols-outlined" style="font-size: 20px;">format_list_bulleted</span>
+            </button>
+          </div>
+
+          <!-- Sort -->
+          <select
+            [(ngModel)]="sortBy"
+            (ngModelChange)="onSortChange()"
+            class="text-sm border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-gray-800 text-slate-700 dark:text-slate-300 focus:ring-primary focus:border-primary py-2 px-3 pr-8">
+            <option value="recent">{{ 'flowLibrary.sortRecent' | translate }}</option>
+            <option value="name">{{ 'flowLibrary.sortName' | translate }}</option>
+          </select>
+
+          <!-- Schedule filter chip -->
+          <button
+            (click)="toggleScheduleFilter()"
+            class="flex items-center gap-1.5 rounded-lg h-10 px-3 text-sm font-medium border transition-colors"
+            [ngClass]="filterScheduled
+              ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-400'
+              : 'bg-white dark:bg-gray-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600'">
+            <span class="material-symbols-outlined" style="font-size: 18px;">schedule</span>
+            <span>{{ 'flowLibrary.filterScheduled' | translate }}</span>
+            <span *ngIf="filterScheduled" class="material-symbols-outlined" style="font-size: 16px;">close</span>
+          </button>
+
+          <!-- New Action button -->
+          <button
+            (click)="createNewFlow()"
+            class="flex items-center justify-center rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold transition-all hover:opacity-90 shadow-sm gap-2">
+            <span class="material-symbols-outlined" style="font-size: 18px;">add</span>
+            <span>{{ 'flowLibrary.newAction' | translate }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading state -->
+    <div *ngIf="loading" class="px-8 pb-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
+        <div *ngFor="let i of [1,2,3,4]" class="bg-white dark:bg-gray-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 animate-pulse">
+          <div class="flex items-start justify-between mb-4">
+            <div class="size-12 rounded-xl bg-slate-200 dark:bg-slate-700"></div>
+          </div>
+          <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/4 mb-2"></div>
+          <div class="h-3 bg-slate-200 dark:bg-slate-700 rounded w-full mb-1"></div>
+          <div class="h-3 bg-slate-200 dark:bg-slate-700 rounded w-2/3"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grid / List content -->
+    <div *ngIf="!loading" class="px-8 pb-8">
+      <!-- Grid view -->
+      <div *ngIf="viewMode === 'grid'" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
+        <!-- Flow cards -->
+        <div
+          *ngFor="let flow of filteredFlows"
+          (click)="editFlow(flow)"
+          class="relative bg-white dark:bg-gray-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 flex flex-col h-full cursor-pointer hover:border-primary hover:shadow-md transition-all duration-200">
+
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center gap-2">
+              <div class="size-12 rounded-xl flex items-center justify-center" [ngClass]="[flow.iconBg]">
+                <span class="material-symbols-outlined text-2xl" [ngClass]="[flow.iconColor]">{{ flow.icon }}</span>
+              </div>
+              <span *ngIf="flow.enabled"
+                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+                <span class="material-symbols-outlined" style="font-size: 12px;">schedule</span>
+                {{ 'flowLibrary.scheduled' | translate }}
+              </span>
+            </div>
+          </div>
+          <h3 *ngIf="renamingFlowId !== flow.id" class="text-base font-bold text-slate-900 dark:text-white mb-1">{{ flow.name }}</h3>
+          <input *ngIf="renamingFlowId === flow.id"
+            type="text"
+            [(ngModel)]="renamingFlowName"
+            (blur)="confirmRename()"
+            (keydown)="onRenameKeydown($event)"
+            (click)="$event.stopPropagation()"
+            class="text-base font-bold text-slate-900 dark:text-white bg-white dark:bg-gray-700 border border-primary rounded-md px-2 py-0.5 mb-1 w-full focus:outline-none focus:ring-2 focus:ring-primary/30"
+            autofocus />
+          <p class="text-slate-500 dark:text-slate-400 text-xs mb-6 line-clamp-2">{{ flow.description }}</p>
+          <div class="mt-auto pt-4 border-t border-slate-50 dark:border-slate-700/50 flex items-center justify-between">
+            <span class="text-[10px] text-slate-400 dark:text-slate-500 flex items-center gap-1">
+              <span class="material-symbols-outlined" style="font-size: 14px;">schedule</span>
+              {{ getTimeAgo(flow.updatedAt) }}
+            </span>
+            <div class="flex items-center gap-1">
+              <button
+                (click)="startRename(flow, $event)"
+                class="p-2 text-slate-400 hover:text-primary hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg transition-colors"
+                [title]="'flowLibrary.rename' | translate">
+                <span class="material-symbols-outlined" style="font-size: 20px;">drive_file_rename_outline</span>
+              </button>
+              <button
+                (click)="editFlow(flow); $event.stopPropagation()"
+                class="p-2 text-slate-400 hover:text-primary hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg transition-colors"
+                [title]="'flowLibrary.edit' | translate">
+                <span class="material-symbols-outlined" style="font-size: 20px;">edit</span>
+              </button>
+              <button
+                (click)="deleteFlow(flow, $event)"
+                class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                [title]="'flowLibrary.delete' | translate">
+                <span class="material-symbols-outlined" style="font-size: 20px;">delete</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Create new card -->
+        <button
+          (click)="createNewFlow()"
+          class="group border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl p-5 flex flex-col items-center justify-center h-full hover:border-primary hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-all min-h-[220px]">
+          <div class="size-12 rounded-full bg-slate-100 dark:bg-slate-800 group-hover:bg-primary/20 flex items-center justify-center mb-3">
+            <span class="material-symbols-outlined text-slate-400 group-hover:text-primary">add</span>
+          </div>
+          <p class="text-sm font-bold text-slate-600 dark:text-slate-400 group-hover:text-primary">{{ 'flowLibrary.createNewAction' | translate }}</p>
+          <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1">{{ 'flowLibrary.useBlocksOrTemplates' | translate }}</p>
+        </button>
+      </div>
+
+      <!-- List view -->
+      <div *ngIf="viewMode === 'list'" class="bg-white dark:bg-gray-800 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden">
+        <div
+          *ngFor="let flow of filteredFlows; let last = last"
+          (click)="editFlow(flow)"
+          class="relative flex items-center gap-4 px-6 py-4 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
+          [class.border-b]="!last"
+          [class.border-slate-100]="!last"
+          [class.dark:border-slate-700]="!last">
+
+          <div class="size-10 rounded-xl flex items-center justify-center flex-shrink-0" [ngClass]="[flow.iconBg]">
+            <span class="material-symbols-outlined" style="font-size: 20px;" [ngClass]="[flow.iconColor]">{{ flow.icon }}</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h3 *ngIf="renamingFlowId !== flow.id" class="text-sm font-bold text-slate-900 dark:text-white truncate">{{ flow.name }}</h3>
+            <input *ngIf="renamingFlowId === flow.id"
+              type="text"
+              [(ngModel)]="renamingFlowName"
+              (blur)="confirmRename()"
+              (keydown)="onRenameKeydown($event)"
+              (click)="$event.stopPropagation()"
+              class="text-sm font-bold text-slate-900 dark:text-white bg-white dark:bg-gray-700 border border-primary rounded-md px-2 py-0.5 w-full focus:outline-none focus:ring-2 focus:ring-primary/30"
+              autofocus />
+            <p class="text-xs text-slate-500 dark:text-slate-400 truncate">{{ flow.description }}</p>
+          </div>
+          <span *ngIf="flow.enabled"
+            class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 flex-shrink-0">
+            <span class="material-symbols-outlined" style="font-size: 12px;">schedule</span>
+            {{ 'flowLibrary.scheduled' | translate }}
+          </span>
+          <span class="text-[10px] text-slate-400 dark:text-slate-500 flex items-center gap-1 flex-shrink-0 w-16">
+            <span class="material-symbols-outlined" style="font-size: 14px;">schedule</span>
+            {{ getTimeAgo(flow.updatedAt) }}
+          </span>
+          <div class="flex items-center gap-1 flex-shrink-0">
+            <button
+              (click)="startRename(flow, $event)"
+              class="p-1.5 text-slate-400 hover:text-primary hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
+              [title]="'flowLibrary.rename' | translate">
+              <span class="material-symbols-outlined" style="font-size: 18px;">drive_file_rename_outline</span>
+            </button>
+            <button
+              (click)="editFlow(flow); $event.stopPropagation()"
+              class="p-1.5 text-slate-400 hover:text-primary hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
+              [title]="'flowLibrary.edit' | translate">
+              <span class="material-symbols-outlined" style="font-size: 18px;">edit</span>
+            </button>
+            <button
+              (click)="deleteFlow(flow, $event)"
+              class="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+              [title]="'flowLibrary.delete' | translate">
+              <span class="material-symbols-outlined" style="font-size: 18px;">delete</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Empty state in list -->
+        <div *ngIf="filteredFlows.length === 0" class="p-12 text-center">
+          <span class="material-symbols-outlined text-slate-300 dark:text-slate-600 mb-3" style="font-size: 48px;">search_off</span>
+          <p class="text-sm text-slate-500 dark:text-slate-400">{{ 'flowLibrary.noResults' | translate }}</p>
+        </div>
+      </div>
+
+      <!-- Empty grid state -->
+      <div *ngIf="viewMode === 'grid' && filteredFlows.length === 0" class="text-center py-16">
+        <span class="material-symbols-outlined text-slate-300 dark:text-slate-600 mb-3" style="font-size: 48px;">search_off</span>
+        <p class="text-sm text-slate-500 dark:text-slate-400">{{ 'flowLibrary.noResults' | translate }}</p>
+      </div>
+    </div>
+  </main>
+
+</div>

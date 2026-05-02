@@ -1,0 +1,51 @@
+<div class="flex flex-col w-full max-w-3xl mx-auto py-8 px-4 gap-6">
+  <div *ngIf="messages.length === 0" class="flex flex-col items-center justify-center min-h-[50vh] gap-8">
+    <div class="text-center">
+      <h1 class="text-4xl font-bold text-slate-900 dark:text-white mb-4">{{ 'welcome' | translate }}</h1>
+      <div class="flex flex-col items-center gap-3">
+        <div class="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 dark:bg-primary/20 text-primary rounded-full text-sm font-medium">
+          <span class="material-symbols-outlined text-lg">psychology</span>
+          <span>{{ currentRoleName }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+    
+  <div *ngFor="let message of messages; trackBy: trackByMessageId" class="group w-full text-slate-900 dark:text-slate-100">
+    <div class="flex gap-4 md:gap-6 m-auto">
+      <div class="flex-shrink-0 flex flex-col relative items-end">
+        <div *ngIf="message.role === 'user'" 
+          class="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-500 to-primary flex items-center justify-center text-white font-bold text-xs">
+          U
+        </div>
+        <div *ngIf="message.role === 'assistant'" 
+          class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white">
+          <span class="material-symbols-outlined text-[18px]">smart_toy</span>
+        </div>
+      </div>
+      <div class="relative flex-1 overflow-hidden">
+        <div class="font-semibold text-sm mb-1 opacity-90">{{ message.role === 'user' ? ('you' | translate) : currentRoleName }}</div>
+        <div class="prose dark:prose-invert text-[15px] leading-7 max-w-none" 
+             [innerHTML]="formatMessageContent(message.content)"
+             (click)="handleCodeCopyClick($event)">
+        </div>
+      </div>
+    </div>
+  </div>
+    
+  <div *ngIf="loading && !isStreaming" class="group w-full text-slate-900 dark:text-slate-100">
+    <div class="flex gap-4 md:gap-6 m-auto">
+      <div class="flex-shrink-0 flex flex-col relative items-end">
+        <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white">
+          <span class="material-symbols-outlined text-[18px] animate-pulse">smart_toy</span>
+        </div>
+      </div>
+      <div class="relative flex-1 overflow-hidden pt-1">
+        <div class="font-semibold text-sm mb-1 opacity-90">{{ currentRoleName }}</div>
+        <div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+          <span>{{ typingText }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,54 @@
+<!-- Panel Header -->
+<div class="px-4 py-4 border-b border-slate-200 dark:border-slate-700">
+  <h2 class="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-3">{{ 'taskBuilder.actionBlocks' | translate }}</h2>
+  <div class="relative">
+    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" style="font-size: 18px;">search</span>
+    <input 
+      type="text" 
+      [(ngModel)]="searchQuery"
+      [placeholder]="'taskBuilder.searchBlocks' | translate"
+      class="w-full pl-9 pr-3 py-2 text-sm bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors" />
+  </div>
+</div>
+
+<!-- Block Categories -->
+<div class="flex-1 overflow-y-auto px-4 py-3 space-y-3">
+  <div *ngFor="let category of getFilteredCategories()">
+    <!-- Collapsible category header -->
+    <button 
+      (click)="toggleCategory(category.key)"
+      class="w-full flex items-center justify-between py-1.5 group cursor-pointer">
+      <h3 class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+        {{ category.labelKey | translate }}
+      </h3>
+      <span 
+        class="material-symbols-outlined text-slate-400 dark:text-slate-500 transition-transform duration-200"
+        [class.rotate-180]="!isCategoryCollapsed(category.key)"
+        style="font-size: 18px;">
+        expand_more
+      </span>
+    </button>
+
+    <!-- Collapsible blocks list -->
+    <div 
+      class="space-y-2 overflow-hidden transition-all duration-200 ease-in-out"
+      [style.max-height]="isCategoryCollapsed(category.key) ? '0px' : '1000px'"
+      [style.opacity]="isCategoryCollapsed(category.key) ? '0' : '1'"
+      [style.margin-top]="isCategoryCollapsed(category.key) ? '0' : '0.5rem'">
+      <div 
+        *ngFor="let block of category.blocks"
+        draggable="true"
+        (dragstart)="onDragStart($event, block)"
+        class="flex items-center gap-3 p-3 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-gray-800 hover:border-primary/50 hover:shadow-sm cursor-grab active:cursor-grabbing transition-all group">
+        <div [class]="block.bgColor + ' rounded-lg p-2'">
+          <span class="material-symbols-outlined" [class]="block.iconColor" style="font-size: 20px;">{{ block.icon }}</span>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium text-slate-700 dark:text-slate-200 truncate">{{ block.labelKey | translate }}</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400 truncate">{{ block.descKey | translate }}</p>
+        </div>
+        <span class="material-symbols-outlined text-slate-300 dark:text-slate-600 group-hover:text-slate-400 dark:group-hover:text-slate-500 transition-colors" style="font-size: 18px;">drag_indicator</span>
+      </div>
+    </div>
+  </div>
+</div>

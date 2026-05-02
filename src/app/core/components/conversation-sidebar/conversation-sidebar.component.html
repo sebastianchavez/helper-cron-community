@@ -1,0 +1,71 @@
+<aside
+  class="w-[260px] flex-shrink-0 bg-sidebar-light dark:bg-sidebar-dark border-r border-slate-200 dark:border-slate-800 flex flex-col h-full transition-all duration-300 hidden md:flex">
+  
+  <div class="p-3 flex flex-col gap-2">
+    <button (click)="onNewConversation()" [disabled]="loading"
+      [class.opacity-50]="loading"
+      [class.cursor-not-allowed]="loading"
+      class="flex w-full cursor-pointer items-center justify-start overflow-hidden rounded-lg h-10 px-3 bg-white dark:bg-[#111722] border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-[#1c2433] text-sm font-medium transition-colors gap-2 text-slate-700 dark:text-white shadow-sm disabled:hover:bg-white dark:disabled:hover:bg-[#111722]">
+      <span class="material-symbols-outlined text-primary" style="font-size: 20px;">add</span>
+      <span>{{ 'newChat' | translate }}</span>
+      <span class="ml-auto material-symbols-outlined text-slate-400" style="font-size: 18px;">edit_square</span>
+    </button>
+    
+    <app-folder-sidebar
+      [selectedFolderId]="selectedFolderId"
+      [conversations]="selectedFolderId ? getFolderConversations() : []"
+      [selectedConversationId]="selectedConversationId"
+      [loading]="loading"
+      (folderSelected)="onFolderSelected($event)"
+      (folderCreated)="onFolderCreated()"
+      (chatCreatedInFolder)="onChatCreatedInFolder($event)"
+      (conversationMoved)="onConversationMoved($event)"
+      (conversationSelected)="onConversationSelected($event)"
+      (conversationDeleted)="onConversationDeleted($event)">
+    </app-folder-sidebar>
+  </div>
+
+  <div class="flex-1 overflow-y-auto px-3 py-2">
+    <div>
+      <div class="flex flex-col gap-1">
+        <ng-container *ngIf="!selectedFolderId">
+          <button *ngFor="let conv of conversations; trackBy: trackConversation" 
+            (click)="onConversationSelected(conv.id)" [disabled]="loading"
+            draggable="true"
+            (dragstart)="onDragStart($event, conv.id)"
+            (dragend)="onDragEnd($event)"
+            [class.bg-slate-200]="conv.id === selectedConversationId"
+            [class.dark:bg-slate-700]="conv.id === selectedConversationId"
+            [class.opacity-50]="loading || isDragging"
+            [class.cursor-not-allowed]="loading"
+            class="group flex items-center gap-3 w-full rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1c2433] transition-colors text-left relative overflow-hidden disabled:hover:bg-transparent dark:disabled:hover:bg-transparent">
+            <span class="truncate z-10 relative flex-1">{{ conv.title || ('conversation' | translate) }}</span>
+            <button (click)="onConversationDeleted(conv.id); $event.stopPropagation()" [disabled]="loading"
+              class="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-red-100 dark:hover:bg-red-900/20 rounded text-red-600 hover:text-red-700">
+              <span class="material-symbols-outlined" style="font-size: 16px;">delete</span>
+            </button>
+          </button>
+        </ng-container>
+
+        <ng-container *ngIf="selectedFolderId">
+          <button *ngFor="let conv of getRootConversations(); trackBy: trackConversation" 
+            (click)="onConversationSelected(conv.id)" [disabled]="loading"
+            draggable="true"
+            (dragstart)="onDragStart($event, conv.id)"
+            (dragend)="onDragEnd($event)"
+            [class.bg-slate-200]="conv.id === selectedConversationId"
+            [class.dark:bg-slate-700]="conv.id === selectedConversationId"
+            [class.opacity-50]="loading || isDragging"
+            [class.cursor-not-allowed]="loading"
+            class="group flex items-center gap-3 w-full rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1c2433] transition-colors text-left relative overflow-hidden disabled:hover:bg-transparent dark:disabled:hover:bg-transparent">
+            <span class="truncate z-10 relative flex-1">{{ conv.title || ('conversation' | translate) }}</span>
+            <button (click)="onConversationDeleted(conv.id); $event.stopPropagation()" [disabled]="loading"
+              class="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-red-100 dark:hover:bg-red-900/20 rounded text-red-600 hover:text-red-700">
+              <span class="material-symbols-outlined" style="font-size: 16px;">delete</span>
+            </button>
+          </button>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</aside>

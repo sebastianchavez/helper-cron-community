@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { TranslationService } from '../services/translation/translation.service';
-import { Subscription } from 'rxjs';
+import { Subscription, merge } from 'rxjs';
 
 @Pipe({
   name: 'translate',
@@ -14,7 +14,10 @@ export class TranslatePipe implements PipeTransform, OnDestroy {
     private translationService: TranslationService,
     private cdr: ChangeDetectorRef
   ) {
-    this.subscription = this.translationService.currentLanguage$.subscribe(() => {
+    this.subscription = merge(
+      this.translationService.currentLanguage$,
+      this.translationService.languageLoaded$
+    ).subscribe(() => {
       this.cdr.markForCheck();
     });
   }

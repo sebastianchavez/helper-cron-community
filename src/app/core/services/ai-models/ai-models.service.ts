@@ -82,8 +82,17 @@ export class AIModelsService {
       this.logger.log('AI_MODELS_SVC', 'loadModels', { info: 'Ollama response', response: ollamaModels });
       this.logger.log('AI_MODELS_SVC', 'loadModels', { info: `Ollama models found: ${ollamaModels.length}` });
       
-      // Convertir modelos de Ollama al formato AIModel
-      const aiModels: AIModel[] = ollamaModels.map(model => ({
+      // Convertir modelos de Ollama al formato AIModel (solo conversacionales)
+      const aiModels: AIModel[] = ollamaModels
+        .filter(model => {
+          const name = (model.name || '').toLowerCase();
+          const family = ((model.details as any)?.family || '').toLowerCase();
+          if (name.includes('embed')) return false;
+          const embeddingFamilies = ['bert', 'nomic-bert', 'mxbai-embed', 'snowflake-arctic-embed'];
+          if (embeddingFamilies.some(ef => family.includes(ef))) return false;
+          return true;
+        })
+        .map(model => ({
         id: model.name,
         name: model.name,
         size: this.formatModelSize(model.size),

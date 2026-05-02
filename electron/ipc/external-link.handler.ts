@@ -18,4 +18,22 @@ export function registerExternalLinkHandler() {
             return { success: false, error: (error as Error).message };
         }
     });
+
+    ipcMain.handle('show-item-in-folder', async (_event, filePath: string) => {
+        try {
+            const fs = require('fs');
+            const exists = fs.existsSync(filePath);
+            if (exists) {
+                shell.showItemInFolder(filePath);
+            } else {
+                const path = require('path');
+                const dir = path.dirname(filePath);
+                await shell.openPath(dir);
+            }
+            return { success: true };
+        } catch (error) {
+            console.error('Error showing item in folder:', error);
+            return { success: false, error: (error as Error).message };
+        }
+    });
 }

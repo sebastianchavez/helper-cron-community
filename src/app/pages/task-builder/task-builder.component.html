@@ -1,0 +1,96 @@
+<div class="flex h-screen overflow-hidden bg-background-light dark:bg-background-dark" style="width: -webkit-fill-available;">
+  
+  <!-- Left Sidebar - Navigation -->
+  <app-navigation-menu [currentPage]="'flow-library'" [isFlowRunning]="isRunning"></app-navigation-menu>
+
+  <!-- Left Panel - Action Blocks -->
+  <aside class="flex-shrink-0 bg-white dark:bg-gray-900 border-r border-slate-200 dark:border-slate-700 flex flex-col h-full" [style.width.px]="leftPanelWidth">
+    <app-block-sidebar
+      [blockCategories]="blockCategories"
+      (templateDragStart)="onTemplateDragStart($event.event, $event.template)">
+    </app-block-sidebar>
+  </aside>
+
+  <!-- Left Panel Resize Handle -->
+  <div 
+    class="resize-handle-vertical flex-shrink-0"
+    (mousedown)="onResizeStart($event, 'left')">
+    <div class="resize-handle-line"></div>
+  </div>
+
+  <!-- Main Content - Canvas -->
+  <main class="flex flex-1 flex-col h-full min-w-0">
+    <!-- Header -->
+    <app-flow-header
+      [editingFlowId]="editingFlowId"
+      [flowName]="flowName"
+      [flowIcon]="flowIcon"
+      [flowIconColor]="flowIconColor"
+      [flowIconBg]="flowIconBg"
+      [isRunning]="isRunning"
+      [flowSaving]="flowSaving"
+      [flowSaveSuccess]="flowSaveSuccess"
+      (run)="runFlow()"
+      (stop)="stopFlow()"
+      (save)="saveFlow()"
+      (nameConfirmed)="onNameConfirmed($event)"
+      (iconChanged)="flowIcon = $event.icon; flowIconColor = $event.iconColor; flowIconBg = $event.iconBg">
+    </app-flow-header>
+
+    <!-- Canvas Area (delegated to child component) -->
+    <app-flow-canvas
+      [canvasBlocks]="canvasBlocks"
+      [connections]="connections"
+      [endNodes]="endNodes"
+      [selectedBlock]="selectedBlock"
+      [selectedEndNode]="selectedEndNode"
+      [draggingTemplate]="draggingTemplate"
+      [startNodeX]="startNodeX"
+      [startNodeY]="startNodeY"
+      [showLogPanel]="showLogPanel"
+      [logEntries]="logEntries"
+      [nextBlockId]="nextBlockId"
+      [nextEndNodeId]="nextEndNodeId"
+      (blockSelected)="selectBlock($event)"
+      (blockDeselected)="deselectBlock()"
+      (endNodeSelected)="selectedEndNode = $event; selectedBlock = null"
+      (templateConsumed)="draggingTemplate = null"
+      (showLogPanelChange)="showLogPanel = $event"
+      (logCleared)="clearLogs()"
+      (connectionsChange)="connections = $event"
+      (endNodesChange)="endNodes = $event"
+      (startNodeXChange)="startNodeX = $event"
+      (startNodeYChange)="startNodeY = $event"
+      (nextBlockIdChange)="nextBlockId = $event"
+      (nextEndNodeIdChange)="nextEndNodeId = $event">
+    </app-flow-canvas>
+  </main>
+
+  <!-- Right Panel Resize Handle -->
+  <div 
+    *ngIf="showConfigPanel"
+    class="resize-handle-vertical flex-shrink-0"
+    (mousedown)="onResizeStart($event, 'right')">
+    <div class="resize-handle-line"></div>
+  </div>
+
+  <!-- Right Sidebar - Config Panel -->
+  <aside 
+    *ngIf="showConfigPanel"
+    class="flex-shrink-0 bg-white dark:bg-gray-900 border-l border-slate-200 dark:border-slate-700 flex flex-col h-full overflow-y-auto"
+    [style.width.px]="rightPanelWidth">
+    <app-flow-config-sidebar
+      [(scheduleEnabled)]="scheduleEnabled"
+      [(scheduleType)]="scheduleType"
+      [(intervalValue)]="intervalValue"
+      [(intervalUnit)]="intervalUnit"
+      [(specificTime)]="specificTime"
+      [(selectedDays)]="selectedDays"
+      [selectedBlock]="selectedBlock"
+      [canvasBlocks]="canvasBlocks"
+      [editingFlowId]="editingFlowId"
+      (configApplied)="onConfigApplied()"
+      (blockDeleted)="deleteSelectedBlock()">
+    </app-flow-config-sidebar>
+  </aside>
+</div>

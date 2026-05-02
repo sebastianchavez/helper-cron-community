@@ -7,23 +7,25 @@ import {
     deleteConversation,
     updateConversationTitle,
     getConversationsByFolder,
+    getConversation,
     moveConversationToFolder,
-    restoreConversation,
-    permanentDeleteConversation,
-    listDeletedConversations,
+    updateConversationAssociatedFolder,
+    removeConversationAssociatedFolder,
 } from '../db/chat.repository';
 
 export function registerChatDbHandler() {
-    ipcMain.handle('chat:conversation:create', (_e, title?: string, folderId?: string) =>
-        createConversation(title, folderId)
+    ipcMain.handle('chat:conversation:create', (_e, title?: string, folderId?: string, assistantRole?: string) =>
+        createConversation(title, folderId, assistantRole)
     );
 
-    ipcMain.handle('chat:conversation:list', () =>
-        listConversations()
-    );
+    ipcMain.handle('chat:conversation:list', () => listConversations());
 
     ipcMain.handle('chat:conversation:by-folder', (_e, folderId: string) =>
         getConversationsByFolder(folderId)
+    );
+
+    ipcMain.handle('chat:conversation:get', (_e, conversationId: string) =>
+        getConversation(conversationId)
     );
 
     ipcMain.handle(
@@ -34,8 +36,7 @@ export function registerChatDbHandler() {
 
     ipcMain.handle(
         'chat:message:list',
-        (_e, conversationId: string) =>
-            getMessages(conversationId)
+        (_e, conversationId: string) => getMessages(conversationId)
     );
 
     ipcMain.handle(
@@ -56,17 +57,13 @@ export function registerChatDbHandler() {
     );
 
     ipcMain.handle(
-        'chat:conversation:restore',
-        (_e, conversationId: string) => restoreConversation(conversationId)
+        'chat:conversation:update-associated-folder',
+        (_e, payload: { conversationId: string; folderPath: string }) =>
+            updateConversationAssociatedFolder(payload.conversationId, payload.folderPath)
     );
 
     ipcMain.handle(
-        'chat:conversation:permanent-delete',
-        (_e, conversationId: string) => permanentDeleteConversation(conversationId)
+        'chat:conversation:remove-associated-folder',
+        (_e, conversationId: string) => removeConversationAssociatedFolder(conversationId)
     );
-
-    ipcMain.handle('chat:conversation:list-deleted', () =>
-        listDeletedConversations()
-    );
-
 }

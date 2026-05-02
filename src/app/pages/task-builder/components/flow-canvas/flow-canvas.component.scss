@@ -1,0 +1,396 @@
+.canvas-grid {
+  background-color: #f8fafc;
+  background-image: radial-gradient(circle, #e2e8f0 1px, transparent 1px);
+  background-size: 24px 24px;
+  min-width: 100%;
+  min-height: 100%;
+}
+
+:host-context(.dark) .canvas-grid {
+  background-color: #0f172a;
+  background-image: radial-gradient(circle, #1e293b 1px, transparent 1px);
+}
+
+.connector-line {
+  fill: none;
+  stroke: #94a3b8;
+  stroke-width: 2;
+}
+
+:host-context(.dark) .connector-line {
+  stroke: #64748b;
+}
+
+.pending-connector-line {
+  fill: none;
+  stroke: var(--accent, #3b82f6);
+  stroke-width: 2;
+  stroke-dasharray: 6 4;
+  animation: dash-flow 0.5s linear infinite;
+}
+
+@keyframes dash-flow {
+  to {
+    stroke-dashoffset: -10;
+  }
+}
+
+// ========================
+// Connector handles
+// ========================
+.connector-handle {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: crosshair;
+  z-index: 10;
+
+  .connector-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #cbd5e1;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1px #cbd5e1;
+    transition: all 0.15s ease;
+  }
+
+  &:hover .connector-dot,
+  &.connected .connector-dot {
+    background: var(--accent, #3b82f6);
+    box-shadow: 0 0 0 1px var(--accent, #3b82f6), 0 0 6px rgba(59, 130, 246, 0.4);
+    transform: scale(1.2);
+  }
+
+  &.connector-hovered .connector-dot {
+    background: #22c55e;
+    box-shadow: 0 0 0 2px #22c55e, 0 0 10px rgba(34, 197, 94, 0.5);
+    transform: scale(1.4);
+  }
+}
+
+:host-context(.dark) .connector-handle {
+  .connector-dot {
+    background: #475569;
+    border-color: #1e293b;
+    box-shadow: 0 0 0 1px #475569;
+  }
+
+  &:hover .connector-dot,
+  &.connected .connector-dot {
+    background: var(--accent, #3b82f6);
+    border-color: #1e293b;
+    box-shadow: 0 0 0 1px var(--accent, #3b82f6), 0 0 6px rgba(59, 130, 246, 0.4);
+  }
+
+  &.connector-hovered .connector-dot {
+    background: #22c55e;
+    border-color: #1e293b;
+    box-shadow: 0 0 0 2px #22c55e, 0 0 10px rgba(34, 197, 94, 0.5);
+  }
+}
+
+// Output connector: at bottom-center of block
+.connector-output {
+  left: 50%;
+  bottom: -12px;
+  transform: translateX(-50%);
+}
+
+// Conditional block: FALSE port (left side)
+.connector-cond-false {
+  left: 30px;
+  bottom: -12px;
+  transform: translateX(-50%);
+
+  .connector-dot-false {
+    background: #ef4444;
+    box-shadow: 0 0 0 1px #ef4444;
+  }
+}
+
+// Conditional block: TRUE port (right side)
+.connector-cond-true {
+  left: calc(200px - 30px);
+  bottom: -12px;
+  transform: translateX(-50%);
+
+  .connector-dot-true {
+    background: #22c55e;
+    box-shadow: 0 0 0 1px #22c55e;
+  }
+}
+
+// For-Each block: Loop body port (left side)
+.connector-foreach-body {
+  left: 30px;
+  bottom: -12px;
+  transform: translateX(-50%);
+
+  .connector-dot-loop-body {
+    background: #f59e0b;
+    box-shadow: 0 0 0 1px #f59e0b;
+  }
+}
+
+// For-Each block: After loop port (right side)
+.connector-foreach-done {
+  left: calc(200px - 30px);
+  bottom: -12px;
+  transform: translateX(-50%);
+
+  .connector-dot-loop-done {
+    background: #3b82f6;
+    box-shadow: 0 0 0 1px #3b82f6;
+  }
+}
+
+.connector-port-label {
+  position: absolute;
+  top: 100%;
+  margin-top: 2px;
+  font-size: 9px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.connector-port-label-true {
+  color: #22c55e;
+}
+
+.connector-port-label-false {
+  color: #ef4444;
+}
+
+.connector-port-label-loop-body {
+  color: #f59e0b;
+}
+
+.connector-port-label-loop-done {
+  color: #3b82f6;
+}
+
+// Connection line colors for conditional ports
+.connector-true {
+  stroke: #22c55e !important;
+}
+
+.connector-false {
+  stroke: #ef4444 !important;
+}
+
+// Connection line colors for for-each ports
+.connector-loop-body {
+  stroke: #f59e0b !important;
+}
+
+.connector-loop-done {
+  stroke: #3b82f6 !important;
+}
+
+// API-Rest block: 2xx Success port (left)
+.connector-apirest-success {
+  left: 40px;
+  bottom: -12px;
+  transform: translateX(-50%);
+
+  .connector-dot-2xx {
+    background: #22c55e;
+    box-shadow: 0 0 0 1px #22c55e;
+  }
+}
+
+// API-Rest block: 4xx Client Error port (center)
+.connector-apirest-client {
+  left: 100px;
+  bottom: -12px;
+  transform: translateX(-50%);
+
+  .connector-dot-4xx {
+    background: #f59e0b;
+    box-shadow: 0 0 0 1px #f59e0b;
+  }
+}
+
+// API-Rest block: 5xx Server Error port (right)
+.connector-apirest-server {
+  left: calc(200px - 40px);
+  bottom: -12px;
+  transform: translateX(-50%);
+
+  .connector-dot-5xx {
+    background: #ef4444;
+    box-shadow: 0 0 0 1px #ef4444;
+  }
+}
+
+// Connection line colors for api-rest ports
+.connector-2xx {
+  stroke: #22c55e !important;
+}
+
+.connector-4xx {
+  stroke: #f59e0b !important;
+}
+
+.connector-5xx {
+  stroke: #ef4444 !important;
+}
+
+:host-context(.dark) {
+  .connector-cond-false .connector-dot-false {
+    background: #f87171;
+    border-color: #1e293b;
+    box-shadow: 0 0 0 1px #f87171;
+  }
+  .connector-cond-true .connector-dot-true {
+    background: #4ade80;
+    border-color: #1e293b;
+    box-shadow: 0 0 0 1px #4ade80;
+  }
+  .connector-foreach-body .connector-dot-loop-body {
+    background: #fbbf24;
+    border-color: #1e293b;
+    box-shadow: 0 0 0 1px #fbbf24;
+  }
+  .connector-foreach-done .connector-dot-loop-done {
+    background: #60a5fa;
+    border-color: #1e293b;
+    box-shadow: 0 0 0 1px #60a5fa;
+  }
+  .connector-port-label-true { color: #4ade80; }
+  .connector-port-label-false { color: #f87171; }
+  .connector-port-label-loop-body { color: #fbbf24; }
+  .connector-port-label-loop-done { color: #60a5fa; }
+  .connector-true { stroke: #4ade80 !important; }
+  .connector-false { stroke: #f87171 !important; }
+  .connector-loop-body { stroke: #fbbf24 !important; }
+  .connector-loop-done { stroke: #60a5fa !important; }
+  .connector-apirest-success .connector-dot-2xx {
+    background: #4ade80;
+    border-color: #1e293b;
+    box-shadow: 0 0 0 1px #4ade80;
+  }
+  .connector-apirest-client .connector-dot-4xx {
+    background: #fbbf24;
+    border-color: #1e293b;
+    box-shadow: 0 0 0 1px #fbbf24;
+  }
+  .connector-apirest-server .connector-dot-5xx {
+    background: #f87171;
+    border-color: #1e293b;
+    box-shadow: 0 0 0 1px #f87171;
+  }
+  .connector-2xx { stroke: #4ade80 !important; }
+  .connector-4xx { stroke: #fbbf24 !important; }
+  .connector-5xx { stroke: #f87171 !important; }
+}
+
+// Input connector: at top-center of block
+.connector-input {
+  left: 50%;
+  top: -12px;
+  transform: translateX(-50%);
+}
+
+// End node input connector sits above the circle
+.connector-input-end {
+  top: -16px;
+}
+
+// ========================
+// Fork / Join bar
+// ========================
+.fork-join-bar {
+  width: 160px;
+  height: 12px;
+  border-radius: 4px;
+  margin-top: 12px; // space for input connector
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.18);
+  }
+
+  &.fork-join-bar-selected {
+    box-shadow: 0 0 0 2px var(--accent, #3b82f6), 0 3px 10px rgba(59, 130, 246, 0.3);
+  }
+}
+
+.fork-bar {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.join-bar {
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+}
+
+:host-context(.dark) .fork-bar {
+  background: linear-gradient(135deg, #d97706, #b45309);
+}
+
+:host-context(.dark) .join-bar {
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+}
+
+.fork-join-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+// Fork/Join input connector: centered on the bar
+.connector-input-forkjoin {
+  left: 80px; // forkBarWidth / 2
+  top: 0px;
+  transform: translateX(-50%);
+}
+
+// Fork/Join output connector: centered below the bar
+.connector-output-forkjoin {
+  left: 80px; // forkBarWidth / 2
+  bottom: -24px; // below label
+  transform: translateX(-50%);
+}
+
+// Smooth transition for blocks being dragged
+.canvas-grid > div[class*="absolute"] {
+  transition: box-shadow 0.2s ease;
+}
+
+// ========================
+// Log / Terminal panel
+// ========================
+.log-panel {
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.log-scroll {
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 3px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+  }
+}

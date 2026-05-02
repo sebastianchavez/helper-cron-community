@@ -60,4 +60,13 @@ export class LoggerService {
       });
     }
   }
+
+  logWithEmoji(idLog: string, functionName: string, info: LogInfo, emoji: string = ''): void {
+    if (isDevMode()) {
+      console.log(`${emoji} [${idLog}] [${functionName}]`, info.info, {
+        response: info.response,
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
 }

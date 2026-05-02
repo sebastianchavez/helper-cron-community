@@ -1,5 +1,6 @@
-import { CommonModule } from '@angular/common';
+﻿import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { NgxSimpliAlertService } from 'ngx-simpli-alert';
 import { AIModelsService, AIModel, OllamaStatus } from '../../services/ai-models/ai-models.service';
 import { TranslationService } from '../../services/translation/translation.service';
@@ -12,7 +13,7 @@ import { takeUntil } from 'rxjs/operators';
 @Component({
   selector: 'app-ai-models',
   standalone: true,
-  imports: [CommonModule, TranslatePipe],
+  imports: [CommonModule, FormsModule, TranslatePipe],
   template: `
     <div class="bg-white dark:bg-[#1c2433] rounded-lg border border-slate-200 dark:border-slate-700 p-6">
       <div class="flex items-center justify-between mb-4">
@@ -108,18 +109,23 @@ import { takeUntil } from 'rxjs/operators';
       </div>
 
       <!-- Lista de modelos -->
-      <div *ngIf="!loading && !error" class="space-y-3">
-        <!-- Resumen -->
-        <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4 border border-slate-200/50 dark:border-slate-700/50">
-          <div class="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <span class="text-slate-600 dark:text-slate-400">{{ 'models.installed' | translate }}:</span>
-              <span class="ml-2 font-medium text-slate-900 dark:text-white">{{ models.length }}</span>
-            </div>
-            <div>
-              <span class="text-slate-600 dark:text-slate-400">{{ 'models.size' | translate }}:</span>
-              <span class="ml-2 font-medium text-slate-900 dark:text-white">{{ getTotalSize() }}</span>
-            </div>
+      <div *ngIf="!loading && !error" class="space-y-2">
+        <!-- Resumen + filtro -->
+        <div class="flex items-center gap-3">
+          <div class="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 rounded-lg px-3 py-2 border border-slate-200/50 dark:border-slate-700/50 flex-shrink-0">
+            <span>{{ 'models.installed' | translate }}: <strong class="text-slate-900 dark:text-white">{{ models.length }}</strong></span>
+            <span class="opacity-40">|</span>
+            <span>{{ 'models.size' | translate }}: <strong class="text-slate-900 dark:text-white">{{ getTotalSize() }}</strong></span>
+          </div>
+          <!-- Búsqueda -->
+          <div *ngIf="models.length > 0" class="flex-1 flex items-center gap-2 px-2.5 py-1.5 bg-slate-50 dark:bg-slate-800/50 border border-slate-200/50 dark:border-slate-700/50 rounded-lg">
+            <span class="material-symbols-outlined text-slate-400 flex-shrink-0" style="font-size:14px;">search</span>
+            <input [(ngModel)]="localModelFilter" type="text"
+              placeholder="{{ 'models.filterPlaceholder' | translate }}"
+              class="flex-1 text-xs bg-transparent text-slate-700 dark:text-slate-200 placeholder-slate-400 outline-none" />
+            <button *ngIf="localModelFilter" (click)="localModelFilter=''" class="text-slate-400 hover:text-slate-600">
+              <span class="material-symbols-outlined" style="font-size:13px;">close</span>
+            </button>
           </div>
         </div>
 
@@ -237,256 +243,60 @@ import { takeUntil } from 'rxjs/operators';
           </div>
         </div>
 
-        <!-- Lista de modelos -->
-        <div *ngIf="models.length > 0" class="space-y-2">
-          <div *ngFor="let model of models" 
-               class="flex items-center justify-between p-3 rounded-lg border border-slate-200/50 dark:border-slate-700/50 hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+        <!-- Lista de modelos instalados -->
+        <div *ngIf="models.length > 0" class="space-y-1">
+          <!-- Cabecera de grupo local -->
+          <div class="flex items-center gap-2 px-1 py-1 mb-1">
+            <span class="material-symbols-outlined text-slate-400" style="font-size:14px;">computer</span>
+            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">{{ 'models.sectionLocal' | translate }}</span>
+            <span class="ml-1 text-xs text-slate-400">({{ filteredModels.length }})</span>
+          </div>
+
+          <!-- Sin resultados de filtro -->
+          <div *ngIf="filteredModels.length === 0" class="text-center py-4 text-xs text-slate-400">
+            {{ 'models.noFilterResults' | translate }}
+          </div>
+
+          <div *ngFor="let model of filteredModels" 
+               class="flex items-center justify-between px-3 py-2 rounded-lg border border-slate-200/50 dark:border-slate-700/50 hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
             
             <!-- Información del modelo -->
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2 min-w-0">
               <!-- Indicador de estado -->
-              <div class="flex-shrink-0">
-                <span *ngIf="model.status === 'available'" 
-                      class="w-3 h-3 bg-green-500 rounded-full block"
-                      [title]="'models.available' | translate"></span>
-                <span *ngIf="model.status === 'downloading'" 
-                      class="w-3 h-3 bg-yellow-500 rounded-full block animate-pulse"
-                      [title]="'models.downloading' | translate"></span>
-                <span *ngIf="model.status === 'error'" 
-                      class="w-3 h-3 bg-red-500 rounded-full block"
-                      [title]="'models.error' | translate"></span>
-              </div>
+              <span *ngIf="model.status === 'available'" 
+                    class="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></span>
+              <span *ngIf="model.status === 'downloading'" 
+                    class="w-2 h-2 bg-yellow-500 rounded-full flex-shrink-0 animate-pulse"></span>
+              <span *ngIf="model.status === 'error'" 
+                    class="w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></span>
 
-              <!-- Detalles del modelo -->
-              <div>
-                <div class="flex items-center gap-2">
-                  <h4 class="font-medium text-slate-900 dark:text-white">{{ model.name }}</h4>
-                  <span *ngIf="model.version" 
-                        class="text-xs px-2 py-0.5 bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400 rounded font-mono">
-                    {{ model.version }}
-                  </span>
+              <!-- Detalles -->
+              <div class="min-w-0">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="text-sm font-medium text-slate-900 dark:text-white truncate">{{ model.name }}</span>
                   <span *ngIf="model.family && model.family !== 'unknown'" 
-                        class="text-xs px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded">
+                        class="text-xs px-1.5 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded leading-none">
                     {{ model.family }}
                   </span>
                 </div>
-                <div class="flex items-center gap-4 text-sm text-slate-600 dark:text-slate-400 mt-1">
-                  <span class="flex items-center gap-1">
-                    <span class="material-symbols-outlined text-xs">storage</span>
-                    {{ model.size }}
-                  </span>
-                  <span class="flex items-center gap-1">
-                    <span class="material-symbols-outlined text-xs">schedule</span>
-                    {{ formatLastUsed(model.lastUsed) }}
-                  </span>
+                <div class="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  <span>{{ model.size }}</span>
+                  <span>{{ formatLastUsed(model.lastUsed) }}</span>
                 </div>
               </div>
             </div>
 
-            <!-- Estado y acciones -->
-            <div class="flex items-center gap-2">
-              <div class="text-sm text-right">
-                <div class="flex items-center gap-2">
-                  <span *ngIf="model.status === 'available'" 
-                        class="text-green-600 dark:text-green-400 font-medium">
-                    {{ 'models.available' | translate }}
-                  </span>
-                  <span *ngIf="model.status === 'downloading'" 
-                        class="text-yellow-600 dark:text-yellow-400 font-medium">
-                    {{ 'models.downloading' | translate }}
-                  </span>
-                  <span *ngIf="model.status === 'error'" 
-                        class="text-red-600 dark:text-red-400 font-medium">
-                    {{ 'models.error' | translate }}
-                  </span>
-                </div>
-                <div *ngIf="model.family" class="text-xs text-slate-500 dark:text-slate-500 mt-1">
-                  {{ model.family }}
-                </div>
-              </div>
-              
-              <!-- Botón de eliminar -->
-              <button 
-                (click)="deleteModel(model.name)"
-                [disabled]="isDeleting(model.name) || model.status === 'downloading'"
-                class="flex items-center gap-1 px-2 py-1 text-xs text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                [title]="'models.deleteModel' | translate">
-                <span class="material-symbols-outlined" style="font-size: 16px;" 
-                      [class.animate-spin]="isDeleting(model.name)">
-                  {{ isDeleting(model.name) ? 'refresh' : 'delete' }}
-                </span>
-              </button>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Sección de modelos recomendados (siempre visible cuando Ollama está funcionando) -->
-        <div *ngIf="ollamaStatus.installed && ollamaStatus.running && !loading && !error" class="mt-8">
-          <div class="border-t border-slate-200 dark:border-slate-700 pt-6">
-            <h4 class="text-lg font-medium text-slate-900 dark:text-white mb-3 text-center">
-              {{ 'models.recommendedModels' | translate }}
-            </h4>
-            <p class="text-sm text-slate-600 dark:text-slate-400 mb-4 text-center">
-              {{ 'models.selectModelToDownload' | translate }}
-            </p>
-            
-            <!-- Lista de modelos recomendados -->
-            <div class="grid gap-3 max-w-3xl mx-auto">
-              <div *ngFor="let model of recommendedModels" 
-                   class="flex flex-col p-4 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800/30 hover:border-primary/30 transition-colors">
-                <div class="flex items-center justify-between">
-                  <div class="flex-1">
-                    <div class="flex items-center gap-2 mb-1">
-                      <h6 class="font-medium text-slate-900 dark:text-white">{{ model.displayName }}</h6>
-                      <span class="text-xs px-2 py-1 bg-slate-200 dark:bg-slate-600 text-slate-600 dark:text-slate-300 rounded">
-                        {{ 'models.modelSize' | translate }} {{ model.size }}
-                      </span>
-                    </div>
-                    <p class="text-sm text-slate-600 dark:text-slate-400">{{ model.description }}</p>
-                  </div>
-                  <div class="ml-4 flex items-center gap-2">
-                    <!-- Mostrar si ya está instalado -->
-                    <span *ngIf="isModelInstalled(model.name)" 
-                          class="text-xs px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded font-medium">
-                      {{ 'models.installed' | translate }}
-                    </span>
-                    <!-- Botón de descarga -->
-                    <button 
-                      *ngIf="!isModelInstalled(model.name)"
-                      (click)="downloadModel(model.name)"
-                      [disabled]="isDownloading(model.name)"
-                      class="inline-flex items-center gap-2 px-3 py-1.5 bg-primary hover:bg-primary/90 disabled:opacity-50 text-white rounded-md transition-colors text-sm font-medium">
-                      <span class="material-symbols-outlined" style="font-size: 16px;" 
-                            [class.animate-spin]="isDownloading(model.name)">
-                        {{ isDownloading(model.name) ? 'refresh' : 'download' }}
-                      </span>
-                      {{ isDownloading(model.name) ? ('models.downloadingModel' | translate) : ('models.downloadModel' | translate) }}
-                    </button>
-                  </div>
-                </div>
-                
-                <!-- Barra de progreso -->
-                <div *ngIf="isDownloading(model.name) && getDownloadProgress(model.name)" 
-                     class="mt-3 space-y-1">
-                  <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 overflow-hidden">
-                    <div class="bg-primary h-full transition-all duration-300 ease-out rounded-full"
-                         [style.width.%]="getDownloadProgress(model.name)?.progress || 0">
-                    </div>
-                  </div>
-                  
-                  <!-- Información de progreso -->
-                  <div class="flex justify-between text-xs text-slate-500 dark:text-slate-400">
-                    <span *ngIf="getDownloadProgress(model.name)?.phase">{{ getDownloadProgress(model.name)?.phase }}</span>
-                    <span>{{ getDownloadProgress(model.name)?.progress || 0 }}%</span>
-                  </div>
-                  <div *ngIf="getDownloadProgress(model.name)?.completed && getDownloadProgress(model.name)?.total" 
-                       class="text-xs text-slate-500 dark:text-slate-400 text-right">
-                    {{ formatBytes(getDownloadProgress(model.name)!.completed!) }} / 
-                    {{ formatBytes(getDownloadProgress(model.name)!.total!) }}
-                  </div>
-                  
-                  <!-- Mensaje de error de descarga -->
-                  <div *ngIf="getDownloadProgress(model.name)?.status === 'error'" 
-                       class="text-xs text-red-500 dark:text-red-400 mt-1">
-                    <div class="flex items-center gap-1">
-                      <span class="material-symbols-outlined" style="font-size: 12px;">error</span>
-                      <span>{{ 'models.downloadError' | translate }}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Botón para expandir más modelos -->
-            <div class="text-center mt-4">
-              <button 
-                 (click)="toggleExpandedModels()"
-                 class="inline-flex items-center gap-2 px-4 py-2 text-sm text-primary hover:text-primary/80 hover:bg-primary/10 transition-colors rounded-lg border border-primary/20">
-                <span>{{ showExpandedModels ? ('models.showLess' | translate) : ('models.exploreModels' | translate) }}</span>
-                <span class="material-symbols-outlined transition-transform duration-200" 
-                      [style.transform]="showExpandedModels ? 'rotate(180deg)' : 'rotate(0deg)'" 
-                      style="font-size: 18px;">expand_more</span>
-              </button>
-            </div>
-
-            <!-- Lista expandida de modelos adicionales -->
-            <div *ngIf="showExpandedModels" class="mt-6 space-y-3 border-t border-slate-200 dark:border-slate-700 pt-6">
-              <h5 class="text-md font-medium text-slate-700 dark:text-slate-300 mb-3 text-center">
-                {{ 'models.additionalModels' | translate }}
-              </h5>
-              <div *ngFor="let model of expandedModels" 
-                   class="flex flex-col p-4 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800/30 hover:border-primary/30 transition-colors">
-                <div class="flex items-center justify-between">
-                  <div class="flex-1">
-                    <div class="flex items-center gap-2 mb-1">
-                      <h6 class="font-medium text-slate-900 dark:text-white">{{ model.displayName }}</h6>
-                      <span class="text-xs px-2 py-1 bg-slate-200 dark:bg-slate-600 text-slate-600 dark:text-slate-300 rounded">
-                        {{ 'models.modelSize' | translate }} {{ model.size }}
-                      </span>
-                    </div>
-                    <p class="text-sm text-slate-600 dark:text-slate-400">{{ model.description }}</p>
-                  </div>
-                  <div class="ml-4 flex items-center gap-2">
-                    <!-- Mostrar si ya está instalado -->
-                    <span *ngIf="isModelInstalled(model.name)" 
-                          class="text-xs px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded font-medium">
-                      {{ 'models.installed' | translate }}
-                    </span>
-                    <!-- Botón de descarga -->
-                    <button 
-                      *ngIf="!isModelInstalled(model.name)"
-                      (click)="downloadModel(model.name)"
-                      [disabled]="isDownloading(model.name)"
-                      class="inline-flex items-center gap-2 px-3 py-1.5 bg-primary hover:bg-primary/90 disabled:opacity-50 text-white rounded-md transition-colors text-sm font-medium">
-                      <span class="material-symbols-outlined" style="font-size: 16px;" 
-                            [class.animate-spin]="isDownloading(model.name)">
-                        {{ isDownloading(model.name) ? 'refresh' : 'download' }}
-                      </span>
-                      {{ isDownloading(model.name) ? ('models.downloadingModel' | translate) : ('models.downloadModel' | translate) }}
-                    </button>
-                  </div>
-                </div>
-                
-                <!-- Barra de progreso -->
-                <div *ngIf="isDownloading(model.name) && getDownloadProgress(model.name)" 
-                     class="mt-3 space-y-1">
-                  <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 overflow-hidden">
-                    <div class="bg-primary h-full transition-all duration-300 ease-out rounded-full"
-                         [style.width.%]="getDownloadProgress(model.name)?.progress || 0">
-                    </div>
-                  </div>
-                  
-                  <!-- Información de progreso -->
-                  <div class="flex justify-between text-xs text-slate-500 dark:text-slate-400">
-                    <span *ngIf="getDownloadProgress(model.name)?.phase">{{ getDownloadProgress(model.name)?.phase }}</span>
-                    <span>{{ getDownloadProgress(model.name)?.progress || 0 }}%</span>
-                  </div>
-                  <div *ngIf="getDownloadProgress(model.name)?.completed && getDownloadProgress(model.name)?.total" 
-                       class="text-xs text-slate-500 dark:text-slate-400 text-right">
-                    {{ formatBytes(getDownloadProgress(model.name)!.completed!) }} / 
-                    {{ formatBytes(getDownloadProgress(model.name)!.total!) }}
-                  </div>
-                  
-                  <!-- Mensaje de error de descarga -->
-                  <div *ngIf="getDownloadProgress(model.name)?.status === 'error'" 
-                       class="text-xs text-red-500 dark:text-red-400 mt-1">
-                    <div class="flex items-center gap-1">
-                      <span class="material-symbols-outlined" style="font-size: 12px;">error</span>
-                      <span>{{ 'models.downloadError' | translate }}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Enlace a la biblioteca completa de Ollama -->
-              <div class="text-center mt-4 pt-3 border-t border-slate-200 dark:border-slate-700">
-                <button 
-                   (click)="openOllamaLibrary()"
-                   class="text-sm text-slate-500 hover:text-primary transition-colors underline bg-transparent border-none cursor-pointer">
-                  {{ 'models.browseAllModels' | translate }} →
-                </button>
-              </div>
-            </div>
+            <!-- Acciones -->
+            <button 
+              (click)="deleteModel(model.name)"
+              [disabled]="isDeleting(model.name) || model.status === 'downloading'"
+              class="flex items-center gap-1 px-2 py-1 text-xs text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0 ml-2"
+              [title]="'models.deleteModel' | translate">
+              <span class="material-symbols-outlined" style="font-size: 15px;" 
+                    [class.animate-spin]="isDeleting(model.name)">
+                {{ isDeleting(model.name) ? 'refresh' : 'delete' }}
+              </span>
+            </button>
           </div>
         </div>
       </div>
@@ -503,6 +313,14 @@ export class AiModelsComponent implements OnInit, OnDestroy {
   downloadingModels = new Set<string>();
   deletingModels = new Set<string>();
   showExpandedModels = false;
+  localModelFilter = '';
+
+  get filteredModels(): AIModel[] {
+    if (!this.localModelFilter.trim()) return this.models;
+    const f = this.localModelFilter.toLowerCase();
+    return this.models.filter(m => m.name.toLowerCase().includes(f) || (m.family || '').toLowerCase().includes(f));
+  }
+
   // Progreso de descarga por modelo
   downloadProgress = new Map<string, {
     progress: number;
@@ -901,4 +719,5 @@ export class AiModelsComponent implements OnInit, OnDestroy {
     
     return phaseNames[phase] || phase;
   }
+
 }

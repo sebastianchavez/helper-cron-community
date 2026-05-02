@@ -1,22 +1,11 @@
 <div class="flex h-screen overflow-hidden bg-background-light dark:bg-background-dark" style="width: -webkit-fill-available;">
   <!-- Sidebar con menú de navegación -->
-  <aside class="w-[260px] flex-shrink-0 bg-sidebar-light dark:bg-sidebar-dark border-r border-slate-200 dark:border-slate-800 flex flex-col h-full">
-    <div class="flex-1"></div>
-    <app-navigation-menu [currentPage]="'settings'"></app-navigation-menu>
-  </aside>
+  <app-navigation-menu [currentPage]="'settings'"></app-navigation-menu>
   
   <!-- Contenido principal -->
   <main class="flex flex-1 flex-col h-full">
     <!-- Header -->
     <header class="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
-      <div class="flex items-center gap-3">
-        <button 
-          (click)="navigateToChatbot()"
-          class="flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-primary transition-colors">
-          <span class="material-symbols-outlined" style="font-size: 20px;">arrow_back</span>
-          <span class="font-medium">{{ 'nav.chat' | translate }}</span>
-        </button>
-      </div>
       <h1 class="text-xl font-bold text-slate-900 dark:text-white">{{ 'settings.title' | translate }}</h1>
       <div></div>
     </header>
@@ -64,27 +53,93 @@
         
         <!-- Tema -->
         <div class="bg-white dark:bg-gray-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ 'settings.appearance' | translate }}</h2>
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-gray-700 dark:text-gray-300 font-medium">{{ 'settings.darkMode' | translate }}</p>
-              <p class="text-sm text-gray-500 dark:text-gray-400">{{ 'settings.darkModeDesc' | translate }}</p>
-            </div>
-            <button 
-              (click)="toggleTheme()"
-              [class.bg-blue-600]="isDarkMode"
-              [class.bg-gray-200]="!isDarkMode"
-              class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none">
-              <span 
-                [class.translate-x-6]="isDarkMode"
-                [class.translate-x-1]="!isDarkMode"
-                class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"></span>
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">{{ 'settings.appearance' | translate }}</h2>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mb-5">{{ 'settings.appearanceDesc' | translate }}</p>
+
+          <!-- Modo de tema -->
+          <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">{{ 'settings.themeMode' | translate }}</p>
+          <div class="grid grid-cols-3 gap-3 mb-6">
+            <!-- Claro -->
+            <button
+              (click)="setThemeMode('light')"
+              [class.ring-2]="themeMode === 'light'"
+              [class.ring-primary]="themeMode === 'light'"
+              class="flex flex-col items-center gap-2 p-4 rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-gray-700/50 hover:bg-slate-100 dark:hover:bg-gray-700 transition-all cursor-pointer">
+              <span class="material-symbols-outlined text-yellow-500" style="font-size: 28px;">light_mode</span>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ 'settings.themeLight' | translate }}</span>
             </button>
+            <!-- Oscuro -->
+            <button
+              (click)="setThemeMode('dark')"
+              [class.ring-2]="themeMode === 'dark'"
+              [class.ring-primary]="themeMode === 'dark'"
+              class="flex flex-col items-center gap-2 p-4 rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-gray-700/50 hover:bg-slate-100 dark:hover:bg-gray-700 transition-all cursor-pointer">
+              <span class="material-symbols-outlined text-indigo-400" style="font-size: 28px;">dark_mode</span>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ 'settings.themeDark' | translate }}</span>
+            </button>
+            <!-- Sistema -->
+            <button
+              (click)="setThemeMode('system')"
+              [class.ring-2]="themeMode === 'system'"
+              [class.ring-primary]="themeMode === 'system'"
+              class="flex flex-col items-center gap-2 p-4 rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-gray-700/50 hover:bg-slate-100 dark:hover:bg-gray-700 transition-all cursor-pointer">
+              <span class="material-symbols-outlined text-slate-500 dark:text-slate-400" style="font-size: 28px;">desktop_windows</span>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ 'settings.themeSystem' | translate }}</span>
+            </button>
+          </div>
+
+          <!-- Color de acento -->
+          <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">{{ 'settings.accentColor' | translate }}</p>
+          <div class="grid grid-cols-3 gap-3">
+            <button
+              *ngFor="let accent of accentColors"
+              (click)="setAccentColor(accent.key)"
+              [class.ring-2]="accentColor === accent.key"
+              [style.--ring-color]="accent.color"
+              [class.ring-[var(--ring-color)]]="accentColor === accent.key"
+              class="flex items-center gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-gray-700/50 hover:bg-slate-100 dark:hover:bg-gray-700 transition-all cursor-pointer"
+              [ngClass]="{'ring-2': accentColor === accent.key}"
+              [ngStyle]="accentColor === accent.key ? {'ring-color': accent.color, 'box-shadow': '0 0 0 2px ' + accent.color} : {}">
+              <span class="w-5 h-5 rounded-full flex-shrink-0" [ngStyle]="{'background-color': accent.color}"></span>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ 'settings.accent.' + accent.key | translate }}</span>
+            </button>
+            <!-- Personalizado -->
+            <button
+              (click)="toggleCustomColorPicker()"
+              class="flex items-center gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-gray-700/50 hover:bg-slate-100 dark:hover:bg-gray-700 transition-all cursor-pointer"
+              [ngClass]="{'ring-2': accentColor === 'custom'}"
+              [ngStyle]="accentColor === 'custom' ? {'box-shadow': '0 0 0 2px ' + customAccentColor} : {}">
+              <span class="w-5 h-5 rounded-full flex-shrink-0 bg-gradient-to-br from-red-400 via-green-400 to-blue-500"></span>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ 'settings.accent.custom' | translate }}</span>
+            </button>
+          </div>
+          <!-- Custom color picker -->
+          <div *ngIf="accentColor === 'custom'" class="mt-4 flex items-center gap-3">
+            <input
+              type="color"
+              [value]="customAccentColor"
+              (input)="setCustomAccentColor($any($event.target).value)"
+              class="w-10 h-10 rounded-lg border border-slate-200 dark:border-slate-600 cursor-pointer p-0.5 bg-transparent">
+            <span class="text-sm text-gray-500 dark:text-gray-400 font-mono">{{ customAccentColor }}</span>
           </div>
         </div>
 
         <!-- Modelos de IA -->
-        <app-ai-models></app-ai-models>
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 hover:border-primary/30 transition-colors cursor-pointer group"
+             (click)="navigateToModels()">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
+                <span class="material-symbols-outlined text-primary" style="font-size: 22px;">smart_toy</span>
+              </div>
+              <div>
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-primary transition-colors">{{ 'models.title' | translate }}</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400">{{ 'settings.modelsDesc' | translate }}</p>
+              </div>
+            </div>
+            <span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors" style="font-size: 22px;">chevron_right</span>
+          </div>
+        </div>
 
         <!-- Ollama Control - Solo mostrar si Ollama está corriendo -->
         <div *ngIf="!loading && !error" class="bg-white dark:bg-gray-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">

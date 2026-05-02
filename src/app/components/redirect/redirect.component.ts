@@ -32,8 +32,8 @@ export class RedirectComponent implements OnInit {
       this.logger.log('REDIRECT', 'ngOnInit', { info: 'Redirecting to welcome page' });
       this.router.navigate(['/welcome']);
     } else {
-      this.logger.log('REDIRECT', 'ngOnInit', { info: 'Redirecting to chatbot page' });
-      this.router.navigate(['/chatbot']);
+      this.logger.log('REDIRECT', 'ngOnInit', { info: 'Redirecting to dashboard page' });
+      this.router.navigate(['/dashboard']);
     }
   }
 }

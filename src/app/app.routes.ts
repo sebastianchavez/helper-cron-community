@@ -2,6 +2,10 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
     {
+        path: 'dashboard',
+        loadComponent: () => import('./pages/dashboard/dashboard.component').then(m => m.DashboardComponent)
+    },
+    {
         path: 'welcome',
         loadComponent: () => import('./pages/welcome/welcome.component').then(m => m.WelcomeComponent)
     },
@@ -29,6 +33,18 @@ export const routes: Routes = [
     {
         path: 'terms',
         loadComponent: () => import('./pages/terms/terms.component').then(m => m.TermsComponent)
+    },
+    {
+        path: 'ai-models',
+        loadComponent: () => import('./pages/ai-models/ai-models-page.component').then(m => m.AiModelsPageComponent)
+    },
+    {
+        path: 'task-builder',
+        loadComponent: () => import('./pages/task-builder/task-builder.component').then(m => m.TaskBuilderComponent)
+    },
+    {
+        path: 'flow-library',
+        loadComponent: () => import('./pages/flow-library/flow-library.component').then(m => m.FlowLibraryComponent)
     },
     {
         path: '',

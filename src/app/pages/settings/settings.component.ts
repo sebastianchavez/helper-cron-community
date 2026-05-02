@@ -6,7 +6,6 @@ import { TerminalService } from '../../core/services/terminal/terminal.service';
 import { OllamaStatusService } from '../../core/services/ollama-status/ollama-status.service';
 import { TranslatePipe } from '../../core/pipes/translate.pipe';
 import { NavigationMenuComponent } from '../../core/components/navigation-menu/navigation-menu.component';
-import { AiModelsComponent } from '../../core/components/ai-models/ai-models.component';
 import { AIModelsService } from '../../core/services/ai-models/ai-models.service';
 import { LoggerService } from '../../core/services/logger/logger.service';
 import { Subject, takeUntil } from 'rxjs';
@@ -14,13 +13,17 @@ import { Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, TranslatePipe, NavigationMenuComponent, AiModelsComponent],
+  imports: [CommonModule, TranslatePipe, NavigationMenuComponent],
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss']
 })
 export class SettingsComponent implements OnInit {
   showUserMenu = false;
   isDarkMode = false;
+  themeMode: 'light' | 'dark' | 'system' = 'system';
+  accentColor = 'blue';
+  customAccentColor = '#3b82f6';
+  showCustomColorPicker = false;
   availableLanguages: Language[] = [];
   currentLanguage = 'es';
   showLanguageDropdown = false;
@@ -31,6 +34,14 @@ export class SettingsComponent implements OnInit {
   private destroy$ = new Subject<void>();
   loading = false;
   error: string | null = null;
+
+  accentColors = [
+    { key: 'blue',   color: '#3b82f6', light: '#60a5fa', dark: '#2563eb' },
+    { key: 'green',  color: '#22c55e', light: '#4ade80', dark: '#16a34a' },
+    { key: 'pink',   color: '#ec4899', light: '#f472b6', dark: '#db2777' },
+    { key: 'amber',  color: '#f59e0b', light: '#fbbf24', dark: '#d97706' },
+    { key: 'violet', color: '#8b5cf6', light: '#a78bfa', dark: '#7c3aed' },
+  ];
 
   constructor(
     private router: Router,
@@ -68,9 +79,15 @@ export class SettingsComponent implements OnInit {
     this.checkingOllamaStatus = true;
     try {
       this.ollamaIsRunning = await this.terminalService.isOllamaRunning();
-      this.logger.log('SETTINGS', 'checkOllamaStatus', { info: 'Ollama running', response: this.ollamaIsRunning });
+      this.logger.log('SETTINGS', 'checkOllamaStatus', {
+        info: 'Ollama status checked',
+        response: { ollamaIsRunning: this.ollamaIsRunning }
+      });
     } catch (error: any) {
-      this.logger.error('SETTINGS', 'checkOllamaStatus', { info: 'Error checking Ollama status', error });
+      this.logger.error('SETTINGS', 'checkOllamaStatus', {
+        info: 'Error checking Ollama status',
+        error
+      });
       this.ollamaIsRunning = false;
     } finally {
       this.checkingOllamaStatus = false;
@@ -103,6 +120,10 @@ export class SettingsComponent implements OnInit {
     this.showUserMenu = false;
   }
 
+  navigateToModels(): void {
+    this.router.navigate(['/ai-models']);
+  }
+
   navigateToTerms(): void {
     this.router.navigate(['/terms']);
   }
@@ -117,27 +138,94 @@ export class SettingsComponent implements OnInit {
   }
 
   initializeTheme(): void {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      this.isDarkMode = savedTheme === 'dark';
-    } else {
-      this.isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    // Load theme mode
+    const savedMode = localStorage.getItem('themeMode') as 'light' | 'dark' | 'system' | null;
+    this.themeMode = savedMode || 'system';
+
+    // Load accent color
+    const savedAccent = localStorage.getItem('accentColor');
+    if (savedAccent) {
+      this.accentColor = savedAccent;
     }
-    this.applyTheme();
+    const savedCustomColor = localStorage.getItem('customAccentColor');
+    if (savedCustomColor) {
+      this.customAccentColor = savedCustomColor;
+    }
+
+    this.applyThemeMode();
+    this.applyAccentColor();
   }
 
-  toggleTheme(): void {
-    this.isDarkMode = !this.isDarkMode;
-    this.applyTheme();
-    localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
+  setThemeMode(mode: 'light' | 'dark' | 'system'): void {
+    this.themeMode = mode;
+    localStorage.setItem('themeMode', mode);
+    this.applyThemeMode();
     this.showUserMenu = false;
   }
 
-  private applyTheme(): void {
-    if (this.isDarkMode) {
+  toggleTheme(): void {
+    // Kept for backward compatibility
+    this.setThemeMode(this.isDarkMode ? 'light' : 'dark');
+  }
+
+  private applyThemeMode(): void {
+    let shouldBeDark: boolean;
+
+    if (this.themeMode === 'system') {
+      shouldBeDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    } else {
+      shouldBeDark = this.themeMode === 'dark';
+    }
+
+    this.isDarkMode = shouldBeDark;
+
+    if (shouldBeDark) {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
+    }
+
+    // Also save old format for backward compat
+    localStorage.setItem('theme', shouldBeDark ? 'dark' : 'light');
+  }
+
+  setAccentColor(colorKey: string): void {
+    this.accentColor = colorKey;
+    this.showCustomColorPicker = false;
+    localStorage.setItem('accentColor', colorKey);
+    this.applyAccentColor();
+  }
+
+  setCustomAccentColor(hex: string): void {
+    this.customAccentColor = hex;
+    this.accentColor = 'custom';
+    localStorage.setItem('accentColor', 'custom');
+    localStorage.setItem('customAccentColor', hex);
+    this.applyAccentColor();
+  }
+
+  toggleCustomColorPicker(): void {
+    this.accentColor = 'custom';
+    this.showCustomColorPicker = true;
+    localStorage.setItem('accentColor', 'custom');
+    this.applyAccentColor();
+  }
+
+  private applyAccentColor(): void {
+    const root = document.documentElement;
+
+    if (this.accentColor === 'custom') {
+      root.style.setProperty('--accent', this.customAccentColor);
+      root.style.setProperty('--accent-light', this.customAccentColor);
+      root.style.setProperty('--accent-dark', this.customAccentColor);
+      return;
+    }
+
+    const found = this.accentColors.find(c => c.key === this.accentColor);
+    if (found) {
+      root.style.setProperty('--accent', found.color);
+      root.style.setProperty('--accent-light', found.light);
+      root.style.setProperty('--accent-dark', found.dark);
     }
   }
 
@@ -161,7 +249,10 @@ export class SettingsComponent implements OnInit {
   }
 
   openAbout(): void {
-    this.logger.log('SETTINGS', 'openAbout', { info: 'Mostrando información de la aplicación' });
+    this.logger.log('SETTINGS', 'openAbout', {
+      info: 'Opening application information',
+      response: {}
+    });
     this.showUserMenu = false;
   }
 
@@ -177,7 +268,10 @@ export class SettingsComponent implements OnInit {
       
       if (result.success) {
         this.ollamaStopMessage = result.message;
-        this.logger.log('SETTINGS', 'stopOllama', { info: 'Ollama stopped successfully', response: result.message });
+        this.logger.log('SETTINGS', 'stopOllama', {
+          info: 'Ollama stopped successfully',
+          response: { message: result.message }
+        });
         
         // Notify other components that Ollama has been stopped
         this.ollamaStatusService.notifyOllamaStopped();
@@ -200,7 +294,10 @@ export class SettingsComponent implements OnInit {
         }, 1500);
       } else {
         this.ollamaStopMessage = 'Error: ' + result.message;
-        this.logger.error('SETTINGS', 'stopOllama', { info: 'Error stopping Ollama', error: result.message });
+        this.logger.error('SETTINGS', 'stopOllama', {
+          info: 'Error stopping Ollama',
+          error: result.message
+        });
         
         // Limpiar mensaje después de 5 segundos para errores
         setTimeout(() => {
@@ -209,7 +306,10 @@ export class SettingsComponent implements OnInit {
       }
     } catch (error: any) {
       this.ollamaStopMessage = 'Error: ' + (error.message || 'Error desconocido');
-      this.logger.error('SETTINGS', 'stopOllama', { info: 'Exception stopping Ollama', error });
+      this.logger.error('SETTINGS', 'stopOllama', {
+        info: 'Exception stopping Ollama',
+        error
+      });
       
       // Limpiar mensaje después de 5 segundos para errores
       setTimeout(() => {

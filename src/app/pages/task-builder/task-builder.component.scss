@@ -1,0 +1,92 @@
+// Custom scrollbar for the sidebars
+aside {
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 2px;
+  }
+}
+
+:host-context(.dark) aside {
+  &::-webkit-scrollbar-thumb {
+    background: #475569;
+  }
+}
+
+// Draggable block hover effect
+[draggable="true"] {
+  &:active {
+    opacity: 0.7;
+    transform: scale(0.98);
+  }
+}
+
+// Checkbox styling
+input[type="checkbox"] {
+  accent-color: var(--accent, #3b82f6);
+}
+
+// ========================
+// Resizable panel handles
+// ========================
+.resize-handle-vertical {
+  width: 6px;
+  cursor: col-resize;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  z-index: 20;
+  transition: background 0.15s ease;
+
+  &:hover,
+  &:active {
+    background: rgba(59, 130, 246, 0.08);
+  }
+
+  .resize-handle-line {
+    width: 2px;
+    height: 32px;
+    border-radius: 1px;
+    background: #cbd5e1;
+    transition: background 0.15s ease, height 0.15s ease;
+  }
+
+  &:hover .resize-handle-line,
+  &:active .resize-handle-line {
+    background: var(--accent, #3b82f6);
+    height: 48px;
+  }
+}
+
+:host-context(.dark) .resize-handle-vertical {
+  &:hover,
+  &:active {
+    background: rgba(59, 130, 246, 0.12);
+  }
+
+  .resize-handle-line {
+    background: #475569;
+  }
+
+  &:hover .resize-handle-line,
+  &:active .resize-handle-line {
+    background: var(--accent, #3b82f6);
+  }
+}
+
+// Select element dark mode fix
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2rem;
+}

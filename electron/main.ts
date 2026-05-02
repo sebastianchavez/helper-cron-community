@@ -4,7 +4,6 @@ import { exec } from 'child_process';
 import { registerJobHandlers } from './ipc/job.handlers';
 import { registerFileDiffHandler } from './ipc/file-diff.handler';
 import { registerOllamaChatHandler } from './ipc/ollama-chat.handler';
-import { registerOllamaPlanHandler } from './ipc/ollama-plan.handler';
 import { registerOllamaServiceHandler } from './ipc/ollama-service.handler';
 import { initDb } from './db/db';
 import { registerChatDbHandler } from './ipc/chat-db.handler';
@@ -13,7 +12,20 @@ import { setupUserProfileHandlers } from './ipc/user-profile.handler';
 import { registerTerminalHandler } from './ipc/terminal.handler';
 import { registerExternalLinkHandler } from './ipc/external-link.handler';
 import { registerWindowHandlers } from './ipc/window.handler';
+import { registerDirectoryHandler } from './ipc/directory.handler';
+import { registerFileWriteHandler } from './ipc/file-write.handler';
+import { registerFolderDialogHandler } from './ipc/folder-dialog.handler';
+import { registerFlowHandlers } from './ipc/flow.handler';
+import { registerExecutionLogHandlers } from './ipc/execution-log.handler';
 
+import { startFlowScheduler, stopFlowScheduler } from './scheduler/flow.scheduler';
+import { setMainWindow } from './window-manager';
+
+// Set app name for Windows notifications
+app.setName('Helper Cron');
+if (process.platform === 'win32') {
+    app.setAppUserModelId('Helper Cron');
+}
 
 let win: BrowserWindow | null = null;
 let ollamaStartedByApp = false;
@@ -46,15 +58,20 @@ function createWindow() {
         );
     }
     win.setMenu(null);
+    setMainWindow(win);
 
     registerJobHandlers(win);
     registerFileDiffHandler();
     registerOllamaChatHandler();
     registerChatDbHandler();
     registerFolderHandlers();
-    registerOllamaPlanHandler();
     registerOllamaServiceHandler();
     registerTerminalHandler();
+    registerDirectoryHandler();
+    registerFileWriteHandler();
+    registerFolderDialogHandler();
+    registerFlowHandlers();
+    registerExecutionLogHandlers();
 }
 
 app.whenReady().then(async () => {
@@ -85,9 +102,11 @@ app.whenReady().then(async () => {
     }
     
     createWindow();
+    startFlowScheduler();
 });
 
 app.on('window-all-closed', async () => {
+    stopFlowScheduler();
     // Detener Ollama solo si fue iniciado por la aplicación
     if (ollamaStartedByApp) {
         console.log('[MAIN] Stopping Ollama (started by app) before closing app...');
@@ -120,7 +139,8 @@ app.on('window-all-closed', async () => {
     if (process.platform !== 'darwin') app.quit();
 });
 
-app.on('before-quit', async (event) => {
+app.on('before-quit', async (_event) => {
+    stopFlowScheduler();
     if (ollamaStartedByApp) {
         console.log('[MAIN] App is about to quit, ensuring Ollama (started by app) is stopped...');
         // Detener Ollama antes de salir completamente

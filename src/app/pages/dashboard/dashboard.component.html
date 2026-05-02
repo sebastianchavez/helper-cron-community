@@ -1,0 +1,203 @@
+<div class="flex h-screen overflow-hidden bg-background-light dark:bg-background-dark" style="width: -webkit-fill-available;">
+
+  <!-- Navigation Menu -->
+  <app-navigation-menu [currentPage]="'dashboard'"></app-navigation-menu>
+
+  <!-- Main content -->
+  <main class="flex-1 overflow-y-auto">
+
+    <!-- Header -->
+    <div class="px-8 pt-8 pb-0">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+        <div>
+          <h1 class="text-2xl font-bold text-slate-900 dark:text-white">{{ 'dashboard.title' | translate }}</h1>
+          <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">{{ 'dashboard.subtitle' | translate }}</p>
+        </div>
+        <button
+          (click)="loadDashboardData()"
+          class="flex items-center gap-1.5 rounded-lg h-10 px-3 text-sm font-medium border border-slate-200 dark:border-slate-700 bg-white dark:bg-gray-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600 transition-colors">
+          <span class="material-symbols-outlined" style="font-size: 18px;">refresh</span>
+          <span>{{ 'dashboard.refresh' | translate }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="px-8 pb-8 space-y-8">
+
+      <!-- Stat cards -->
+      <div class="grid grid-cols-2 xl:grid-cols-4 gap-4">
+
+        <!-- Total Flows -->
+        <div
+          (click)="navigateTo('/flow-library')"
+          class="bg-white dark:bg-gray-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 flex items-start gap-4 cursor-pointer hover:border-primary hover:shadow-md transition-all duration-200">
+          <div class="size-11 rounded-xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+            <span class="material-symbols-outlined text-blue-600 dark:text-blue-400" style="font-size: 22px;">account_tree</span>
+          </div>
+          <div class="min-w-0">
+            <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">{{ 'dashboard.statFlows' | translate }}</p>
+            <p class="text-3xl font-bold text-slate-900 dark:text-white leading-none">
+              <span *ngIf="!loading">{{ totalFlows }}</span>
+              <span *ngIf="loading" class="inline-block w-10 h-7 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Active Flows -->
+        <div
+          (click)="navigateTo('/flow-library')"
+          class="bg-white dark:bg-gray-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 flex items-start gap-4 cursor-pointer hover:border-primary hover:shadow-md transition-all duration-200">
+          <div class="size-11 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0">
+            <span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400" style="font-size: 22px;">play_circle</span>
+          </div>
+          <div class="min-w-0">
+            <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">{{ 'dashboard.statActiveFlows' | translate }}</p>
+            <p class="text-3xl font-bold text-slate-900 dark:text-white leading-none">
+              <span *ngIf="!loading">{{ activeFlows }}</span>
+              <span *ngIf="loading" class="inline-block w-10 h-7 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Conversations -->
+        <div
+          (click)="navigateTo('/chatbot')"
+          class="bg-white dark:bg-gray-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 flex items-start gap-4 cursor-pointer hover:border-primary hover:shadow-md transition-all duration-200">
+          <div class="size-11 rounded-xl bg-violet-50 dark:bg-violet-900/30 flex items-center justify-center flex-shrink-0">
+            <span class="material-symbols-outlined text-violet-600 dark:text-violet-400" style="font-size: 22px;">forum</span>
+          </div>
+          <div class="min-w-0">
+            <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">{{ 'dashboard.statConversations' | translate }}</p>
+            <p class="text-3xl font-bold text-slate-900 dark:text-white leading-none">
+              <span *ngIf="!loading">{{ totalConversations }}</span>
+              <span *ngIf="loading" class="inline-block w-10 h-7 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></span>
+            </p>
+          </div>
+        </div>
+
+        <!-- AI Models -->
+        <div
+          (click)="navigateTo('/ai-models')"
+          class="bg-white dark:bg-gray-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 flex items-start gap-4 cursor-pointer hover:border-primary hover:shadow-md transition-all duration-200">
+          <div class="size-11 rounded-xl bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center flex-shrink-0">
+            <span class="material-symbols-outlined text-amber-600 dark:text-amber-400" style="font-size: 22px;">smart_toy</span>
+          </div>
+          <div class="min-w-0">
+            <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">{{ 'dashboard.statModels' | translate }}</p>
+            <p class="text-3xl font-bold text-slate-900 dark:text-white leading-none">
+              <span *ngIf="!loading">{{ availableModels }}</span>
+              <span *ngIf="loading" class="inline-block w-10 h-7 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></span>
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Middle row: Quick actions + Recent executions -->
+      <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+
+        <!-- Quick actions -->
+        <div class="bg-white dark:bg-gray-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5">
+          <h2 class="text-base font-semibold text-slate-900 dark:text-white mb-4">{{ 'dashboard.quickActions' | translate }}</h2>
+          <div class="grid grid-cols-2 gap-3">
+            <button
+              *ngFor="let action of quickActions"
+              (click)="navigateTo(action.route)"
+              class="flex flex-col items-start gap-2 p-4 rounded-xl border border-slate-100 dark:border-slate-700 hover:border-primary/40 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all text-left">
+              <div class="size-9 rounded-lg flex items-center justify-center" [ngClass]="action.bgColor">
+                <span class="material-symbols-outlined" [ngClass]="action.color" style="font-size: 20px;">{{ action.icon }}</span>
+              </div>
+              <div>
+                <p class="text-sm font-semibold text-slate-800 dark:text-slate-100">{{ action.labelKey | translate }}</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{{ action.descKey | translate }}</p>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Recent executions -->
+        <div class="bg-white dark:bg-gray-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ 'dashboard.recentExecutions' | translate }}</h2>
+          </div>
+
+          <!-- Loading -->
+          <div *ngIf="loading" class="space-y-2">
+            <div *ngFor="let i of [1,2,3,4]" class="h-10 bg-slate-100 dark:bg-slate-700 rounded-lg animate-pulse"></div>
+          </div>
+
+          <!-- Empty -->
+          <div *ngIf="!loading && recentExecutions.length === 0"
+            class="flex flex-col items-center justify-center py-10 text-slate-400 dark:text-slate-500">
+            <span class="material-symbols-outlined mb-2" style="font-size: 36px;">history</span>
+            <p class="text-sm">{{ 'dashboard.noExecutions' | translate }}</p>
+          </div>
+
+          <!-- List -->
+          <div *ngIf="!loading && recentExecutions.length > 0" class="space-y-1.5">
+            <div
+              *ngFor="let exec of recentExecutions"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
+              <!-- Status dot -->
+              <span
+                class="size-2 rounded-full flex-shrink-0"
+                [ngClass]="{
+                  'bg-emerald-500': exec.status === 'success',
+                  'bg-red-500': exec.status === 'error',
+                  'bg-amber-400 animate-pulse': exec.status === 'running'
+                }">
+              </span>
+              <span class="flex-1 text-sm text-slate-700 dark:text-slate-300 truncate font-medium">{{ exec.flowName }}</span>
+              <span class="text-xs text-slate-400 flex-shrink-0">{{ formatDuration(exec.duration) }}</span>
+              <span class="text-xs text-slate-400 flex-shrink-0">{{ getTimeAgo(exec.startedAt) }}</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Recent flows -->
+      <div class="bg-white dark:bg-gray-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ 'dashboard.recentFlows' | translate }}</h2>
+          <button
+            (click)="navigateTo('/flow-library')"
+            class="text-xs text-primary hover:underline">{{ 'dashboard.viewAll' | translate }}</button>
+        </div>
+
+        <!-- Loading -->
+        <div *ngIf="loading" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">
+          <div *ngFor="let i of [1,2,3,4,5]" class="h-20 bg-slate-100 dark:bg-slate-700 rounded-xl animate-pulse"></div>
+        </div>
+
+        <!-- Empty -->
+        <div *ngIf="!loading && recentFlows.length === 0"
+          class="flex flex-col items-center justify-center py-10 text-slate-400 dark:text-slate-500">
+          <span class="material-symbols-outlined mb-2" style="font-size: 36px;">account_tree</span>
+          <p class="text-sm">{{ 'dashboard.noFlows' | translate }}</p>
+          <button
+            (click)="navigateTo('/task-builder')"
+            class="mt-3 px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:opacity-90 transition-opacity">
+            {{ 'dashboard.createFirst' | translate }}
+          </button>
+        </div>
+
+        <!-- Grid -->
+        <div *ngIf="!loading && recentFlows.length > 0" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">
+          <button
+            *ngFor="let flow of recentFlows"
+            (click)="navigateToFlow(flow.id)"
+            class="flex flex-col items-center gap-2 p-4 rounded-xl border border-slate-100 dark:border-slate-700 hover:border-primary/40 hover:shadow-sm transition-all text-center">
+            <div class="size-10 rounded-xl flex items-center justify-center" [ngClass]="flow.iconBg">
+              <span class="material-symbols-outlined" [ngClass]="flow.iconColor" style="font-size: 20px;">{{ flow.icon }}</span>
+            </div>
+            <span class="text-xs font-medium text-slate-700 dark:text-slate-200 truncate w-full text-center">{{ flow.name }}</span>
+            <span class="text-[10px] text-slate-400">{{ getTimeAgo(flow.updatedAt) }}</span>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+</div>
