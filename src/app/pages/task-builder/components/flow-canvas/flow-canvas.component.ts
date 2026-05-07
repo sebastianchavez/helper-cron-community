@@ -153,9 +153,18 @@ export class FlowCanvasComponent implements AfterViewChecked, DoCheck {
     const id = `end-${this.nextEndNodeId}`;
     this.nextEndNodeId++;
     this.nextEndNodeIdChange.emit(this.nextEndNodeId);
-    const lastEnd = this.endNodes[this.endNodes.length - 1];
-    const x = lastEnd ? lastEnd.x + 160 : 300;
-    const y = lastEnd ? lastEnd.y : 300;
+
+    let x: number;
+    let y: number;
+    const canvas = document.querySelector('.canvas-grid') as HTMLElement;
+    if (canvas) {
+      x = (canvas.scrollLeft + canvas.clientWidth / 2) * (100 / this.zoomLevel);
+      y = (canvas.scrollTop + canvas.clientHeight / 2) * (100 / this.zoomLevel);
+    } else {
+      const lastEnd = this.endNodes[this.endNodes.length - 1];
+      x = lastEnd ? lastEnd.x + 160 : 300;
+      y = lastEnd ? lastEnd.y : 300;
+    }
     this.endNodes.push({ id, x, y });
   }
 
